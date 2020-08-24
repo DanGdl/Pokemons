@@ -1,2 +1,2 @@
 # Pokemons
-Exaxm task VMedia
+Exam task VMedia
