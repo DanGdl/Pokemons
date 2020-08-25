@@ -35,11 +35,26 @@ public abstract class HostedFragment<VIEW_MODEL extends FragmentContract.ViewMod
         fragmentHost = null;
     }
 
+    @Override
+    public void onDestroy() {
+        getLifecycle().removeObserver(getModel());
+        getModel().getStateObservable().removeObservers(this);
+        super.onDestroy();
+    }
+
     protected boolean hasHost() {
         return fragmentHost != null;
     }
 
     protected HOST getFragmentHost() {
         return fragmentHost;
+    }
+
+    protected VIEW_MODEL getModel() {
+        return model;
+    }
+
+    protected void setModel(VIEW_MODEL model) {
+        this.model = model;
     }
 }
