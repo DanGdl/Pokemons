@@ -1,4 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon;
 
-//public class PokemonViewModel implements PokemonsContract.ViewModel {
-//}
+import com.mdgd.pokemon.ui.arch.MviViewModel;
+
+public class PokemonViewModel extends MviViewModel<PokemonScreenState> implements PokemonContract.ViewModel {
+}

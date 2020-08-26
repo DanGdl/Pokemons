@@ -11,6 +11,7 @@ public class PokemonsContract {
     }
 
     public interface Host extends FragmentContract.Host {
+        void proceedToPokemonScreen();
     }
 
     public interface Router {
