@@ -13,13 +13,17 @@ import com.mdgd.pokemon.dto.Pokemon;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+
 public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.PokemonViewHolder> {
     private final List<Pokemon> items = new ArrayList<>();
+    private final PublishSubject<Pokemon> clicksSubject = PublishSubject.create();
 
     @NonNull
     @Override
     public PokemonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PokemonViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false));
+        return new PokemonViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false), clicksSubject);
     }
 
     @Override
@@ -43,10 +47,17 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
         notifyDataSetChanged();
     }
 
+    public Observable<Pokemon> getOnItemClickSubject() {
+        return clicksSubject;
+    }
+
     public class PokemonViewHolder extends RecyclerView.ViewHolder {
 
-        public PokemonViewHolder(@NonNull View itemView) {
+        private final PublishSubject<Pokemon> clicksSubject;
+
+        public PokemonViewHolder(@NonNull View itemView, PublishSubject<Pokemon> clicksSubject) {
             super(itemView);
+            this.clicksSubject = clicksSubject;
         }
 
         public void bindItem(Pokemon pokemon, int position) {

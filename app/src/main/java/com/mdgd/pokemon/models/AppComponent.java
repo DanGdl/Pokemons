@@ -1,5 +1,7 @@
 package com.mdgd.pokemon.models;
 
+import com.mdgd.pokemon.ui.pokemons.PokemonsViewModelFactory;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -7,9 +9,7 @@ import dagger.Component;
 @Singleton
 @Component(modules = {AppModule.class})
 public interface AppComponent {
-//    void injectNetwork(MainActivityModule module);
-//
-//    void injectNetwork(MainFragmentModule module);
-//
-//    void injectNetwork(SomeServiceModule module);
+    void injectPokemonsRepo(PokemonsViewModelFactory factory);
+
+    void injectPokemonsCache(PokemonsViewModelFactory factory);
 }

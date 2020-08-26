@@ -17,16 +17,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
+import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
+import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreen;
+import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel, PokemonsContract.Host>
-        implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, CompoundButton.OnCheckedChangeListener {
+        implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
+        CompoundButton.OnCheckedChangeListener, Observer<PokemonsScreenState>, PokemonsScreen {
 
+    private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final PokemonsAdapter adapter = new PokemonsAdapter();
-    private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshSwipe;
     private ToggleButton filterAttack;
     private ToggleButton filterDefence;
     private ToggleButton filterMovement;
+    private View refresh;
 
     public static PokemonsFragment newInstance() {
         return new PokemonsFragment();
@@ -37,12 +44,9 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
         super.onCreate(savedInstanceState);
         setModel(new ViewModelProvider(this, new PokemonsViewModelFactory(this)).get(PokemonsViewModel.class));
         getLifecycle().addObserver(getModel());
-        getModel().getStateObservable().observe(this, new Observer<PokemonsScreenState>() {
-            @Override
-            public void onChanged(PokemonsScreenState pokemonsScreenState) {
+        getModel().getStateObservable().observe(this, this);
 
-            }
-        });
+        onDestroyDisposables.add(adapter.getOnItemClickSubject().subscribe(pokemon -> getModel().onItemClicked(pokemon)));
     }
 
     @Nullable
@@ -55,15 +59,16 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.pokemons_recycler);
+        final RecyclerView recyclerView = view.findViewById(R.id.pokemons_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        refresh = view.findViewById(R.id.pokemons_refresh);
         refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh);
         filterAttack = view.findViewById(R.id.pokemons_filter_attack);
         filterDefence = view.findViewById(R.id.pokemons_filter_defence);
         filterMovement = view.findViewById(R.id.pokemons_filter_movement);
 
-        view.findViewById(R.id.pokemons_refresh).setOnClickListener(this);
+        refresh.setOnClickListener(this);
         refreshSwipe.setOnRefreshListener(this);
         filterAttack.setOnCheckedChangeListener(this);
         filterDefence.setOnCheckedChangeListener(this);
@@ -79,16 +84,29 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
 
     @Override
     public void onClick(View view) {
-        // todo launch refresh
+        if (view == refresh) {
+            refreshSwipe.setRefreshing(true);
+        }
     }
 
     @Override
     public void onRefresh() {
-// todo launch refresh
+        getModel().reload();
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        // todo launch filtering
+        getModel().sort(new FilterData(filterAttack.isChecked(), filterDefence.isChecked(), filterMovement.isChecked()));
+    }
+
+    @Override
+    public void onChanged(PokemonsScreenState pokemonsScreenState) {
+        pokemonsScreenState.visit(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        onDestroyDisposables.clear();
+        super.onDestroy();
     }
 }
