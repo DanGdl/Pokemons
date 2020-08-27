@@ -15,19 +15,6 @@ public class PokemonsScreenState {
     private final int action;
     private final Throwable error;
 
-    public static PokemonsScreenState createSetDataState(List<PokemonDetails> list) {
-        return new PokemonsScreenState(SET_DATA, list);
-    }
-
-    public static PokemonsScreenState createAddDataState(List<PokemonDetails> list) {
-        return new PokemonsScreenState(ADD_DATA, list);
-    }
-
-    public static PokemonsScreenState createErrorState(Throwable error) {
-        return new PokemonsScreenState(ERROR, error);
-    }
-
-
     public PokemonsScreenState(int action, List<PokemonDetails> list) {
         this.action = action;
         this.list = list;
@@ -40,6 +27,17 @@ public class PokemonsScreenState {
         this.error = error;
     }
 
+    public static PokemonsScreenState createSetDataState(List<PokemonDetails> list) {
+        return new PokemonsScreenState(SET_DATA, list);
+    }
+
+    public static PokemonsScreenState createAddDataState(List<PokemonDetails> list) {
+        return new PokemonsScreenState(ADD_DATA, list);
+    }
+
+    public static PokemonsScreenState createErrorState(Throwable error) {
+        return new PokemonsScreenState(ERROR, error);
+    }
 
     public void visit(PokemonsScreen pokemonsScreen) {
         pokemonsScreen.hideProgress();

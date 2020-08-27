@@ -12,9 +12,9 @@ public interface Cache {
 
     @Nullable Optional<PokemonDetails> getSelectedPokemon();
 
-    void setPokemons(List<PokemonDetails> list);
-
     void addPokemons(List<PokemonDetails> list);
 
     List<PokemonDetails> getPokemons();
+
+    void setPokemons(List<PokemonDetails> list);
 }

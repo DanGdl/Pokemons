@@ -32,6 +32,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
 
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final PokemonsAdapter adapter = new PokemonsAdapter();
+    private SwipeRefreshLayout refreshSwipe;
     private final EndlessScrollListener scrollListener = new EndlessScrollListener() {
         @Override
         public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -41,7 +42,6 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
             getModel().loadPage(page);
         }
     };
-    private SwipeRefreshLayout refreshSwipe;
     private ToggleButton filterAttack;
     private ToggleButton filterDefence;
     private ToggleButton filterMovement;

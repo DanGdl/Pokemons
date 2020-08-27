@@ -24,12 +24,6 @@ public class CacheImpl implements Cache {
     }
 
     @Override
-    public void setPokemons(List<PokemonDetails> list) {
-        pokemons.clear();
-        pokemons.addAll(list);
-    }
-
-    @Override
     public void addPokemons(List<PokemonDetails> list) {
         pokemons.addAll(list);
     }
@@ -37,5 +31,11 @@ public class CacheImpl implements Cache {
     @Override
     public List<PokemonDetails> getPokemons() {
         return new ArrayList<>(pokemons);
+    }
+
+    @Override
+    public void setPokemons(List<PokemonDetails> list) {
+        pokemons.clear();
+        pokemons.addAll(list);
     }
 }
