@@ -7,7 +7,9 @@ import com.mdgd.pokemon.models.cache.CacheImpl;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.PokemonsRepository;
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao;
+import com.mdgd.pokemon.models.repo.dao.PokemonsDaoImpl;
 import com.mdgd.pokemon.models.repo.network.Network;
+import com.mdgd.pokemon.models.repo.network.PokemonsNetwork;
 
 import javax.inject.Singleton;
 
@@ -31,13 +33,13 @@ public class AppModule {
     @Provides
     @Singleton
     public Network getPokemonsNetwork() {
-        return null;
+        return new PokemonsNetwork();
     }
 
     @Provides
     @Singleton
     public PokemonsDao getPokemonsDao() {
-        return null;
+        return new PokemonsDaoImpl();
     }
 
     @Provides

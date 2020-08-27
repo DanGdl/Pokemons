@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +28,14 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     }
 
     @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
         //only trigger action if scrolling down
         if (!reverseDirection ? dy > 0 : dy < 0) {
-            RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
-            int totalItemCount = lm.getItemCount();
-            int lastVisibleItemPosition = ((LinearLayoutManager) lm).findLastVisibleItemPosition();
+            final RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
+            final int totalItemCount = lm.getItemCount();
+            final int lastVisibleItemPosition = ((LinearLayoutManager) lm).findLastVisibleItemPosition();
 
             // If the total item count is zero and the previous isn't, assume the
             // list is invalidated and should be reset back to initial state

@@ -37,4 +37,12 @@ public class MainActivity extends HostActivity implements SplashContract.Host, P
     public void proceedToPokemonScreen() {
         replaceFragment(PokemonFragment.newInstance(), true, "pokemon");
     }
+
+    @Override
+    public void showError(Throwable error) {
+        if (error != null) {
+            error.printStackTrace();
+        }
+        // todo impl error dialog
+    }
 }

@@ -30,8 +30,26 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0'
 
     api 'com.google.guava:guava:28.0-android'
+
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.6.0"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:2.9.0"
+
+    // okHttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+
+    // images
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // json
+    implementation "com.google.code.gson:gson:2.8.5"
 
     // dagger2
     implementation 'com.google.dagger:dagger:2.27'
@@ -44,18 +62,6 @@ dependencies {
     // rx
     implementation 'io.reactivex.rxjava3:rxjava:3.0.6'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-
-    implementation 'com.trello.rxlifecycle3:rxlifecycle:3.1.0'
-    implementation "com.jakewharton.rxbinding3:rxbinding:$rxbinding3@aar"
-    implementation "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-drawerlayout:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-leanback:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-recyclerview:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-slidingpanelayout:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-swiperefreshlayout:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-viewpager:$rxbinding3"
-    implementation "com.jakewharton.rxbinding3:rxbinding-material:$rxbinding3"
-    implementation 'com.jakewharton.rx2:replaying-share:2.1.1'
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

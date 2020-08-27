@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons;
 
-import com.mdgd.pokemon.dto.Pokemon;
+import com.mdgd.pokemon.dto.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.FragmentContract;
 import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
 import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;
@@ -10,9 +10,12 @@ public class PokemonsContract {
     public interface ViewModel extends FragmentContract.ViewModel<PokemonsScreenState> {
         void reload();
 
+        void loadPage(int page);
+
         void sort(FilterData filterData);
 
-        void onItemClicked(Pokemon pokemon);
+        void onItemClicked(PokemonDetails pokemon);
+
     }
 
     public interface View extends FragmentContract.View {
@@ -20,6 +23,8 @@ public class PokemonsContract {
 
     public interface Host extends FragmentContract.Host {
         void proceedToPokemonScreen();
+
+        void showError(Throwable error);
     }
 
     public interface Router {

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.dto.Pokemon;
+import com.mdgd.pokemon.dto.PokemonDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,8 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.PokemonViewHolder> {
-    private final List<Pokemon> items = new ArrayList<>();
-    private final PublishSubject<Pokemon> clicksSubject = PublishSubject.create();
+    private final List<PokemonDetails> items = new ArrayList<>();
+    private final PublishSubject<PokemonDetails> clicksSubject = PublishSubject.create();
 
     @NonNull
     @Override
@@ -36,31 +36,31 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
         return items.size();
     }
 
-    public void setItems(List<Pokemon> items) {
+    public void setItems(List<PokemonDetails> items) {
         this.items.clear();
         this.items.addAll(items);
         notifyDataSetChanged();
     }
 
-    public void addItems(List<Pokemon> items) {
+    public void addItems(List<PokemonDetails> items) {
         this.items.addAll(items);
         notifyDataSetChanged();
     }
 
-    public Observable<Pokemon> getOnItemClickSubject() {
+    public Observable<PokemonDetails> getOnItemClickSubject() {
         return clicksSubject;
     }
 
     public class PokemonViewHolder extends RecyclerView.ViewHolder {
 
-        private final PublishSubject<Pokemon> clicksSubject;
+        private final PublishSubject<PokemonDetails> clicksSubject;
 
-        public PokemonViewHolder(@NonNull View itemView, PublishSubject<Pokemon> clicksSubject) {
+        public PokemonViewHolder(@NonNull View itemView, PublishSubject<PokemonDetails> clicksSubject) {
             super(itemView);
             this.clicksSubject = clicksSubject;
         }
 
-        public void bindItem(Pokemon pokemon, int position) {
+        public void bindItem(PokemonDetails pokemon, int position) {
 
         }
     }

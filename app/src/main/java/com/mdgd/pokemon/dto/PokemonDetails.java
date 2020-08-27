@@ -1,4 +1,4 @@
 package com.mdgd.pokemon.dto;
 
-public class Pokemon {
+public class PokemonDetails {
 }

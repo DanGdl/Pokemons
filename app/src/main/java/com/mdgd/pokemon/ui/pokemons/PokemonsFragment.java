@@ -16,10 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mdgd.pokemon.R;
+import com.mdgd.pokemon.dto.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
 import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
 import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreen;
 import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;
+
+import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -29,6 +32,15 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
 
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final PokemonsAdapter adapter = new PokemonsAdapter();
+    private final EndlessScrollListener scrollListener = new EndlessScrollListener() {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            if (refreshSwipe != null) {
+                refreshSwipe.setRefreshing(true);
+            }
+            getModel().loadPage(page);
+        }
+    };
     private SwipeRefreshLayout refreshSwipe;
     private ToggleButton filterAttack;
     private ToggleButton filterDefence;
@@ -61,12 +73,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
 
         final RecyclerView recyclerView = view.findViewById(R.id.pokemons_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // todo request next page
-            }
-        });
+        recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setAdapter(adapter);
         refresh = view.findViewById(R.id.pokemons_refresh);
         refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh);
@@ -74,6 +81,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
         filterDefence = view.findViewById(R.id.pokemons_filter_defence);
         filterMovement = view.findViewById(R.id.pokemons_filter_movement);
 
+        // todo make ui for filter buttons
         refresh.setOnClickListener(this);
         refreshSwipe.setOnRefreshListener(this);
         filterAttack.setOnCheckedChangeListener(this);
@@ -114,5 +122,29 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
     public void onDestroy() {
         onDestroyDisposables.clear();
         super.onDestroy();
+    }
+
+    @Override
+    public void hideProgress() {
+        if (refreshSwipe != null) {
+            refreshSwipe.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void setItems(List<PokemonDetails> list) {
+        adapter.setItems(list);
+    }
+
+    @Override
+    public void addItems(List<PokemonDetails> list) {
+        adapter.addItems(list);
+    }
+
+    @Override
+    public void showError(Throwable error) {
+        if (hasHost()) {
+            getFragmentHost().showError(error);
+        }
     }
 }
