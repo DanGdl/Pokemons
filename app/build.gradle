@@ -31,6 +31,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
 
+    api 'com.google.guava:guava:28.0-android'
+
     // dagger2
     implementation 'com.google.dagger:dagger:2.27'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
