@@ -3,16 +3,15 @@ package com.mdgd.pokemon.ui.pokemons;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.mdgd.pokemon.dto.PokemonDetails;
 import com.mdgd.pokemon.models.cache.Cache;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
+import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.MviViewModel;
 import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
 import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -40,6 +39,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(
                     loadPageSubject
+                            .doOnNext(ignore -> postState(PokemonsScreenState.createLoadingState()))
                             .switchMapSingle(page -> repo.getPage(page)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -57,13 +57,14 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     }
 
     private PokemonsScreenState sort(FilterData filters, List<PokemonDetails> pokemons) {
-        Collections.sort(pokemons, new Comparator<PokemonDetails>() {
-            @Override
-            public int compare(PokemonDetails pokemon, PokemonDetails t1) {
-                return 0; // todo connect filters
-            }
-        });
-        return PokemonsScreenState.createSetDataState(pokemons);
+        Collections.shuffle(pokemons);
+//        Collections.sort(pokemons, new Comparator<PokemonDetails>() {
+//            @Override
+//            public int compare(PokemonDetails pokemon, PokemonDetails t1) {
+//                return 0; // todo connect filters
+//            }
+//        });
+        return PokemonsScreenState.createUpdateDataState(pokemons);
     }
 
     private PokemonsScreenState mapToState(Integer page, Result<List<PokemonDetails>> result) {

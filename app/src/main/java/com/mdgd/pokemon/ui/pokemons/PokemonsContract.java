@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons;
 
-import com.mdgd.pokemon.dto.PokemonDetails;
+import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.FragmentContract;
 import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
 import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;

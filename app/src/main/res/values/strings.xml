@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Pokemons</string>
     <string name="screen_splash_advertisement">Here can be your advertisement</string>
+    <string name="item_pokemon_attack">Attack:\n%1$s</string>
+    <string name="item_pokemon_defence">Defence:\n%1$s</string>
+    <string name="item_pokemon_speed">Speed:\n%1$s</string>
 </resources>

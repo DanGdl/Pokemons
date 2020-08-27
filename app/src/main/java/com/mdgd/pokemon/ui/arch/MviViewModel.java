@@ -42,6 +42,10 @@ public class MviViewModel<T> extends ViewModel implements FragmentContract.ViewM
         stateHolder.setValue(state);
     }
 
+    protected void postState(T state) {
+        stateHolder.postValue(state);
+    }
+
     protected boolean hasOnDestroyDisposables() {
         return onDestroyDisposables.size() != 0;
     }

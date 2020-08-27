@@ -10,11 +10,11 @@ import androidx.appcompat.widget.AppCompatToggleButton;
 public class FilterToggleButton extends AppCompatToggleButton {
 
     public FilterToggleButton(@NonNull Context context) {
-        this(context, null);
+        super(context);
     }
 
     public FilterToggleButton(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public FilterToggleButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {

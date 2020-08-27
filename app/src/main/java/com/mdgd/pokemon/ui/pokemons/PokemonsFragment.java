@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.dto.PokemonDetails;
+import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
 import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
 import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreen;
@@ -42,6 +42,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
             getModel().loadPage(page);
         }
     };
+    private RecyclerView recyclerView;
     private ToggleButton filterAttack;
     private ToggleButton filterDefence;
     private ToggleButton filterMovement;
@@ -71,7 +72,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final RecyclerView recyclerView = view.findViewById(R.id.pokemons_recycler);
+        recyclerView = view.findViewById(R.id.pokemons_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setAdapter(adapter);
@@ -84,6 +85,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
         // todo make ui for filter buttons
         refresh.setOnClickListener(this);
         refreshSwipe.setOnRefreshListener(this);
+
         filterAttack.setOnCheckedChangeListener(this);
         filterDefence.setOnCheckedChangeListener(this);
         filterMovement.setOnCheckedChangeListener(this);
@@ -125,6 +127,13 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
     }
 
     @Override
+    public void showProgress() {
+        if (refreshSwipe != null) {
+            refreshSwipe.setRefreshing(true);
+        }
+    }
+
+    @Override
     public void hideProgress() {
         if (refreshSwipe != null) {
             refreshSwipe.setRefreshing(false);
@@ -142,9 +151,17 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
     }
 
     @Override
+    public void updateItems(List<PokemonDetails> list) {
+        adapter.updateItems(list);
+        recyclerView.scrollToPosition(0);
+    }
+
+    @Override
     public void showError(Throwable error) {
         if (hasHost()) {
             getFragmentHost().showError(error);
         }
     }
+
+
 }

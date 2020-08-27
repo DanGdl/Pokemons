@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.models.repo.dao;
 
-import com.mdgd.pokemon.dto.PokemonDetails;
+import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 
 import java.util.List;
 

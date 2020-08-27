@@ -22,7 +22,7 @@ public class SplashViewModel extends MviViewModel<SplashScreenState> implements 
     protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
         super.onAny(owner, event);
         if (event == Lifecycle.Event.ON_START) {
-            observeTillStop(Single.timer(500, TimeUnit.MILLISECONDS, Schedulers.computation())
+            observeTillStop(Single.timer(1000, TimeUnit.MILLISECONDS, Schedulers.computation())
                     .subscribe(val -> router.proceedToNextScreen()));
         }
     }

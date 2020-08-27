@@ -1,9 +1,9 @@
 package com.mdgd.pokemon.models.repo.network;
 
 import com.mdgd.pokemon.BuildConfig;
-import com.mdgd.pokemon.dto.PokemonDetails;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList;
+import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 
 import java.util.ArrayList;
 import java.util.List;

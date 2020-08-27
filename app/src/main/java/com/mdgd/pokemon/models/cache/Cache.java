@@ -1,7 +1,7 @@
 package com.mdgd.pokemon.models.cache;
 
 import com.google.common.base.Optional;
-import com.mdgd.pokemon.dto.PokemonDetails;
+import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 
 import java.util.List;
 
