@@ -57,6 +57,12 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
 
         recyclerView = view.findViewById(R.id.pokemons_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // todo request next page
+            }
+        });
         recyclerView.setAdapter(adapter);
         refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh);
         filterAttack = view.findViewById(R.id.pokemons_filter_attack);
