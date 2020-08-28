@@ -1,10 +1,11 @@
 package com.mdgd.pokemon.ui.pokemon;
 
 import com.mdgd.pokemon.ui.arch.FragmentContract;
+import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
 
-public class PokemonContract {
+public class PokemonDetailsContract {
 
-    public interface ViewModel extends FragmentContract.ViewModel<PokemonScreenState> {
+    public interface ViewModel extends FragmentContract.ViewModel<PokemonDetailsScreenState> {
     }
 
     public interface View extends FragmentContract.View {

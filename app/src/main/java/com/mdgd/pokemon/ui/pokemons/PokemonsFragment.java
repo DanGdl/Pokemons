@@ -9,7 +9,6 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,9 +26,9 @@ import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel, PokemonsContract.Host>
+public class PokemonsFragment extends HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>
         implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
-        CompoundButton.OnCheckedChangeListener, Observer<PokemonsScreenState>, PokemonsScreen {
+        CompoundButton.OnCheckedChangeListener, PokemonsScreen {
 
     private final List<String> filters = new ArrayList<>(3);
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
@@ -131,11 +130,6 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
             }
         }
         getModel().sort(new FilterData(new ArrayList<>(filters)));
-    }
-
-    @Override
-    public void onChanged(PokemonsScreenState pokemonsScreenState) {
-        pokemonsScreenState.visit(this);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons.infra;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class FilterData {
@@ -9,6 +10,10 @@ public class FilterData {
 
     private final List<String> filters;
 
+
+    public FilterData() {
+        this.filters = new LinkedList<>();
+    }
 
     public FilterData(List<String> filters) {
         this.filters = filters;

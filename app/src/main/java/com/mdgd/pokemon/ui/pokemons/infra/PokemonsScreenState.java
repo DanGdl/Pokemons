@@ -1,11 +1,12 @@
 package com.mdgd.pokemon.ui.pokemons.infra;
 
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.ui.arch.ScreenState;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class PokemonsScreenState {
+public class PokemonsScreenState extends ScreenState<PokemonsScreen> {
 
     private static final int SET_DATA = 1;
     private static final int ADD_DATA = 2;
@@ -55,6 +56,7 @@ public class PokemonsScreenState {
         return new PokemonsScreenState(LOADING);
     }
 
+    @Override
     public void visit(PokemonsScreen pokemonsScreen) {
         if (LOADING == action) {
             pokemonsScreen.showProgress();
@@ -70,5 +72,9 @@ public class PokemonsScreenState {
         } else if (ERROR == action) {
             pokemonsScreen.showError(error);
         }
+    }
+
+    public boolean isError() {
+        return ERROR == action;
     }
 }

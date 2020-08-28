@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
 
-public class SplashFragment extends HostedFragment<SplashContract.ViewModel, SplashContract.Host> implements SplashContract.View, SplashContract.Router {
+public class SplashFragment extends HostedFragment<SplashScreenState, SplashContract.ViewModel, SplashContract.Host> implements SplashContract.View, SplashContract.Router {
 
     public static SplashFragment newInstance() {
         return new SplashFragment();

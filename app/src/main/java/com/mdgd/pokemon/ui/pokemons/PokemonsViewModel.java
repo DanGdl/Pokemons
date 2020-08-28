@@ -19,12 +19,13 @@ import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> implements PokemonsContract.ViewModel {
 
     private final PublishSubject<Integer> loadPageSubject = PublishSubject.create();
-    private final PublishSubject<FilterData> filtersSubject = PublishSubject.create();
+    private final BehaviorSubject<FilterData> filtersSubject = BehaviorSubject.createDefault(new FilterData());
     private final PokemonsContract.Router router;
     private final PokemonsRepo repo;
     private final Cache cache;

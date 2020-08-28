@@ -4,11 +4,12 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import java.lang.reflect.ParameterizedType;
 
-public abstract class HostedFragment<VIEW_MODEL extends FragmentContract.ViewModel, HOST extends FragmentContract.Host> extends Fragment
-        implements FragmentContract.View {
+public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host> extends Fragment
+        implements FragmentContract.View, Observer<STATE>, Screen {
 
     private VIEW_MODEL model;
     private HOST fragmentHost;
@@ -37,9 +38,16 @@ public abstract class HostedFragment<VIEW_MODEL extends FragmentContract.ViewMod
 
     @Override
     public void onDestroy() {
-        getLifecycle().removeObserver(getModel());
+        // order matters
         getModel().getStateObservable().removeObservers(this);
+        getLifecycle().removeObserver(getModel());
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onChanged(STATE screenState) {
+        screenState.visit(this);
     }
 
     protected boolean hasHost() {
