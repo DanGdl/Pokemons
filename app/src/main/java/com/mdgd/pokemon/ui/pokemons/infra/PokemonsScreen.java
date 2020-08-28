@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemons.dto;
+package com.mdgd.pokemon.ui.pokemons.infra;
 
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 

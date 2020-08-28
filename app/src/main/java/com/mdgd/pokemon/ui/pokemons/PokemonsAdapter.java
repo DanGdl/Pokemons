@@ -124,9 +124,9 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
 
             name.setText(pokemon.getName());
             final Resources resources = itemView.getContext().getResources();
-            attack.setText(resources.getString(R.string.item_pokemon_attack, pokemon.getAttack()));
-            defence.setText(resources.getString(R.string.item_pokemon_defence, pokemon.getDefence()));
-            speed.setText(resources.getString(R.string.item_pokemon_speed, pokemon.getSpeed()));
+            attack.setText(resources.getString(R.string.item_pokemon_attack, pokemon.getAttack() == -1 ? "--" : String.valueOf(pokemon.getAttack())));
+            defence.setText(resources.getString(R.string.item_pokemon_defence, pokemon.getDefence() == -1 ? "--" : String.valueOf(pokemon.getDefence())));
+            speed.setText(resources.getString(R.string.item_pokemon_speed, pokemon.getSpeed() == -1 ? "--" : String.valueOf(pokemon.getSpeed())));
         }
 
         @Override

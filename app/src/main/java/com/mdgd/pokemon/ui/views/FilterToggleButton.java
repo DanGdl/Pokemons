@@ -20,4 +20,6 @@ public class FilterToggleButton extends AppCompatToggleButton {
     public FilterToggleButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
+    // todo draw background properly
 }

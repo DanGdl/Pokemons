@@ -18,10 +18,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
-import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
-import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreen;
-import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;
+import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreen;
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -30,6 +31,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
         implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
         CompoundButton.OnCheckedChangeListener, Observer<PokemonsScreenState>, PokemonsScreen {
 
+    private final List<String> filters = new ArrayList<>(3);
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final PokemonsAdapter adapter = new PokemonsAdapter();
     private SwipeRefreshLayout refreshSwipe;
@@ -45,7 +47,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
     private RecyclerView recyclerView;
     private ToggleButton filterAttack;
     private ToggleButton filterDefence;
-    private ToggleButton filterMovement;
+    private ToggleButton filterSpeed;
     private View refresh;
 
     public static PokemonsFragment newInstance() {
@@ -80,15 +82,14 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
         refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh);
         filterAttack = view.findViewById(R.id.pokemons_filter_attack);
         filterDefence = view.findViewById(R.id.pokemons_filter_defence);
-        filterMovement = view.findViewById(R.id.pokemons_filter_movement);
+        filterSpeed = view.findViewById(R.id.pokemons_filter_movement);
 
-        // todo make ui for filter buttons
         refresh.setOnClickListener(this);
         refreshSwipe.setOnRefreshListener(this);
 
         filterAttack.setOnCheckedChangeListener(this);
         filterDefence.setOnCheckedChangeListener(this);
-        filterMovement.setOnCheckedChangeListener(this);
+        filterSpeed.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -112,7 +113,24 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        getModel().sort(new FilterData(filterAttack.isChecked(), filterDefence.isChecked(), filterMovement.isChecked()));
+        if (b) {
+            if (filterAttack == compoundButton) {
+                filters.add(FilterData.FILTER_ATTACK);
+            } else if (filterDefence == compoundButton) {
+                filters.add(FilterData.FILTER_DEFENCE);
+            } else if (filterSpeed == compoundButton) {
+                filters.add(FilterData.FILTER_SPEED);
+            }
+        } else {
+            if (filterAttack == compoundButton) {
+                filters.remove(FilterData.FILTER_ATTACK);
+            } else if (filterDefence == compoundButton) {
+                filters.remove(FilterData.FILTER_DEFENCE);
+            } else if (filterSpeed == compoundButton) {
+                filters.remove(FilterData.FILTER_SPEED);
+            }
+        }
+        getModel().sort(new FilterData(new ArrayList<>(filters)));
     }
 
     @Override
@@ -162,6 +180,4 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.ViewModel,
             getFragmentHost().showError(error);
         }
     }
-
-
 }

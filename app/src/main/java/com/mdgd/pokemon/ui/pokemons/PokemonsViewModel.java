@@ -8,11 +8,14 @@ import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 import com.mdgd.pokemon.ui.arch.MviViewModel;
-import com.mdgd.pokemon.ui.pokemons.dto.FilterData;
-import com.mdgd.pokemon.ui.pokemons.dto.PokemonsScreenState;
+import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator;
+import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -25,13 +28,17 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     private final PokemonsContract.Router router;
     private final PokemonsRepo repo;
     private final Cache cache;
+    private final Map<String, CharacteristicComparator> comparators = new HashMap<String, CharacteristicComparator>() {{
+        put(FilterData.FILTER_ATTACK, (p1, p2) -> Integer.compare(p1.getAttack(), p2.getAttack()));
+        put(FilterData.FILTER_DEFENCE, (p1, p2) -> Integer.compare(p1.getDefence(), p2.getDefence()));
+        put(FilterData.FILTER_SPEED, (p1, p2) -> Integer.compare(p1.getSpeed(), p2.getSpeed()));
+    }};
 
     public PokemonsViewModel(PokemonsContract.Router router, PokemonsRepo repo, Cache cache) {
         this.router = router;
         this.repo = repo;
         this.cache = cache;
     }
-
 
     @Override
     protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
@@ -57,13 +64,21 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     }
 
     private PokemonsScreenState sort(FilterData filters, List<PokemonDetails> pokemons) {
-        Collections.shuffle(pokemons);
-//        Collections.sort(pokemons, new Comparator<PokemonDetails>() {
-//            @Override
-//            public int compare(PokemonDetails pokemon, PokemonDetails t1) {
-//                return 0; // todo connect filters
-//            }
-//        });
+        // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
+        if (!filters.isEmpty()) {
+            Collections.sort(pokemons, (pokemon1, pokemon2) -> {
+                int compare = 0;
+                for (String filter : filters.getFilters()) {
+                    if (comparators.get(filter) != null) {
+                        compare = comparators.get(filter).compare(pokemon2, pokemon1); // swap, instead of multiply on -1
+                        if (compare != 0) {
+                            break;
+                        }
+                    }
+                }
+                return compare;
+            });
+        }
         return PokemonsScreenState.createUpdateDataState(pokemons);
     }
 

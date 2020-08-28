@@ -55,6 +55,6 @@ public class PokemonsNetwork implements Network {
                 .flatMap(data -> service.getPokemonsDetails(data.getUrl())
                         .toObservable())
                 .collectInto(new ArrayList<PokemonDetails>(), ArrayList::add)
-                .map(collected -> (List<PokemonDetails>) collected);
+                .map(collected -> collected);
     }
 }

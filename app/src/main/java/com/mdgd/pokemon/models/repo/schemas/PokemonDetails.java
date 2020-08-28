@@ -60,31 +60,31 @@ public class PokemonDetails {
     @Expose
     private Integer weight;
 
-    public String getAttack() {
+    public int getAttack() {
         for (Stat s : getStats()) {
             if ("attack".equals(s.getStat().getName())) {
-                return String.valueOf(s.getBaseStat());
+                return s.getBaseStat();
             }
         }
-        return "--";
+        return -1;
     }
 
-    public String getDefence() {
+    public int getDefence() {
         for (Stat s : getStats()) {
             if ("defense".equals(s.getStat().getName())) {
-                return String.valueOf(s.getBaseStat());
+                return s.getBaseStat();
             }
         }
-        return "--";
+        return -1;
     }
 
-    public String getSpeed() {
+    public int getSpeed() {
         for (Stat s : getStats()) {
             if ("speed".equals(s.getStat().getName())) {
-                return String.valueOf(s.getBaseStat());
+                return s.getBaseStat();
             }
         }
-        return "--";
+        return -1;
     }
 
     public String getImageUrl() {

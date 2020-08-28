@@ -24,7 +24,6 @@ public class PokemonsRepository implements PokemonsRepo {
                 .flatMap(list -> {
                     if (list.isEmpty()) {
                         return loadPage(page);
-                        // todo save
                     } else {
                         return Single.just(new Result<>(list));
                     }
