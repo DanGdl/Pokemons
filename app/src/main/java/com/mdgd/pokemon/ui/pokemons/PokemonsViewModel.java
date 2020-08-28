@@ -55,6 +55,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
                                     .onErrorReturn(PokemonsScreenState::createErrorState))
                             .subscribe(this::setState, Throwable::printStackTrace),
 
+                    // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
                             .map(filters -> sort(filters, cache.getPokemons()))
                             .subscribe(this::setState, Throwable::printStackTrace)
