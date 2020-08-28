@@ -10,13 +10,13 @@ public class PokemonDetailsScreenState extends ScreenState<PokemonDetailsScreen>
     private final List<PokemonProperty> items;
     private final int action;
 
-    public static PokemonDetailsScreenState createSetDataState(List<PokemonProperty> properties) {
-        return new PokemonDetailsScreenState(ACTION_SET, properties);
-    }
-
     public PokemonDetailsScreenState(int action, List<PokemonProperty> items) {
         this.action = action;
         this.items = items;
+    }
+
+    public static PokemonDetailsScreenState createSetDataState(List<PokemonProperty> properties) {
+        return new PokemonDetailsScreenState(ACTION_SET, properties);
     }
 
     public void visit(PokemonDetailsScreen screen) {

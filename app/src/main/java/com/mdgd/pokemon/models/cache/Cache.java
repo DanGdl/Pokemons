@@ -15,11 +15,11 @@ public interface Cache {
 
     Observable<Optional<PokemonDetails>> getSelectedPokemonObservable();
 
-    void setPokemons(List<PokemonDetails> list);
-
     void addPokemons(List<PokemonDetails> list);
 
     List<PokemonDetails> getPokemons();
+
+    void setPokemons(List<PokemonDetails> list);
 
     Observable<List<PokemonDetails>> getPokemonsObservable();
 }
