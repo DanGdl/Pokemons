@@ -133,7 +133,7 @@ public abstract class PokemonsRoomDao {
 
 
     public List<PokemonFullDataSchema> getPage(int offset, int pageSize) {
-        // todo use maps to improve speed
+        // todo use maps and indexes to improve speed
         final List<PokemonFullDataSchema> schemas = new ArrayList<>();
         final List<PokemonSchema> pokemons = getPokemonsForPage(offset, pageSize);
         for (PokemonSchema s : pokemons) {
