@@ -23,7 +23,7 @@ public class PokemonSchema {
     @Expose
     @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
-    private Integer id;
+    private long id;
 
     @Expose
     @SerializedName("is_default")
@@ -71,11 +71,11 @@ public class PokemonSchema {
         this.height = height;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

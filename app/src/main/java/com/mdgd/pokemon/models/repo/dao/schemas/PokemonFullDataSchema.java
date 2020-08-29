@@ -12,39 +12,40 @@ import com.mdgd.pokemon.models.repo.schemas.Move;
 import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.mdgd.pokemon.models.repo.schemas.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PokemonFullDataSchema {
     @Expose
     @SerializedName("abilities")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Ability.class)
-    private List<Ability> abilities;
+    private List<Ability> abilities = new ArrayList<>();
 
     @Expose
     @SerializedName("forms")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Form.class)
-    private List<Form> forms;
+    private List<Form> forms = new ArrayList<>();
 
     @Expose
     @SerializedName("game_indices")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = GameIndex.class)
-    private List<GameIndex> gameIndices;
+    private List<GameIndex> gameIndices = new ArrayList<>();
 
     @Expose
     @SerializedName("moves")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Move.class)
-    private List<MoveFullSchema> moves;
+    private List<MoveFullSchema> moves = new ArrayList<>();
     ;
 
     @Expose
     @SerializedName("stats")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Stat.class)
-    private List<Stat> stats;
+    private List<Stat> stats = new ArrayList<>();
 
     @Expose
     @SerializedName("types")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Type.class)
-    private List<Type> types;
+    private List<Type> types = new ArrayList<>();
 
     @Embedded
     private PokemonSchema pokemonSchema;

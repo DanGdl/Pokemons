@@ -3,6 +3,7 @@ package com.mdgd.pokemon.models.repo.schemas;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -11,7 +12,7 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "stats")
+@Entity(tableName = "stats", indices = {@Index("id")})
 public class Stat {
 
     @ForeignKey(entity = PokemonSchema.class, parentColumns = "id", childColumns = "pokemonId", onDelete = CASCADE)

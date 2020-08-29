@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.schemas.VersionGroupDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoveFullSchema {
@@ -15,7 +16,7 @@ public class MoveFullSchema {
 
     @Expose
     @SerializedName("version_group_details")
-    private List<VersionGroupDetail> versionGroupDetails;
+    private List<VersionGroupDetail> versionGroupDetails = new ArrayList<>();
 
     public MoveSchema getMove() {
         return move;
