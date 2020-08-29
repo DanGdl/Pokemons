@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.arch.MviViewModel;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
@@ -31,7 +31,7 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenSt
         }
     }
 
-    private List<PokemonProperty> mapToListPokemon(PokemonDetails pokemonDetails) {
+    private List<PokemonProperty> mapToListPokemon(PokemonFullDataSchema pokemonDetails) {
         final List<PokemonProperty> properties = new ArrayList<>();
 
         return properties;

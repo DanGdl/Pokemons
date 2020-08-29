@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons;
 
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.arch.FragmentContract;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
@@ -14,7 +14,7 @@ public class PokemonsContract {
 
         void sort(FilterData filterData);
 
-        void onItemClicked(PokemonDetails pokemon);
+        void onItemClicked(PokemonFullDataSchema pokemon);
 
     }
 

@@ -1,44 +1,27 @@
-package com.mdgd.pokemon.models.repo.schemas;
+package com.mdgd.pokemon.models.repo.dao.schemas;
 
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
+import com.mdgd.pokemon.models.repo.schemas.Move_;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "forms")
-public class Form {
+@Entity(tableName = "moves")
+public class MoveSchema {
 
     @ForeignKey(entity = PokemonSchema.class, parentColumns = "id", childColumns = "pokemonId", onDelete = CASCADE)
     public long pokemonId;
     @PrimaryKey(autoGenerate = true)
     private long id;
+    @Embedded
     @Expose
-    @SerializedName("name")
-    private String name;
-    @Expose
-    @SerializedName("url")
-    private String url;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+    @SerializedName("move")
+    private Move_ move;
 
     public long getPokemonId() {
         return pokemonId;
@@ -48,6 +31,14 @@ public class Form {
         this.pokemonId = pokemonId;
     }
 
+    public Move_ getMove() {
+        return move;
+    }
+
+    public void setMove(Move_ move) {
+        this.move = move;
+    }
+
     public long getId() {
         return id;
     }
@@ -55,4 +46,5 @@ public class Form {
     public void setId(long id) {
         this.id = id;
     }
+
 }

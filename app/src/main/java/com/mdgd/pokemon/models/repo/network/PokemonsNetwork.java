@@ -2,8 +2,8 @@ package com.mdgd.pokemon.models.repo.network;
 
 import com.mdgd.pokemon.BuildConfig;
 import com.mdgd.pokemon.models.infra.Result;
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +41,13 @@ public class PokemonsNetwork implements Network {
         service = retrofit.create(PokemonsRetrofitApi.class);
     }
 
+    /**
+     * loads all pokemons
+     */
     @Override
     public Single<Result<List<PokemonDetails>>> loadPokemons() {
         return service.loadPage(1, 0)
-                .flatMap(list -> service.loadPage(60 /*list.getCount()*/, 0)) // todo restore when dao ready
+                .flatMap(list -> service.loadPage(list.getCount(), 0))
                 .flatMap(this::mapToDetails)
                 .map(Result::new)
                 .onErrorReturn(Result::new);

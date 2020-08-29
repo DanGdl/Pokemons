@@ -37,40 +37,40 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="50dp" />
 
-    <com.mdgd.pokemon.ui.views.FilterToggleButton
+    <ImageButton
         android:id="@+id/pokemons_filter_attack"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@null"
-        android:textOff=""
-        android:textOn=""
-        app:icons="@drawable/toggle_attack_background"
+        android:padding="5dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_attack_off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pokemons_filter_defence"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pokemon_filters_line_top" />
 
-    <com.mdgd.pokemon.ui.views.FilterToggleButton
+    <ImageButton
         android:id="@+id/pokemons_filter_defence"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@null"
-        android:textOff=""
-        android:textOn=""
-        app:icons="@drawable/toggle_defence_background"
+        android:padding="5dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_defence_off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pokemons_filter_movement"
         app:layout_constraintStart_toEndOf="@+id/pokemons_filter_attack"
         app:layout_constraintTop_toTopOf="@+id/pokemon_filters_line_top" />
 
-    <com.mdgd.pokemon.ui.views.FilterToggleButton
+    <ImageButton
         android:id="@+id/pokemons_filter_movement"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@null"
-        android:textOff=""
-        android:textOn=""
-        app:icons="@drawable/toggle_speed_background"
+        android:padding="5dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_speed_off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pokemons_filter_defence"

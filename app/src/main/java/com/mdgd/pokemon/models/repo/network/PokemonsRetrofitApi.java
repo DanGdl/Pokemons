@@ -1,7 +1,7 @@
 package com.mdgd.pokemon.models.repo.network;
 
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.GET;

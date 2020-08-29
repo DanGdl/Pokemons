@@ -5,8 +5,10 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
@@ -21,20 +23,17 @@ public class PokemonsDaoImpl implements PokemonsDao {
 
     @Override
     public Completable save(List<PokemonDetails> list) {
-        return Completable.fromAction(() -> {
-            if (pokemonsRoomDao.countRows() == 0) {
-                pokemonsRoomDao.save(list);
-            } else {
-                pokemonsRoomDao.update(list);
-            }
-        });
+        return Completable.fromAction(() -> pokemonsRoomDao.save(list));
     }
 
     @Override
-    public Single<Result<List<PokemonDetails>>> getPage(int page, int pageSize) {
+    public Single<Result<List<PokemonFullDataSchema>>> getPage(int page, int pageSize) {
         final int offset = page * pageSize;
         return Single.fromCallable(() -> {
-            if (pokemonsRoomDao.countRows() <= offset) {
+            final int rows = pokemonsRoomDao.countRows();
+            if (rows == 0) {
+                return new Result<>(new ArrayList<>(0));
+            } else if (pokemonsRoomDao.countRows() <= offset) {
                 return new Result<>(new Exception("No more pokemons in DAO"));
             } else {
                 return new Result<>(pokemonsRoomDao.getPage(offset, pageSize));

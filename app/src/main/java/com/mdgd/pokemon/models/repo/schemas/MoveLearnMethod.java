@@ -1,15 +1,19 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.ColumnInfo;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class MoveLearnMethod {
 
+    @Expose
     @SerializedName("name")
-    @Expose
     private String name;
-    @SerializedName("url")
+
     @Expose
+    @SerializedName("url")
+    @ColumnInfo(name = "MoveLearnMethodUrl")
     private String url;
 
     public String getName() {

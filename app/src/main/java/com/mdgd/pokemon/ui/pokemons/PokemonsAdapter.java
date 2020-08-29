@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.squareup.picasso.Picasso;
 
@@ -23,8 +23,8 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.PokemonViewHolder> {
-    private final List<PokemonDetails> items = new ArrayList<>();
-    private final PublishSubject<PokemonDetails> clicksSubject = PublishSubject.create();
+    private final List<PokemonFullDataSchema> items = new ArrayList<>();
+    private final PublishSubject<PokemonFullDataSchema> clicksSubject = PublishSubject.create();
 
     @NonNull
     @Override
@@ -42,14 +42,14 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
         return items.size();
     }
 
-    public void setItems(List<PokemonDetails> items) {
+    public void setItems(List<PokemonFullDataSchema> items) {
         this.items.clear();
         this.items.addAll(items);
         notifyDataSetChanged();
     }
 
-    public void updateItems(List<PokemonDetails> list) {
-        final List<PokemonDetails> oldList = new ArrayList<>(items);
+    public void updateItems(List<PokemonFullDataSchema> list) {
+        final List<PokemonFullDataSchema> oldList = new ArrayList<>(items);
 
         this.items.clear();
         this.items.addAll(list);
@@ -77,12 +77,12 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
         }).dispatchUpdatesTo(this);
     }
 
-    public void addItems(List<PokemonDetails> items) {
+    public void addItems(List<PokemonFullDataSchema> items) {
         this.items.addAll(items);
         notifyDataSetChanged();
     }
 
-    public Observable<PokemonDetails> getOnItemClickSubject() {
+    public Observable<PokemonFullDataSchema> getOnItemClickSubject() {
         return clicksSubject;
     }
 
@@ -102,14 +102,14 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
 
     public class PokemonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final PublishSubject<PokemonDetails> clicksSubject;
+        private final PublishSubject<PokemonFullDataSchema> clicksSubject;
         private final ImageView image;
         private final TextView name;
         private final TextView attack;
         private final TextView defence;
         private final TextView speed;
 
-        public PokemonViewHolder(@NonNull View itemView, PublishSubject<PokemonDetails> clicksSubject) {
+        public PokemonViewHolder(@NonNull View itemView, PublishSubject<PokemonFullDataSchema> clicksSubject) {
             super(itemView);
             this.clicksSubject = clicksSubject;
 
@@ -120,11 +120,11 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
             speed = itemView.findViewById(R.id.item_pokemon_speed);
         }
 
-        public void bindItem(PokemonDetails pokemon, int position) {
-            final String url = pokemon.getSprites().getOther().getOfficialArtwork().getFrontDefault();
+        public void bindItem(PokemonFullDataSchema pokemon, int position) {
+            final String url = pokemon.getPokemonSchema().getSprites().getOther().getOfficialArtwork().getFrontDefault();
             Picasso.get().load(url).into(image);
 
-            name.setText(pokemon.getName());
+            name.setText(pokemon.getPokemonSchema().getName());
             final Resources resources = itemView.getContext().getResources();
 
             String attackVal = "--";

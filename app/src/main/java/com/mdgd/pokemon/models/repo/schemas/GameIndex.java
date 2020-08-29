@@ -1,15 +1,29 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "game_indexes")
 public class GameIndex {
 
+    @ForeignKey(entity = PokemonSchema.class, parentColumns = "id", childColumns = "pokemonId", onDelete = CASCADE)
+    public long pokemonId;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+    @Expose
     @SerializedName("game_index")
-    @Expose
     private Integer gameIndex;
-    @SerializedName("version")
+    @Embedded
     @Expose
+    @SerializedName("version")
     private Version version;
 
     public Integer getGameIndex() {
@@ -28,4 +42,19 @@ public class GameIndex {
         this.version = version;
     }
 
+    public long getPokemonId() {
+        return pokemonId;
+    }
+
+    public void setPokemonId(long pokemonId) {
+        this.pokemonId = pokemonId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

@@ -1,26 +1,27 @@
-package com.mdgd.pokemon.models.repo.schemas;
+package com.mdgd.pokemon.models.repo.dao.schemas;
+
+import androidx.room.Embedded;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mdgd.pokemon.models.repo.schemas.VersionGroupDetail;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Move {
+public class MoveFullSchema {
 
-    @Expose
-    @SerializedName("move")
-    private Move_ move;
+    @Embedded
+    private MoveSchema move;
 
     @Expose
     @SerializedName("version_group_details")
-    private List<VersionGroupDetail> versionGroupDetails = new ArrayList<>();
+    private List<VersionGroupDetail> versionGroupDetails;
 
-    public Move_ getMove() {
+    public MoveSchema getMove() {
         return move;
     }
 
-    public void setMove(Move_ move) {
+    public void setMove(MoveSchema move) {
         this.move = move;
     }
 

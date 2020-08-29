@@ -1,18 +1,36 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "abilities")
 public class Ability {
 
+    @PrimaryKey(autoGenerate = true)
+    public long id;
+
+    @ForeignKey(entity = PokemonSchema.class, parentColumns = "id", childColumns = "pokemonId", onDelete = CASCADE)
+    public long pokemonId;
+
+    @Embedded
+    @Expose
     @SerializedName("ability")
-    @Expose
     private Ability_ ability;
+
+    @Expose
     @SerializedName("is_hidden")
-    @Expose
     private Boolean isHidden;
-    @SerializedName("slot")
+
     @Expose
+    @SerializedName("slot")
     private Integer slot;
 
     public Ability_ getAbility() {
@@ -39,4 +57,19 @@ public class Ability {
         this.slot = slot;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getPokemonId() {
+        return pokemonId;
+    }
+
+    public void setPokemonId(long pokemonId) {
+        this.pokemonId = pokemonId;
+    }
 }

@@ -5,11 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Ability_ {
 
+    @Expose
     @SerializedName("name")
-    @Expose
     private String name;
-    @SerializedName("url")
+
     @Expose
+    @SerializedName("url")
     private String url;
 
     public String getName() {

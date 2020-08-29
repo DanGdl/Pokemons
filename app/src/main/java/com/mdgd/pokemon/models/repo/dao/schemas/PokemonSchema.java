@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.models.repo.schemas;
+package com.mdgd.pokemon.models.repo.dao.schemas;
 
 import androidx.room.Embedded;
 import androidx.room.Entity;
@@ -6,30 +6,15 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
+import com.mdgd.pokemon.models.repo.schemas.Species;
+import com.mdgd.pokemon.models.repo.schemas.Sprites;
 
 @Entity(tableName = "pokemons")
-public class PokemonDetails {
-
-    @Embedded
-    @Expose
-    @SerializedName("abilities")
-    private ArrayList<Ability> abilities = new ArrayList<>();
+public class PokemonSchema {
 
     @Expose
     @SerializedName("base_experience")
     private Integer baseExperience;
-
-    @Embedded
-    @Expose
-    @SerializedName("forms")
-    private ArrayList<Form> forms = null;
-
-    @Embedded
-    @Expose
-    @SerializedName("game_indices")
-    private ArrayList<GameIndex> gameIndices = new ArrayList<>();
 
     @Expose
     @SerializedName("height")
@@ -47,11 +32,6 @@ public class PokemonDetails {
     @Expose
     @SerializedName("location_area_encounters")
     private String locationAreaEncounters;
-
-    @Embedded
-    @Expose
-    @SerializedName("moves")
-    private ArrayList<Move> moves = new ArrayList<>();
 
     @Expose
     @SerializedName("name")
@@ -71,27 +51,9 @@ public class PokemonDetails {
     @SerializedName("sprites")
     private Sprites sprites;
 
-    @Embedded
-    @Expose
-    @SerializedName("stats")
-    private ArrayList<Stat> stats = new ArrayList<>();
-
-    @Embedded
-    @Expose
-    @SerializedName("types")
-    private ArrayList<Type> types = new ArrayList<>();
-
     @Expose
     @SerializedName("weight")
     private Integer weight;
-
-    public ArrayList<Ability> getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(ArrayList<Ability> abilities) {
-        this.abilities = abilities;
-    }
 
     public Integer getBaseExperience() {
         return baseExperience;
@@ -99,22 +61,6 @@ public class PokemonDetails {
 
     public void setBaseExperience(Integer baseExperience) {
         this.baseExperience = baseExperience;
-    }
-
-    public ArrayList<Form> getForms() {
-        return forms;
-    }
-
-    public void setForms(ArrayList<Form> forms) {
-        this.forms = forms;
-    }
-
-    public ArrayList<GameIndex> getGameIndices() {
-        return gameIndices;
-    }
-
-    public void setGameIndices(ArrayList<GameIndex> gameIndices) {
-        this.gameIndices = gameIndices;
     }
 
     public Integer getHeight() {
@@ -149,14 +95,6 @@ public class PokemonDetails {
         this.locationAreaEncounters = locationAreaEncounters;
     }
 
-    public ArrayList<Move> getMoves() {
-        return moves;
-    }
-
-    public void setMoves(ArrayList<Move> moves) {
-        this.moves = moves;
-    }
-
     public String getName() {
         return name;
     }
@@ -187,22 +125,6 @@ public class PokemonDetails {
 
     public void setSprites(Sprites sprites) {
         this.sprites = sprites;
-    }
-
-    public ArrayList<Stat> getStats() {
-        return stats;
-    }
-
-    public void setStats(ArrayList<Stat> stats) {
-        this.stats = stats;
-    }
-
-    public ArrayList<Type> getTypes() {
-        return types;
-    }
-
-    public void setTypes(ArrayList<Type> types) {
-        this.types = types;
     }
 
     public Integer getWeight() {

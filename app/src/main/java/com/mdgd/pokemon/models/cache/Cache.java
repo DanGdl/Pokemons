@@ -1,7 +1,7 @@
 package com.mdgd.pokemon.models.cache;
 
 import com.google.common.base.Optional;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
 import java.util.List;
 
@@ -9,17 +9,17 @@ import io.reactivex.rxjava3.annotations.Nullable;
 import io.reactivex.rxjava3.core.Observable;
 
 public interface Cache {
-    void putSelected(PokemonDetails pokemon);
+    void putSelected(PokemonFullDataSchema pokemon);
 
-    @Nullable Optional<PokemonDetails> getSelectedPokemon();
+    @Nullable Optional<PokemonFullDataSchema> getSelectedPokemon();
 
-    Observable<Optional<PokemonDetails>> getSelectedPokemonObservable();
+    Observable<Optional<PokemonFullDataSchema>> getSelectedPokemonObservable();
 
-    void addPokemons(List<PokemonDetails> list);
+    void addPokemons(List<PokemonFullDataSchema> list);
 
-    List<PokemonDetails> getPokemons();
+    List<PokemonFullDataSchema> getPokemons();
 
-    void setPokemons(List<PokemonDetails> list);
+    void setPokemons(List<PokemonFullDataSchema> list);
 
-    Observable<List<PokemonDetails>> getPokemonsObservable();
+    Observable<List<PokemonFullDataSchema>> getPokemonsObservable();
 }

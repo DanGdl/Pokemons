@@ -4,18 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreen;
@@ -28,7 +28,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class PokemonsFragment extends HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>
         implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
-        CompoundButton.OnCheckedChangeListener, PokemonsScreen {
+        PokemonsScreen {
 
     private final List<String> filters = new ArrayList<>(3);
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
@@ -44,9 +44,9 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
         }
     };
     private RecyclerView recyclerView;
-    private ToggleButton filterAttack;
-    private ToggleButton filterDefence;
-    private ToggleButton filterSpeed;
+    private ImageButton filterAttack;
+    private ImageButton filterDefence;
+    private ImageButton filterSpeed;
     private View refresh;
 
     public static PokemonsFragment newInstance() {
@@ -86,9 +86,9 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
         refresh.setOnClickListener(this);
         refreshSwipe.setOnRefreshListener(this);
 
-        filterAttack.setOnCheckedChangeListener(this);
-        filterDefence.setOnCheckedChangeListener(this);
-        filterSpeed.setOnCheckedChangeListener(this);
+        filterAttack.setOnClickListener(this);
+        filterDefence.setOnClickListener(this);
+        filterSpeed.setOnClickListener(this);
     }
 
     @Override
@@ -101,35 +101,42 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     @Override
     public void onClick(View view) {
         if (view == refresh) {
-            refreshSwipe.setRefreshing(true);
+            if (!refreshSwipe.isRefreshing()) {
+                refreshSwipe.setRefreshing(true);
+            }
+        } else {
+            if (filterAttack == view) {
+                if (filters.contains(FilterData.FILTER_ATTACK)) {
+                    filters.remove(FilterData.FILTER_ATTACK);
+                    filterAttack.setColorFilter(null);
+                } else {
+                    filters.add(FilterData.FILTER_ATTACK);
+                    filterAttack.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
+                }
+            } else if (filterDefence == view) {
+                if (filters.contains(FilterData.FILTER_DEFENCE)) {
+                    filters.remove(FilterData.FILTER_DEFENCE);
+                    filterDefence.setColorFilter(null);
+                } else {
+                    filters.add(FilterData.FILTER_DEFENCE);
+                    filterDefence.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
+                }
+            } else if (filterSpeed == view) {
+                if (filters.contains(FilterData.FILTER_SPEED)) {
+                    filters.remove(FilterData.FILTER_SPEED);
+                    filterSpeed.setColorFilter(null);
+                } else {
+                    filters.add(FilterData.FILTER_SPEED);
+                    filterSpeed.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
+                }
+            }
+            getModel().sort(new FilterData(new ArrayList<>(filters)));
         }
     }
 
     @Override
     public void onRefresh() {
         getModel().reload();
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if (b) {
-            if (filterAttack == compoundButton) {
-                filters.add(FilterData.FILTER_ATTACK);
-            } else if (filterDefence == compoundButton) {
-                filters.add(FilterData.FILTER_DEFENCE);
-            } else if (filterSpeed == compoundButton) {
-                filters.add(FilterData.FILTER_SPEED);
-            }
-        } else {
-            if (filterAttack == compoundButton) {
-                filters.remove(FilterData.FILTER_ATTACK);
-            } else if (filterDefence == compoundButton) {
-                filters.remove(FilterData.FILTER_DEFENCE);
-            } else if (filterSpeed == compoundButton) {
-                filters.remove(FilterData.FILTER_SPEED);
-            }
-        }
-        getModel().sort(new FilterData(new ArrayList<>(filters)));
     }
 
     @Override
@@ -153,17 +160,17 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     }
 
     @Override
-    public void setItems(List<PokemonDetails> list) {
+    public void setItems(List<PokemonFullDataSchema> list) {
         adapter.setItems(list);
     }
 
     @Override
-    public void addItems(List<PokemonDetails> list) {
+    public void addItems(List<PokemonFullDataSchema> list) {
         adapter.addItems(list);
     }
 
     @Override
-    public void updateItems(List<PokemonDetails> list) {
+    public void updateItems(List<PokemonFullDataSchema> list) {
         adapter.updateItems(list);
         recyclerView.scrollToPosition(0);
     }

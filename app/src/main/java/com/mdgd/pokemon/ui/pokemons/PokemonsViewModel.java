@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner;
 import com.mdgd.pokemon.models.cache.Cache;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.mdgd.pokemon.ui.arch.MviViewModel;
 import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator;
@@ -32,7 +32,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     private final Cache cache;
     private final Map<String, CharacteristicComparator> comparators = new HashMap<String, CharacteristicComparator>() {{
         put(FilterData.FILTER_ATTACK, (p1, p2) -> compareProperty("attack", p1, p2));
-        put(FilterData.FILTER_DEFENCE, (p1, p2) -> compareProperty("defence", p1, p2));
+        put(FilterData.FILTER_DEFENCE, (p1, p2) -> compareProperty("defense", p1, p2));
         put(FilterData.FILTER_SPEED, (p1, p2) -> compareProperty("speed", p1, p2));
     }};
 
@@ -42,7 +42,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
         this.cache = cache;
     }
 
-    private int compareProperty(String property, PokemonDetails p1, PokemonDetails p2) {
+    private int compareProperty(String property, PokemonFullDataSchema p1, PokemonFullDataSchema p2) {
         int val1 = -1;
         for (Stat s : p1.getStats()) {
             if (property.equals(s.getStat().getName())) {
@@ -55,7 +55,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
                 val2 = s.getBaseStat();
             }
         }
-        return Integer.compare(val2, val1);
+        return Integer.compare(val1, val2);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
         }
     }
 
-    private PokemonsScreenState sort(FilterData filters, List<PokemonDetails> pokemons) {
+    private PokemonsScreenState sort(FilterData filters, List<PokemonFullDataSchema> pokemons) {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
         if (!filters.isEmpty()) {
             Collections.sort(pokemons, (pokemon1, pokemon2) -> {
@@ -101,11 +101,11 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
         return PokemonsScreenState.createUpdateDataState(pokemons);
     }
 
-    private PokemonsScreenState mapToState(Integer page, Result<List<PokemonDetails>> result) {
+    private PokemonsScreenState mapToState(Integer page, Result<List<PokemonFullDataSchema>> result) {
         if (result.isError()) {
             return PokemonsScreenState.createErrorState(result.getError());
         } else {
-            final List<PokemonDetails> list = result.getValue();
+            final List<PokemonFullDataSchema> list = result.getValue();
             if (page == 0) {
                 cache.setPokemons(list);
                 return PokemonsScreenState.createSetDataState(list);
@@ -133,7 +133,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     }
 
     @Override
-    public void onItemClicked(PokemonDetails pokemon) {
+    public void onItemClicked(PokemonFullDataSchema pokemon) {
         cache.putSelected(pokemon);
         router.proceedToNextScreen();
     }

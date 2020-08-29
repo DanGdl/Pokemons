@@ -1,15 +1,19 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.ColumnInfo;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class VersionGroup {
 
+    @Expose
     @SerializedName("name")
-    @Expose
+    @ColumnInfo(name = "VersionGroupName")
     private String name;
-    @SerializedName("url")
+
     @Expose
+    @SerializedName("url")
     private String url;
 
     public String getName() {

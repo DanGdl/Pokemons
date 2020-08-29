@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons.infra;
 
-import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.arch.ScreenState;
 
 import java.util.LinkedList;
@@ -14,7 +14,7 @@ public class PokemonsScreenState extends ScreenState<PokemonsScreen> {
     private static final int LOADING = 4;
     private static final int UPDATE_DATA = 5;
 
-    private final List<PokemonDetails> list;
+    private final List<PokemonFullDataSchema> list;
     private final int action;
     private final Throwable error;
 
@@ -24,7 +24,7 @@ public class PokemonsScreenState extends ScreenState<PokemonsScreen> {
         this.error = null;
     }
 
-    public PokemonsScreenState(int action, List<PokemonDetails> list) {
+    public PokemonsScreenState(int action, List<PokemonFullDataSchema> list) {
         this.action = action;
         this.list = list;
         this.error = null;
@@ -36,15 +36,15 @@ public class PokemonsScreenState extends ScreenState<PokemonsScreen> {
         this.error = error;
     }
 
-    public static PokemonsScreenState createSetDataState(List<PokemonDetails> list) {
+    public static PokemonsScreenState createSetDataState(List<PokemonFullDataSchema> list) {
         return new PokemonsScreenState(SET_DATA, list);
     }
 
-    public static PokemonsScreenState createUpdateDataState(List<PokemonDetails> list) {
+    public static PokemonsScreenState createUpdateDataState(List<PokemonFullDataSchema> list) {
         return new PokemonsScreenState(UPDATE_DATA, list);
     }
 
-    public static PokemonsScreenState createAddDataState(List<PokemonDetails> list) {
+    public static PokemonsScreenState createAddDataState(List<PokemonFullDataSchema> list) {
         return new PokemonsScreenState(ADD_DATA, list);
     }
 

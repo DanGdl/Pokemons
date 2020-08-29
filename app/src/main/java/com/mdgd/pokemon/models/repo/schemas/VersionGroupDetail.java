@@ -1,19 +1,42 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema;
 
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "VersionGroupDetails")
 public class VersionGroupDetail {
 
+    @ForeignKey(entity = MoveSchema.class, parentColumns = "id", childColumns = "moveId", onDelete = CASCADE)
+    public long moveId;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+    @Expose
     @SerializedName("level_learned_at")
-    @Expose
     private Integer levelLearnedAt;
+    @Embedded
+    @Expose
     @SerializedName("move_learn_method")
-    @Expose
     private MoveLearnMethod moveLearnMethod;
-    @SerializedName("version_group")
+    @Embedded
     @Expose
+    @SerializedName("version_group")
     private VersionGroup versionGroup;
+
+    public long getMoveId() {
+        return moveId;
+    }
+
+    public void setMoveId(long moveId) {
+        this.moveId = moveId;
+    }
 
     public Integer getLevelLearnedAt() {
         return levelLearnedAt;
@@ -39,4 +62,11 @@ public class VersionGroupDetail {
         this.versionGroup = versionGroup;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
