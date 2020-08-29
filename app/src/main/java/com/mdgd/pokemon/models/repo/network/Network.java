@@ -8,5 +8,5 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 
 public interface Network {
-    Single<Result<List<PokemonDetails>>> loadPokemonsPage(Integer page, int pageSize);
+    Single<Result<List<PokemonDetails>>> loadPokemons();
 }

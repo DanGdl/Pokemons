@@ -1,105 +1,95 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
-import android.text.TextUtils;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
+@Entity(tableName = "pokemons")
 public class PokemonDetails {
+
+    @Embedded
+    @Expose
     @SerializedName("abilities")
+    private ArrayList<Ability> abilities = new ArrayList<>();
+
     @Expose
-    private List<Ability> abilities = null;
     @SerializedName("base_experience")
-    @Expose
     private Integer baseExperience;
+
+    @Embedded
+    @Expose
     @SerializedName("forms")
+    private ArrayList<Form> forms = null;
+
+    @Embedded
     @Expose
-    private List<Form> forms = null;
     @SerializedName("game_indices")
+    private ArrayList<GameIndex> gameIndices = new ArrayList<>();
+
     @Expose
-    private List<GameIndex> gameIndices = null;
     @SerializedName("height")
-    @Expose
     private Integer height;
-    @SerializedName("held_items")
+
     @Expose
-    private List<Object> heldItems = null;
+    @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
-    @Expose
     private Integer id;
+
+    @Expose
     @SerializedName("is_default")
-    @Expose
     private Boolean isDefault;
+
+    @Expose
     @SerializedName("location_area_encounters")
-    @Expose
     private String locationAreaEncounters;
+
+    @Embedded
+    @Expose
     @SerializedName("moves")
+    private ArrayList<Move> moves = new ArrayList<>();
+
     @Expose
-    private List<Move> moves = null;
     @SerializedName("name")
-    @Expose
     private String name;
+
+    @Expose
     @SerializedName("order")
-    @Expose
     private Integer order;
+
+    @Embedded
+    @Expose
     @SerializedName("species")
-    @Expose
     private Species species;
+
+    @Embedded
+    @Expose
     @SerializedName("sprites")
-    @Expose
     private Sprites sprites;
+
+    @Embedded
+    @Expose
     @SerializedName("stats")
+    private ArrayList<Stat> stats = new ArrayList<>();
+
+    @Embedded
     @Expose
-    private List<Stat> stats = null;
     @SerializedName("types")
+    private ArrayList<Type> types = new ArrayList<>();
+
     @Expose
-    private List<Type> types = null;
     @SerializedName("weight")
-    @Expose
     private Integer weight;
 
-    public int getAttack() {
-        for (Stat s : getStats()) {
-            if ("attack".equals(s.getStat().getName())) {
-                return s.getBaseStat();
-            }
-        }
-        return -1;
-    }
-
-    public int getDefence() {
-        for (Stat s : getStats()) {
-            if ("defense".equals(s.getStat().getName())) {
-                return s.getBaseStat();
-            }
-        }
-        return -1;
-    }
-
-    public int getSpeed() {
-        for (Stat s : getStats()) {
-            if ("speed".equals(s.getStat().getName())) {
-                return s.getBaseStat();
-            }
-        }
-        return -1;
-    }
-
-    public String getImageUrl() {
-        final String url = getSprites().getOther().getOfficialArtwork().getFrontDefault();
-        if (TextUtils.isEmpty(url)) {
-            return getSprites().getFrontDefault();
-        }
-        return url;
-    }
-
-    public List<Ability> getAbilities() {
+    public ArrayList<Ability> getAbilities() {
         return abilities;
     }
 
-    public void setAbilities(List<Ability> abilities) {
+    public void setAbilities(ArrayList<Ability> abilities) {
         this.abilities = abilities;
     }
 
@@ -111,19 +101,19 @@ public class PokemonDetails {
         this.baseExperience = baseExperience;
     }
 
-    public List<Form> getForms() {
+    public ArrayList<Form> getForms() {
         return forms;
     }
 
-    public void setForms(List<Form> forms) {
+    public void setForms(ArrayList<Form> forms) {
         this.forms = forms;
     }
 
-    public List<GameIndex> getGameIndices() {
+    public ArrayList<GameIndex> getGameIndices() {
         return gameIndices;
     }
 
-    public void setGameIndices(List<GameIndex> gameIndices) {
+    public void setGameIndices(ArrayList<GameIndex> gameIndices) {
         this.gameIndices = gameIndices;
     }
 
@@ -133,14 +123,6 @@ public class PokemonDetails {
 
     public void setHeight(Integer height) {
         this.height = height;
-    }
-
-    public List<Object> getHeldItems() {
-        return heldItems;
-    }
-
-    public void setHeldItems(List<Object> heldItems) {
-        this.heldItems = heldItems;
     }
 
     public Integer getId() {
@@ -167,11 +149,11 @@ public class PokemonDetails {
         this.locationAreaEncounters = locationAreaEncounters;
     }
 
-    public List<Move> getMoves() {
+    public ArrayList<Move> getMoves() {
         return moves;
     }
 
-    public void setMoves(List<Move> moves) {
+    public void setMoves(ArrayList<Move> moves) {
         this.moves = moves;
     }
 
@@ -207,19 +189,19 @@ public class PokemonDetails {
         this.sprites = sprites;
     }
 
-    public List<Stat> getStats() {
+    public ArrayList<Stat> getStats() {
         return stats;
     }
 
-    public void setStats(List<Stat> stats) {
+    public void setStats(ArrayList<Stat> stats) {
         this.stats = stats;
     }
 
-    public List<Type> getTypes() {
+    public ArrayList<Type> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Type> types) {
+    public void setTypes(ArrayList<Type> types) {
         this.types = types;
     }
 

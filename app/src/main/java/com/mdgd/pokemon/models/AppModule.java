@@ -39,7 +39,7 @@ public class AppModule {
     @Provides
     @Singleton
     public PokemonsDao getPokemonsDao() {
-        return new PokemonsDaoImpl();
+        return new PokemonsDaoImpl(app);
     }
 
     @Provides

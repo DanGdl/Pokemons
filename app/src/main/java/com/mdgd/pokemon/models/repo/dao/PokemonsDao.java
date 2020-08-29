@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.models.repo.dao;
 
+import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface PokemonsDao {
 
     Completable save(List<PokemonDetails> list);
 
-    Single<List<PokemonDetails>> getPage(int page, int pageSize);
+    Single<Result<List<PokemonDetails>>> getPage(int page, int pageSize);
 }

@@ -7,6 +7,7 @@ import com.mdgd.pokemon.models.cache.Cache;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.mdgd.pokemon.ui.arch.MviViewModel;
 import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
@@ -30,15 +31,31 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     private final PokemonsRepo repo;
     private final Cache cache;
     private final Map<String, CharacteristicComparator> comparators = new HashMap<String, CharacteristicComparator>() {{
-        put(FilterData.FILTER_ATTACK, (p1, p2) -> Integer.compare(p1.getAttack(), p2.getAttack()));
-        put(FilterData.FILTER_DEFENCE, (p1, p2) -> Integer.compare(p1.getDefence(), p2.getDefence()));
-        put(FilterData.FILTER_SPEED, (p1, p2) -> Integer.compare(p1.getSpeed(), p2.getSpeed()));
+        put(FilterData.FILTER_ATTACK, (p1, p2) -> compareProperty("attack", p1, p2));
+        put(FilterData.FILTER_DEFENCE, (p1, p2) -> compareProperty("defence", p1, p2));
+        put(FilterData.FILTER_SPEED, (p1, p2) -> compareProperty("speed", p1, p2));
     }};
 
     public PokemonsViewModel(PokemonsContract.Router router, PokemonsRepo repo, Cache cache) {
         this.router = router;
         this.repo = repo;
         this.cache = cache;
+    }
+
+    private int compareProperty(String property, PokemonDetails p1, PokemonDetails p2) {
+        int val1 = -1;
+        for (Stat s : p1.getStats()) {
+            if (property.equals(s.getStat().getName())) {
+                val1 = s.getBaseStat();
+            }
+        }
+        int val2 = -1;
+        for (Stat s : p2.getStats()) {
+            if (property.equals(s.getStat().getName())) {
+                val2 = s.getBaseStat();
+            }
+        }
+        return Integer.compare(val2, val1);
     }
 
     @Override

@@ -10,7 +10,7 @@ public class Icons_ {
     private String frontDefault;
     @SerializedName("front_female")
     @Expose
-    private Object frontFemale;
+    private String frontFemale;
 
     public String getFrontDefault() {
         return frontDefault;
@@ -20,11 +20,11 @@ public class Icons_ {
         this.frontDefault = frontDefault;
     }
 
-    public Object getFrontFemale() {
+    public String getFrontFemale() {
         return frontFemale;
     }
 
-    public void setFrontFemale(Object frontFemale) {
+    public void setFrontFemale(String frontFemale) {
         this.frontFemale = frontFemale;
     }
 

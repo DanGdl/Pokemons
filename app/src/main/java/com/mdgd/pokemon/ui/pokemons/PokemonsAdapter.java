@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.repo.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -120,13 +121,35 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
         }
 
         public void bindItem(PokemonDetails pokemon, int position) {
-            Picasso.get().load(pokemon.getImageUrl()).into(image);
+            final String url = pokemon.getSprites().getOther().getOfficialArtwork().getFrontDefault();
+            Picasso.get().load(url).into(image);
 
             name.setText(pokemon.getName());
             final Resources resources = itemView.getContext().getResources();
-            attack.setText(resources.getString(R.string.item_pokemon_attack, pokemon.getAttack() == -1 ? "--" : String.valueOf(pokemon.getAttack())));
-            defence.setText(resources.getString(R.string.item_pokemon_defence, pokemon.getDefence() == -1 ? "--" : String.valueOf(pokemon.getDefence())));
-            speed.setText(resources.getString(R.string.item_pokemon_speed, pokemon.getSpeed() == -1 ? "--" : String.valueOf(pokemon.getSpeed())));
+
+            String attackVal = "--";
+            for (Stat s : pokemon.getStats()) {
+                if ("attack".equals(s.getStat().getName())) {
+                    attackVal = String.valueOf(s.getBaseStat());
+                }
+            }
+            attack.setText(resources.getString(R.string.item_pokemon_attack, attackVal));
+
+            String defenceVal = "--";
+            for (Stat s : pokemon.getStats()) {
+                if ("defense".equals(s.getStat().getName())) {
+                    defenceVal = String.valueOf(s.getBaseStat());
+                }
+            }
+            defence.setText(resources.getString(R.string.item_pokemon_defence, defenceVal));
+
+            String speedVal = "--";
+            for (Stat s : pokemon.getStats()) {
+                if ("speed".equals(s.getStat().getName())) {
+                    speedVal = String.valueOf(s.getBaseStat());
+                }
+            }
+            speed.setText(resources.getString(R.string.item_pokemon_speed, speedVal));
         }
 
         @Override

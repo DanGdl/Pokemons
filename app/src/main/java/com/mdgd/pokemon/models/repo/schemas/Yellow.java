@@ -5,48 +5,51 @@ import com.google.gson.annotations.SerializedName;
 
 public class Yellow {
 
+    @Expose
     @SerializedName("back_default")
-    @Expose
-    private Object backDefault;
-    @SerializedName("back_gray")
-    @Expose
-    private Object backGray;
-    @SerializedName("front_default")
-    @Expose
-    private Object frontDefault;
-    @SerializedName("front_gray")
-    @Expose
-    private Object frontGray;
+    private String backDefault;
 
-    public Object getBackDefault() {
+    @Expose
+    @SerializedName("back_gray")
+    private String backGray;
+
+    @Expose
+    @SerializedName("front_default")
+    private String frontDefault;
+
+    @Expose
+    @SerializedName("front_gray")
+    private String frontGray;
+
+    public String getBackDefault() {
         return backDefault;
     }
 
-    public void setBackDefault(Object backDefault) {
+    public void setBackDefault(String backDefault) {
         this.backDefault = backDefault;
     }
 
-    public Object getBackGray() {
+    public String getBackGray() {
         return backGray;
     }
 
-    public void setBackGray(Object backGray) {
+    public void setBackGray(String backGray) {
         this.backGray = backGray;
     }
 
-    public Object getFrontDefault() {
+    public String getFrontDefault() {
         return frontDefault;
     }
 
-    public void setFrontDefault(Object frontDefault) {
+    public void setFrontDefault(String frontDefault) {
         this.frontDefault = frontDefault;
     }
 
-    public Object getFrontGray() {
+    public String getFrontGray() {
         return frontGray;
     }
 
-    public void setFrontGray(Object frontGray) {
+    public void setFrontGray(String frontGray) {
         this.frontGray = frontGray;
     }
 

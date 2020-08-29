@@ -1,10 +1,13 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class BlackWhite {
 
+    @Embedded
     @SerializedName("animated")
     @Expose
     private Animated animated;
@@ -13,13 +16,13 @@ public class BlackWhite {
     private String backDefault;
     @SerializedName("back_female")
     @Expose
-    private Object backFemale;
+    private String backFemale;
     @SerializedName("back_shiny")
     @Expose
     private String backShiny;
     @SerializedName("back_shiny_female")
     @Expose
-    private Object backShinyFemale;
+    private String backShinyFemale;
     @SerializedName("front_default")
     @Expose
     private String frontDefault;
@@ -49,11 +52,11 @@ public class BlackWhite {
         this.backDefault = backDefault;
     }
 
-    public Object getBackFemale() {
+    public String getBackFemale() {
         return backFemale;
     }
 
-    public void setBackFemale(Object backFemale) {
+    public void setBackFemale(String backFemale) {
         this.backFemale = backFemale;
     }
 
@@ -65,11 +68,11 @@ public class BlackWhite {
         this.backShiny = backShiny;
     }
 
-    public Object getBackShinyFemale() {
+    public String getBackShinyFemale() {
         return backShinyFemale;
     }
 
-    public void setBackShinyFemale(Object backShinyFemale) {
+    public void setBackShinyFemale(String backShinyFemale) {
         this.backShinyFemale = backShinyFemale;
     }
 

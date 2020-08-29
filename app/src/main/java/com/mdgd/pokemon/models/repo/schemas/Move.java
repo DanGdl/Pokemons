@@ -3,7 +3,7 @@ package com.mdgd.pokemon.models.repo.schemas;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Move {
 
@@ -12,7 +12,7 @@ public class Move {
     private Move_ move;
     @SerializedName("version_group_details")
     @Expose
-    private List<VersionGroupDetail> versionGroupDetails = null;
+    private ArrayList<VersionGroupDetail> versionGroupDetails = new ArrayList<>();
 
     public Move_ getMove() {
         return move;
@@ -22,11 +22,11 @@ public class Move {
         this.move = move;
     }
 
-    public List<VersionGroupDetail> getVersionGroupDetails() {
+    public ArrayList<VersionGroupDetail> getVersionGroupDetails() {
         return versionGroupDetails;
     }
 
-    public void setVersionGroupDetails(List<VersionGroupDetail> versionGroupDetails) {
+    public void setVersionGroupDetails(ArrayList<VersionGroupDetail> versionGroupDetails) {
         this.versionGroupDetails = versionGroupDetails;
     }
 

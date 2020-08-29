@@ -5,17 +5,20 @@ import com.google.gson.annotations.SerializedName;
 
 public class Silver {
 
+    @Expose
     @SerializedName("back_default")
-    @Expose
     private String backDefault;
+
+    @Expose
     @SerializedName("back_shiny")
-    @Expose
     private String backShiny;
+
+    @Expose
     @SerializedName("front_default")
-    @Expose
     private String frontDefault;
-    @SerializedName("front_shiny")
+
     @Expose
+    @SerializedName("front_shiny")
     private String frontShiny;
 
     public String getBackDefault() {

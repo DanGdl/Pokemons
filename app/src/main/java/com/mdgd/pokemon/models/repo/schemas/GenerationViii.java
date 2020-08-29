@@ -1,12 +1,15 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationViii {
 
-    @SerializedName("icons")
+    @Embedded
     @Expose
+    @SerializedName("icons")
     private Icons_ icons;
 
     public Icons_ getIcons() {

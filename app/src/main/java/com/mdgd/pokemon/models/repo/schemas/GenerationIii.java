@@ -1,18 +1,25 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationIii {
 
+    @Embedded
+    @Expose
     @SerializedName("emerald")
-    @Expose
     private Emerald emerald;
+
+    @Embedded
+    @Expose
     @SerializedName("firered-leafgreen")
-    @Expose
     private FireredLeafgreen fireredLeafgreen;
-    @SerializedName("ruby-sapphire")
+
+    @Embedded
     @Expose
+    @SerializedName("ruby-sapphire")
     private RubySapphire rubySapphire;
 
     public Emerald getEmerald() {

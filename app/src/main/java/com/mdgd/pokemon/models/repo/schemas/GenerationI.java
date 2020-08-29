@@ -1,15 +1,20 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationI {
 
+    @Embedded
+    @Expose
     @SerializedName("red-blue")
-    @Expose
     private RedBlue redBlue;
-    @SerializedName("yellow")
+
+    @Embedded
     @Expose
+    @SerializedName("yellow")
     private Yellow yellow;
 
     public RedBlue getRedBlue() {

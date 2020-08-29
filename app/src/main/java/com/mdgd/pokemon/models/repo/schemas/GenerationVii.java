@@ -1,15 +1,20 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationVii {
 
+    @Embedded
+    @Expose
     @SerializedName("icons")
-    @Expose
     private Icons icons;
-    @SerializedName("ultra-sun-ultra-moon")
+
+    @Embedded
     @Expose
+    @SerializedName("ultra-sun-ultra-moon")
     private UltraSunUltraMoon ultraSunUltraMoon;
 
     public Icons getIcons() {

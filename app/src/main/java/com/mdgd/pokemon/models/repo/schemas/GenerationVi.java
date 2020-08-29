@@ -1,15 +1,20 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationVi {
 
+    @Expose
+    @Embedded
     @SerializedName("omegaruby-alphasapphire")
-    @Expose
     private OmegarubyAlphasapphire omegarubyAlphasapphire;
-    @SerializedName("x-y")
+
+    @Embedded
     @Expose
+    @SerializedName("x-y")
     private XY xY;
 
     public OmegarubyAlphasapphire getOmegarubyAlphasapphire() {

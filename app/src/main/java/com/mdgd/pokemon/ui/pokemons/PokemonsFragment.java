@@ -140,14 +140,14 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
 
     @Override
     public void showProgress() {
-        if (refreshSwipe != null) {
+        if (refreshSwipe != null && !refreshSwipe.isRefreshing()) {
             refreshSwipe.setRefreshing(true);
         }
     }
 
     @Override
     public void hideProgress() {
-        if (refreshSwipe != null) {
+        if (refreshSwipe != null && refreshSwipe.isRefreshing()) {
             refreshSwipe.setRefreshing(false);
         }
     }

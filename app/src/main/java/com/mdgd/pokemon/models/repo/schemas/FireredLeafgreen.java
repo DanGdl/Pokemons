@@ -7,46 +7,46 @@ public class FireredLeafgreen {
 
     @SerializedName("back_default")
     @Expose
-    private Object backDefault;
+    private String backDefault;
     @SerializedName("back_shiny")
     @Expose
-    private Object backShiny;
+    private String backShiny;
     @SerializedName("front_default")
     @Expose
-    private Object frontDefault;
+    private String frontDefault;
     @SerializedName("front_shiny")
     @Expose
-    private Object frontShiny;
+    private String frontShiny;
 
-    public Object getBackDefault() {
+    public String getBackDefault() {
         return backDefault;
     }
 
-    public void setBackDefault(Object backDefault) {
+    public void setBackDefault(String backDefault) {
         this.backDefault = backDefault;
     }
 
-    public Object getBackShiny() {
+    public String getBackShiny() {
         return backShiny;
     }
 
-    public void setBackShiny(Object backShiny) {
+    public void setBackShiny(String backShiny) {
         this.backShiny = backShiny;
     }
 
-    public Object getFrontDefault() {
+    public String getFrontDefault() {
         return frontDefault;
     }
 
-    public void setFrontDefault(Object frontDefault) {
+    public void setFrontDefault(String frontDefault) {
         this.frontDefault = frontDefault;
     }
 
-    public Object getFrontShiny() {
+    public String getFrontShiny() {
         return frontShiny;
     }
 
-    public void setFrontShiny(Object frontShiny) {
+    public void setFrontShiny(String frontShiny) {
         this.frontShiny = frontShiny;
     }
 

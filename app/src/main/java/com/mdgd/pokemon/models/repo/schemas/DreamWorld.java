@@ -1,16 +1,21 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.ColumnInfo;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class DreamWorld {
 
+    @ColumnInfo(name = "DreamWorldFrontDefault")
+    @Expose
     @SerializedName("front_default")
-    @Expose
     private String frontDefault;
-    @SerializedName("front_female")
+
+    @ColumnInfo(name = "DreamWorldFrontFemale")
     @Expose
-    private Object frontFemale;
+    @SerializedName("front_female")
+    private String frontFemale;
 
     public String getFrontDefault() {
         return frontDefault;
@@ -20,11 +25,11 @@ public class DreamWorld {
         this.frontDefault = frontDefault;
     }
 
-    public Object getFrontFemale() {
+    public String getFrontFemale() {
         return frontFemale;
     }
 
-    public void setFrontFemale(Object frontFemale) {
+    public void setFrontFemale(String frontFemale) {
         this.frontFemale = frontFemale;
     }
 

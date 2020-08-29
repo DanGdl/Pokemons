@@ -1,18 +1,25 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationIi {
 
+    @Embedded
+    @Expose
     @SerializedName("crystal")
-    @Expose
     private Crystal crystal;
+
+    @Embedded
+    @Expose
     @SerializedName("gold")
-    @Expose
     private Gold gold;
-    @SerializedName("silver")
+
+    @Embedded
     @Expose
+    @SerializedName("silver")
     private Silver silver;
 
     public Crystal getCrystal() {

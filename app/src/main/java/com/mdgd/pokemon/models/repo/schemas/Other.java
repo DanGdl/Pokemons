@@ -1,15 +1,20 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Other {
 
+    @Embedded
+    @Expose
     @SerializedName("dream_world")
-    @Expose
     private DreamWorld dreamWorld;
-    @SerializedName("official-artwork")
+
+    @Embedded
     @Expose
+    @SerializedName("official-artwork")
     private OfficialArtwork officialArtwork;
 
     public DreamWorld getDreamWorld() {

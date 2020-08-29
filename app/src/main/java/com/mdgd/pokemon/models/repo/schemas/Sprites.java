@@ -1,40 +1,55 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Sprites {
 
+    @Expose
     @SerializedName("back_default")
-    @Expose
     private String backDefault;
+
+    @Expose
     @SerializedName("back_female")
+    private String backFemale;
+
     @Expose
-    private Object backFemale;
     @SerializedName("back_shiny")
-    @Expose
     private String backShiny;
+
+    @Expose
     @SerializedName("back_shiny_female")
+    private String backShinyFemale;
+
+    @ColumnInfo(name = "SpritesFrontDefault")
     @Expose
-    private Object backShinyFemale;
     @SerializedName("front_default")
-    @Expose
     private String frontDefault;
+
+    @Expose
     @SerializedName("front_female")
-    @Expose
     private String frontFemale;
+
+    @Expose
     @SerializedName("front_shiny")
-    @Expose
     private String frontShiny;
+
+    @Expose
     @SerializedName("front_shiny_female")
-    @Expose
     private String frontShinyFemale;
+
+    @Embedded
+    @Expose
     @SerializedName("other")
-    @Expose
     private Other other;
-    @SerializedName("versions")
-    @Expose
-    private Versions versions;
+
+//    @Embedded
+//    @Expose
+//    @SerializedName("versions")
+//    private Versions versions;
 
     public String getBackDefault() {
         return backDefault;
@@ -44,11 +59,11 @@ public class Sprites {
         this.backDefault = backDefault;
     }
 
-    public Object getBackFemale() {
+    public String getBackFemale() {
         return backFemale;
     }
 
-    public void setBackFemale(Object backFemale) {
+    public void setBackFemale(String backFemale) {
         this.backFemale = backFemale;
     }
 
@@ -60,11 +75,11 @@ public class Sprites {
         this.backShiny = backShiny;
     }
 
-    public Object getBackShinyFemale() {
+    public String getBackShinyFemale() {
         return backShinyFemale;
     }
 
-    public void setBackShinyFemale(Object backShinyFemale) {
+    public void setBackShinyFemale(String backShinyFemale) {
         this.backShinyFemale = backShinyFemale;
     }
 
@@ -108,12 +123,12 @@ public class Sprites {
         this.other = other;
     }
 
-    public Versions getVersions() {
-        return versions;
-    }
+//    public Versions getVersions() {
+//        return versions;
+//    }
 
-    public void setVersions(Versions versions) {
-        this.versions = versions;
-    }
+//    public void setVersions(Versions versions) {
+//        this.versions = versions;
+//    }
 
 }

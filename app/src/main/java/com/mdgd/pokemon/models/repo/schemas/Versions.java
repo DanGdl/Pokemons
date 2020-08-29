@@ -1,33 +1,50 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Versions {
 
+    @Embedded
+    @Expose
     @SerializedName("generation-i")
-    @Expose
     private GenerationI generationI;
+
+    @Embedded
+    @Expose
     @SerializedName("generation-ii")
-    @Expose
     private GenerationIi generationIi;
+
+    @Embedded
+    @Expose
     @SerializedName("generation-iii")
-    @Expose
     private GenerationIii generationIii;
+
+    @Embedded
+    @Expose
     @SerializedName("generation-iv")
-    @Expose
     private GenerationIv generationIv;
+
+    @Embedded
+    @Expose
     @SerializedName("generation-v")
-    @Expose
     private GenerationV generationV;
+
+    @Embedded
+    @Expose
     @SerializedName("generation-vi")
-    @Expose
     private GenerationVi generationVi;
+
+    @Embedded
+    @Expose
     @SerializedName("generation-vii")
-    @Expose
     private GenerationVii generationVii;
-    @SerializedName("generation-viii")
+
+    @Embedded
     @Expose
+    @SerializedName("generation-viii")
     private GenerationViii generationViii;
 
     public GenerationI getGenerationI() {

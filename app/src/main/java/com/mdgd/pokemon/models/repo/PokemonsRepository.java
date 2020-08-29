@@ -21,16 +21,25 @@ public class PokemonsRepository implements PokemonsRepo {
     @Override
     public Single<Result<List<PokemonDetails>>> getPage(Integer page) {
         return dao.getPage(page, PAGE_SIZE)
-                .flatMap(list -> {
-                    if (list.isEmpty()) {
-                        return loadPage(page);
+                .flatMap(result -> {
+                    if (result.isError()) {
+                        return Single.just(new Result<>(result.getError()));
                     } else {
-                        return Single.just(new Result<>(list));
+                        final List<PokemonDetails> list = result.getValue();
+                        return list.isEmpty() ? loadPokemons(page) : Single.just(new Result<>(list));
                     }
                 });
     }
 
-    private Single<Result<List<PokemonDetails>>> loadPage(Integer page) {
-        return network.loadPokemonsPage(page, PAGE_SIZE);
+    private Single<Result<List<PokemonDetails>>> loadPokemons(Integer page) {
+        return network.loadPokemons()
+                .flatMap(result -> {
+                    if (result.isError()) {
+                        return Single.just(result);
+                    } else {
+                        return dao.save(result.getValue())
+                                .andThen(dao.getPage(page, PAGE_SIZE));
+                    }
+                });
     }
 }

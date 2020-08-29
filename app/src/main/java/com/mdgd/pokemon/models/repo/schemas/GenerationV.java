@@ -1,12 +1,15 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationV {
 
-    @SerializedName("black-white")
+    @Embedded
     @Expose
+    @SerializedName("black-white")
     private BlackWhite blackWhite;
 
     public BlackWhite getBlackWhite() {

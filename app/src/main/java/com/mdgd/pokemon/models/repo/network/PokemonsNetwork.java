@@ -42,9 +42,9 @@ public class PokemonsNetwork implements Network {
     }
 
     @Override
-    public Single<Result<List<PokemonDetails>>> loadPokemonsPage(Integer page, int pageSize) {
-        final int offset = page == 0 ? 0 : (page - 1) * pageSize;
-        return service.loadPage(pageSize, offset)
+    public Single<Result<List<PokemonDetails>>> loadPokemons() {
+        return service.loadPage(1, 0)
+                .flatMap(list -> service.loadPage(60 /*list.getCount()*/, 0)) // todo restore when dao ready
                 .flatMap(this::mapToDetails)
                 .map(Result::new)
                 .onErrorReturn(Result::new);

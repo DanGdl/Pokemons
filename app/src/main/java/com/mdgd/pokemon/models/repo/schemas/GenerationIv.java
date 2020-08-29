@@ -1,18 +1,25 @@
 package com.mdgd.pokemon.models.repo.schemas;
 
+import androidx.room.Embedded;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GenerationIv {
 
+    @Expose
+    @Embedded
     @SerializedName("diamond-pearl")
-    @Expose
     private DiamondPearl diamondPearl;
+
+    @Expose
+    @Embedded
     @SerializedName("heartgold-soulsilver")
-    @Expose
     private HeartgoldSoulsilver heartgoldSoulsilver;
-    @SerializedName("platinum")
+
     @Expose
+    @Embedded
+    @SerializedName("platinum")
     private Platinum platinum;
 
     public DiamondPearl getDiamondPearl() {
