@@ -171,7 +171,7 @@ public abstract class PokemonsRoomDao {
             versionGroupDetails.addAll(getVersionGroupDetails(moveIds.subList(startIdx, endIdx)));
             startIdx = endIdx;
             endIdx = Math.min(startIdx + page, moveIds.size());
-            if (startIdx == moveIds.size()) {
+            if (startIdx >= moveIds.size()) {
                 break;
             }
         }

@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonImageViewHolder;
-import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonLabelImageViewHolder;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonLabelViewHolder;
+import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonTextViewHolder;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonTitleViewHolder;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.ViewHolderFactory;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
@@ -28,7 +28,7 @@ public class PokemonPropertiesAdapter extends RecyclerView.Adapter<PokemonProper
         resolver.put(PokemonProperty.PROPERTY_IMAGE, parent -> new PokemonImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon_image, parent, false)));
         resolver.put(PokemonProperty.PROPERTY_LABEL, parent -> new PokemonLabelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon_label, parent, false)));
         resolver.put(PokemonProperty.PROPERTY_TITLE, parent -> new PokemonTitleViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon_title, parent, false)));
-        resolver.put(PokemonProperty.PROPERTY_LABEL_IMAGE, parent -> new PokemonLabelImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon_label_image, parent, false)));
+        resolver.put(PokemonProperty.PROPERTY_TEXT, parent -> new PokemonTextViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon_label_image, parent, false)));
     }
 
     @Override

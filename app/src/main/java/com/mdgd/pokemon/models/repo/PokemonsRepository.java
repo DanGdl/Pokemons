@@ -18,6 +18,7 @@ public class PokemonsRepository implements PokemonsRepo {
         this.network = pokemonsNetwork;
     }
 
+    // maybe move loading to splash
     @Override
     public Single<Result<List<PokemonFullDataSchema>>> getPage(Integer page) {
         return dao.getPage(page, PAGE_SIZE)
