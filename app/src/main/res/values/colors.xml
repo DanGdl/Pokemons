@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="filter_active">#000</color>
-    <color name="filter_inactive" />
+    <color name="filter_inactive">#737373</color>
 </resources>
