@@ -32,6 +32,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final PokemonsAdapter adapter = new PokemonsAdapter();
     private SwipeRefreshLayout refreshSwipe;
+    // maybe paging library?
     private final EndlessScrollListener scrollListener = new EndlessScrollListener() {
         @Override
         public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {

@@ -17,6 +17,7 @@ public abstract class HostActivity extends AppCompatActivity {
 
     protected abstract int getFragmentContainerId();
 
+    // maybe use navigation components?
     protected FragmentTransaction getTransaction(boolean addToStack, String backStackTag, int enterAnim, int exitAnim, boolean sameAnimForPop) {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (addToStack) {

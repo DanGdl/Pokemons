@@ -49,4 +49,8 @@ public class MviViewModel<T> extends ViewModel implements FragmentContract.ViewM
     protected boolean hasOnDestroyDisposables() {
         return onDestroyDisposables.size() != 0;
     }
+
+    protected boolean hasOStopDisposables() {
+        return onStopDisposables.size() != 0;
+    }
 }
