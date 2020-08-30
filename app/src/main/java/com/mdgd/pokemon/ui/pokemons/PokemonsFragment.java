@@ -108,7 +108,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
             if (filterAttack == view) {
                 if (filters.contains(FilterData.FILTER_ATTACK)) {
                     filters.remove(FilterData.FILTER_ATTACK);
-                    filterAttack.setColorFilter(null);
+                    filterAttack.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
                 } else {
                     filters.add(FilterData.FILTER_ATTACK);
                     filterAttack.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
@@ -116,15 +116,15 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
             } else if (filterDefence == view) {
                 if (filters.contains(FilterData.FILTER_DEFENCE)) {
                     filters.remove(FilterData.FILTER_DEFENCE);
-                    filterDefence.setColorFilter(null);
+                    filterDefence.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
                 } else {
                     filters.add(FilterData.FILTER_DEFENCE);
-                    filterDefence.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
+                    filterDefence.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
                 }
             } else if (filterSpeed == view) {
                 if (filters.contains(FilterData.FILTER_SPEED)) {
                     filters.remove(FilterData.FILTER_SPEED);
-                    filterSpeed.setColorFilter(null);
+                    filterSpeed.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
                 } else {
                     filters.add(FilterData.FILTER_SPEED);
                     filterSpeed.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
