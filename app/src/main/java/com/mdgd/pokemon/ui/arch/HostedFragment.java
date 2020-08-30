@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer;
 import java.lang.reflect.ParameterizedType;
 
 public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host> extends Fragment
-        implements FragmentContract.View, Observer<STATE>, Screen {
+        implements FragmentContract.View, Observer<STATE> {
 
     private VIEW_MODEL model;
     private HOST fragmentHost;

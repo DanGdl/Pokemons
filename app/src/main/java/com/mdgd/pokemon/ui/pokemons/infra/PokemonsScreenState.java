@@ -2,11 +2,12 @@ package com.mdgd.pokemon.ui.pokemons.infra;
 
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.arch.ScreenState;
+import com.mdgd.pokemon.ui.pokemons.PokemonsContract;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class PokemonsScreenState extends ScreenState<PokemonsScreen> {
+public class PokemonsScreenState extends ScreenState<PokemonsContract.View> {
 
     private static final int SET_DATA = 1;
     private static final int ADD_DATA = 2;
@@ -57,7 +58,7 @@ public class PokemonsScreenState extends ScreenState<PokemonsScreen> {
     }
 
     @Override
-    public void visit(PokemonsScreen pokemonsScreen) {
+    public void visit(PokemonsContract.View pokemonsScreen) {
         if (LOADING == action) {
             pokemonsScreen.showProgress();
             return;

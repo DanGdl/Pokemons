@@ -5,6 +5,8 @@ import com.mdgd.pokemon.ui.arch.FragmentContract;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
+import java.util.List;
+
 public class PokemonsContract {
 
     public interface ViewModel extends FragmentContract.ViewModel<PokemonsScreenState> {
@@ -19,6 +21,17 @@ public class PokemonsContract {
     }
 
     public interface View extends FragmentContract.View {
+        void showProgress();
+
+        void hideProgress();
+
+        void setItems(List<PokemonFullDataSchema> list);
+
+        void addItems(List<PokemonFullDataSchema> list);
+
+        void updateItems(List<PokemonFullDataSchema> list);
+
+        void showError(Throwable error);
     }
 
     public interface Host extends FragmentContract.Host {

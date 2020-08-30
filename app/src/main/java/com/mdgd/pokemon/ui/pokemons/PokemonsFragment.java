@@ -18,7 +18,6 @@ import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.arch.HostedFragment;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreen;
 import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
 import java.util.ArrayList;
@@ -27,8 +26,7 @@ import java.util.List;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class PokemonsFragment extends HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>
-        implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
-        PokemonsScreen {
+        implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private final List<String> filters = new ArrayList<>(3);
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
