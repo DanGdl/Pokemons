@@ -56,11 +56,12 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setModel(new ViewModelProvider(this, new PokemonsViewModelFactory(this)).get(PokemonsViewModel.class));
-        getLifecycle().addObserver(getModel());
-        getModel().getStateObservable().observe(this, this);
-
         onDestroyDisposables.add(adapter.getOnItemClickSubject().subscribe(pokemon -> getModel().onItemClicked(pokemon)));
+    }
+
+    @Override
+    protected PokemonsContract.ViewModel createModel() {
+        return new ViewModelProvider(this, new PokemonsViewModelFactory(this)).get(PokemonsViewModel.class);
     }
 
     @Nullable
@@ -106,31 +107,23 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
             }
         } else {
             if (filterAttack == view) {
-                if (filters.contains(FilterData.FILTER_ATTACK)) {
-                    filters.remove(FilterData.FILTER_ATTACK);
-                    filterAttack.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
-                } else {
-                    filters.add(FilterData.FILTER_ATTACK);
-                    filterAttack.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
-                }
+                setupFilter(filterAttack, FilterData.FILTER_ATTACK);
             } else if (filterDefence == view) {
-                if (filters.contains(FilterData.FILTER_DEFENCE)) {
-                    filters.remove(FilterData.FILTER_DEFENCE);
-                    filterDefence.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
-                } else {
-                    filters.add(FilterData.FILTER_DEFENCE);
-                    filterDefence.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
-                }
+                setupFilter(filterDefence, FilterData.FILTER_DEFENCE);
             } else if (filterSpeed == view) {
-                if (filters.contains(FilterData.FILTER_SPEED)) {
-                    filters.remove(FilterData.FILTER_SPEED);
-                    filterSpeed.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
-                } else {
-                    filters.add(FilterData.FILTER_SPEED);
-                    filterSpeed.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
-                }
+                setupFilter(filterSpeed, FilterData.FILTER_SPEED);
             }
             getModel().sort(new FilterData(new ArrayList<>(filters)));
+        }
+    }
+
+    private void setupFilter(ImageButton filterView, String filterTag) {
+        if (filters.contains(filterTag)) {
+            filters.remove(filterTag);
+            filterView.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
+        } else {
+            filters.add(filterTag);
+            filterView.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
         }
     }
 

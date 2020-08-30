@@ -30,11 +30,8 @@ public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsScreenS
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setModel(new ViewModelProvider(this, new PokemonDetailsViewModelFactory()).get(PokemonDetailsViewModel.class));
-        getLifecycle().addObserver(getModel());
-        getModel().getStateObservable().observe(this, this);
+    protected PokemonDetailsContract.ViewModel createModel() {
+        return new ViewModelProvider(this, new PokemonDetailsViewModelFactory()).get(PokemonDetailsViewModel.class);
     }
 
     @Nullable

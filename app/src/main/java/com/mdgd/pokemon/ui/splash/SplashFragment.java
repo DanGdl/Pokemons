@@ -19,10 +19,8 @@ public class SplashFragment extends HostedFragment<SplashScreenState, SplashCont
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setModel(new ViewModelProvider(this, new SplashViewModelFactory(this)).get(SplashViewModel.class));
-        getLifecycle().addObserver(getModel());
+    protected SplashContract.ViewModel createModel() {
+        return new ViewModelProvider(this, new SplashViewModelFactory(this)).get(SplashViewModel.class);
     }
 
     @Nullable

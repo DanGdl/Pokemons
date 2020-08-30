@@ -1,8 +1,10 @@
 package com.mdgd.pokemon.ui.arch;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
@@ -30,6 +32,18 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setModel(createModel());
+        if (getModel() != null) {
+            getLifecycle().addObserver(getModel());
+            getModel().getStateObservable().observe(this, this);
+        }
+    }
+
+    protected abstract VIEW_MODEL createModel();
+
+    @Override
     public void onDetach() {
         super.onDetach();
         // release the call back
@@ -39,8 +53,10 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
     @Override
     public void onDestroy() {
         // order matters
-        getModel().getStateObservable().removeObservers(this);
-        getLifecycle().removeObserver(getModel());
+        if (getModel() != null) {
+            getModel().getStateObservable().removeObservers(this);
+            getLifecycle().removeObserver(getModel());
+        }
         super.onDestroy();
     }
 
