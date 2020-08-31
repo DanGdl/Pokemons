@@ -1,6 +1,7 @@
 package com.mdgd.pokemon.models.cache;
 
 import com.google.common.base.Optional;
+import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface Cache {
     void setPokemons(List<PokemonFullDataSchema> list);
 
     Observable<List<PokemonFullDataSchema>> getPokemonsObservable();
+
+    void setLoadingProgress(Result<Long> value);
+
+    Observable<Result<Long>> getProgressObservable();
 }

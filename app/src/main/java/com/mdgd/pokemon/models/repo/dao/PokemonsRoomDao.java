@@ -32,82 +32,80 @@ public abstract class PokemonsRoomDao {
 
     @Transaction
     void save(List<PokemonDetails> pokemons) {
-        if (countRows() == 0) {
-            final List<PokemonSchema> schemas = new ArrayList<>();
-            final List<Ability> abilities = new ArrayList<>();
-            final List<GameIndex> gameIndexes = new ArrayList<>();
-            final List<Form> forms = new ArrayList<>();
-            final List<MoveSchema> moveSchemas = new ArrayList<>();
-            final List<Move> moves = new ArrayList<>();
-            final List<Type> types = new ArrayList<>();
-            final List<Stat> stats = new ArrayList<>();
+        final List<PokemonSchema> schemas = new ArrayList<>();
+        final List<Ability> abilities = new ArrayList<>();
+        final List<GameIndex> gameIndexes = new ArrayList<>();
+        final List<Form> forms = new ArrayList<>();
+        final List<MoveSchema> moveSchemas = new ArrayList<>();
+        final List<Move> moves = new ArrayList<>();
+        final List<Type> types = new ArrayList<>();
+        final List<Stat> stats = new ArrayList<>();
 
-            for (PokemonDetails pd : pokemons) {
-                PokemonSchema schema = new PokemonSchema();
-                schema.setBaseExperience(pd.getBaseExperience());
-                schema.setHeight(pd.getHeight());
-                schema.setId(pd.getId());
-                schema.setIsDefault(pd.getIsDefault());
-                schema.setLocationAreaEncounters(pd.getLocationAreaEncounters());
-                schema.setName(pd.getName());
-                schema.setOrder(pd.getOrder());
-                schema.setSpecies(pd.getSpecies());
-                schema.setSprites(pd.getSprites());
-                schema.setWeight(pd.getWeight());
+        for (PokemonDetails pd : pokemons) {
+            PokemonSchema schema = new PokemonSchema();
+            schema.setBaseExperience(pd.getBaseExperience());
+            schema.setHeight(pd.getHeight());
+            schema.setId(pd.getId());
+            schema.setIsDefault(pd.getIsDefault());
+            schema.setLocationAreaEncounters(pd.getLocationAreaEncounters());
+            schema.setName(pd.getName());
+            schema.setOrder(pd.getOrder());
+            schema.setSpecies(pd.getSpecies());
+            schema.setSprites(pd.getSprites());
+            schema.setWeight(pd.getWeight());
 
-                schemas.add(schema);
+            schemas.add(schema);
 
-                for (Ability a : pd.getAbilities()) {
-                    a.setPokemonId(schema.getId());
-                }
-                abilities.addAll(pd.getAbilities());
-
-                for (GameIndex a : pd.getGameIndices()) {
-                    a.setPokemonId(schema.getId());
-                }
-                gameIndexes.addAll(pd.getGameIndices());
-
-                for (Form a : pd.getForms()) {
-                    a.setPokemonId(schema.getId());
-                }
-                forms.addAll(pd.getForms());
-
-                for (Move a : pd.getMoves()) {
-                    final MoveSchema moveSchema = new MoveSchema();
-                    moveSchema.setMove(a.getMove());
-                    moveSchema.setPokemonId(schema.getId());
-                    moveSchemas.add(moveSchema);
-                }
-                moves.addAll(pd.getMoves());
-
-                for (Stat a : pd.getStats()) {
-                    a.setPokemonId(schema.getId());
-                }
-                stats.addAll(pd.getStats());
-
-                for (Type a : pd.getTypes()) {
-                    a.setPokemonId(schema.getId());
-                }
-                types.addAll(pd.getTypes());
+            for (Ability a : pd.getAbilities()) {
+                a.setPokemonId(schema.getId());
             }
+            abilities.addAll(pd.getAbilities());
 
-            savePokemons(schemas);
-            saveAbilities(abilities);
-            saveGameIndexes(gameIndexes);
-            saveForms(forms);
-            final List<Long> ids = saveMoves(moveSchemas);
-            final List<VersionGroupDetail> details = new ArrayList<>();
-            for (int i = 0; i < ids.size(); i++) {
-                final Move move = moves.get(i);
-                for (VersionGroupDetail a : move.getVersionGroupDetails()) {
-                    a.setMoveId(ids.get(i));
-                }
-                details.addAll(move.getVersionGroupDetails());
+            for (GameIndex a : pd.getGameIndices()) {
+                a.setPokemonId(schema.getId());
             }
-            saveVersionGroupDetails(details);
-            saveTypes(types);
-            saveStats(stats);
+            gameIndexes.addAll(pd.getGameIndices());
+
+            for (Form a : pd.getForms()) {
+                a.setPokemonId(schema.getId());
+            }
+            forms.addAll(pd.getForms());
+
+            for (Move a : pd.getMoves()) {
+                final MoveSchema moveSchema = new MoveSchema();
+                moveSchema.setMove(a.getMove());
+                moveSchema.setPokemonId(schema.getId());
+                moveSchemas.add(moveSchema);
+            }
+            moves.addAll(pd.getMoves());
+
+            for (Stat a : pd.getStats()) {
+                a.setPokemonId(schema.getId());
+            }
+            stats.addAll(pd.getStats());
+
+            for (Type a : pd.getTypes()) {
+                a.setPokemonId(schema.getId());
+            }
+            types.addAll(pd.getTypes());
         }
+
+        savePokemons(schemas);
+        saveAbilities(abilities);
+        saveGameIndexes(gameIndexes);
+        saveForms(forms);
+        final List<Long> ids = saveMoves(moveSchemas);
+        final List<VersionGroupDetail> details = new ArrayList<>();
+        for (int i = 0; i < ids.size(); i++) {
+            final Move move = moves.get(i);
+            for (VersionGroupDetail a : move.getVersionGroupDetails()) {
+                a.setMoveId(ids.get(i));
+            }
+            details.addAll(move.getVersionGroupDetails());
+        }
+        saveVersionGroupDetails(details);
+        saveTypes(types);
+        saveStats(stats);
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

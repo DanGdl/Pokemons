@@ -12,10 +12,16 @@ public class SplashContract {
 
     public interface Host extends FragmentContract.Host {
         void proceedToPokemonsScreen();
+
+        void showError(Throwable error);
     }
 
 
     public interface Router {
         void proceedToNextScreen();
+
+        void launchWorker();
+
+        void showError(Throwable error);
     }
 }

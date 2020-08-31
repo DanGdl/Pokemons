@@ -1,6 +1,7 @@
 package com.mdgd.pokemon.models.cache;
 
 import com.google.common.base.Optional;
+import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
 public class CacheImpl implements Cache {
     private BehaviorSubject<Optional<PokemonFullDataSchema>> pokemon = BehaviorSubject.createDefault(Optional.absent());
     private BehaviorSubject<List<PokemonFullDataSchema>> pokemons = BehaviorSubject.createDefault(new LinkedList<>());
+    private BehaviorSubject<Result<Long>> progress = BehaviorSubject.createDefault(new Result<>(0L));
 
     @Override
     public void putSelected(PokemonFullDataSchema pokemon) {
@@ -53,5 +55,15 @@ public class CacheImpl implements Cache {
         return pokemons
                 .map(list -> (List<PokemonFullDataSchema>) new ArrayList<>(list))
                 .hide();
+    }
+
+    @Override
+    public void setLoadingProgress(Result<Long> value) {
+        progress.onNext(value);
+    }
+
+    @Override
+    public Observable<Result<Long>> getProgressObservable() {
+        return progress;
     }
 }

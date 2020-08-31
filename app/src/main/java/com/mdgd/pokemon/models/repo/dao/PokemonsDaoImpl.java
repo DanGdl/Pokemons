@@ -40,4 +40,9 @@ public class PokemonsDaoImpl implements PokemonsDao {
             }
         });
     }
+
+    @Override
+    public long getCount() {
+        return pokemonsRoomDao.countRows();
+    }
 }

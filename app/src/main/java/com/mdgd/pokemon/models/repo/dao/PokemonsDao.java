@@ -14,4 +14,6 @@ public interface PokemonsDao {
     Completable save(List<PokemonDetails> list);
 
     Single<Result<List<PokemonFullDataSchema>>> getPage(int page, int pageSize);
+
+    long getCount();
 }

@@ -14,4 +14,8 @@
     <string name="pokemon_detail_game_indicies">Game indexes</string>
     <string name="pokemon_detail_game_moves">Game moves</string>
     <string name="pokemon_detail_version_group_details">Version details</string>
+    <string name="downloading">Downloading</string>
+    <string name="empty" />
+    <string name="dialog_error_title">Some error happened</string>
+    <string name="dialog_error_message">Details:</string>
 </resources>

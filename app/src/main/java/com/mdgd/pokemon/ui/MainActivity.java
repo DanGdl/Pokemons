@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.arch.HostActivity;
+import com.mdgd.pokemon.ui.error.ErrorFragment;
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract;
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsFragment;
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract;
@@ -43,6 +44,10 @@ public class MainActivity extends HostActivity implements SplashContract.Host, P
         if (error != null) {
             error.printStackTrace();
         }
-        // todo impl error dialog
+        if (getSupportFragmentManager().findFragmentByTag("error") == null) {
+            final ErrorFragment errorFragment = ErrorFragment.newInstance(R.string.dialog_error_title, R.string.dialog_error_message);
+            errorFragment.setError(error);
+            errorFragment.show(getSupportFragmentManager(), "error");
+        }
     }
 }
