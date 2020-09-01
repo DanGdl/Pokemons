@@ -45,7 +45,7 @@ public class ErrorFragment extends MessageDialog<ErrorFragmentState, ErrorContra
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final Bundle args = getArguments();
-        // todo add trace printing
+        // todo add trace printing, add retry
         if (args != null) {
             final int type = args.getInt(KEY_TYPE);
             if (TYPE_INT == type) {

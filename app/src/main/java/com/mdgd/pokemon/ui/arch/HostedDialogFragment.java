@@ -11,7 +11,8 @@ import androidx.lifecycle.Observer;
 import java.lang.reflect.ParameterizedType;
 
 public abstract class HostedDialogFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
-        extends AppCompatDialogFragment implements FragmentContract.View, Observer<STATE> {
+        extends AppCompatDialogFragment
+        implements FragmentContract.View, Observer<STATE> {
 
     private VIEW_MODEL model;
     private HOST fragmentHost;

@@ -30,16 +30,17 @@ public class SplashViewModel extends MviViewModel<SplashScreenState> implements 
                             Observable.timer(1, TimeUnit.SECONDS)
                                     .observeOn(AndroidSchedulers.mainThread()),
                             cache.getProgressObservable()
-                                    // .map(e -> new Result<Long>(new Throwable("Dummy error")))
                                     .observeOn(AndroidSchedulers.mainThread()),
                             (e, result) -> result)
+                            .firstOrError()
+                            // .map(e -> new Result<Long>(new Throwable("Dummy error"))) // error test
                             .subscribe(value -> {
                                 if (value.isError()) {
                                     router.showError(value.getError());
                                 } else if (value.getValue() != 0L) {
                                     router.proceedToNextScreen();
                                 }
-                            }));
+                            }, router::showError));
             router.launchWorker();
         }
     }
