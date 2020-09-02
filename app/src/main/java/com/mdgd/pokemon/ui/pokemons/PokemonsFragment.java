@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mdgd.mvi.HostedFragment;
+import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
@@ -60,7 +61,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
 
     @Override
     protected PokemonsContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new PokemonsViewModelFactory(this)).get(PokemonsViewModel.class);
+        return new ViewModelProvider(this, new PokemonsViewModelFactory(PokemonsApp.getInstance().getAppComponent(), this)).get(PokemonsViewModel.class);
     }
 
     @Nullable

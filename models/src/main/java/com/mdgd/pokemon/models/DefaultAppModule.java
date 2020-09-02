@@ -11,45 +11,29 @@ import com.mdgd.pokemon.models.repo.dao.PokemonsDaoImpl;
 import com.mdgd.pokemon.models.repo.network.Network;
 import com.mdgd.pokemon.models.repo.network.PokemonsNetwork;
 
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-@Module
-public class DefaultAppModule {
+public class DefaultAppModule implements AppModule {
     private final Context app;
 
     public DefaultAppModule(Context app) {
         this.app = app;
     }
 
-    @Provides
-    @Singleton
     public Context getApp() {
         return app;
     }
 
-    @Provides
-    @Singleton
     public Network getPokemonsNetwork() {
         return new PokemonsNetwork();
     }
 
-    @Provides
-    @Singleton
     public PokemonsDao getPokemonsDao() {
         return new PokemonsDaoImpl(app);
     }
 
-    @Provides
-    @Singleton
     public PokemonsRepo getPokemonsRepo() {
         return new PokemonsRepository(getPokemonsDao(), getPokemonsNetwork());
     }
 
-    @Provides
-    @Singleton
     public Cache getCache() {
         return new CacheImpl();
     }

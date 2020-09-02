@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mdgd.mvi.HostedFragment;
+import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
@@ -30,7 +31,7 @@ public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsScreenS
 
     @Override
     protected PokemonDetailsContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new PokemonDetailsViewModelFactory()).get(PokemonDetailsViewModel.class);
+        return new ViewModelProvider(this, new PokemonDetailsViewModelFactory(PokemonsApp.getInstance().getAppComponent())).get(PokemonDetailsViewModel.class);
     }
 
     @Nullable

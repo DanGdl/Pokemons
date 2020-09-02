@@ -1,27 +1,16 @@
 package com.mdgd.pokemon.bg;
 
-import com.mdgd.pokemon.PokemonsApp;
-import com.mdgd.pokemon.models.AppComponent;
-import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.repo.PokemonsRepo;
-
-import javax.inject.Inject;
+import com.mdgd.pokemon.models.AppModule;
 
 public class PokemonsLoadingModelFactory {
 
-    @Inject
-    public PokemonsRepo repo;
+    public AppModule appComponent;
 
-    @Inject
-    public Cache cache;
-
-    public PokemonsLoadingModelFactory() {
-        final AppComponent appComponent = PokemonsApp.getInstance().getAppComponent();
-        appComponent.injectPokemonsRepo(this);
-        appComponent.injectPokemonsCache(this);
+    public PokemonsLoadingModelFactory(AppModule appComponent) {
+        this.appComponent = appComponent;
     }
 
     public LoadPokemonsContract.ServiceModel create() {
-        return new LoadPokemonsModel(repo, cache);
+        return new LoadPokemonsModel(appComponent.getPokemonsRepo(), appComponent.getCache());
     }
 }

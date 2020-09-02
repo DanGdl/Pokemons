@@ -4,28 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mdgd.pokemon.models.AppComponent;
-import com.mdgd.pokemon.models.cache.Cache;
-
-import javax.inject.Inject;
+import com.mdgd.pokemon.models.AppModule;
 
 public class SplashViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final SplashContract.Router router;
-    @Inject
-    public Cache cache;
+    private final AppModule appComponent;
 
-    public SplashViewModelFactory(AppComponent appComponent, SplashContract.Router router) {
+    public SplashViewModelFactory(AppModule appComponent, SplashContract.Router router) {
         super();
+        this.appComponent = appComponent;
         this.router = router;
-        appComponent.injectPokemonsCache(this);
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass == SplashViewModel.class) {
-            return (T) new SplashViewModel(router, cache);
+            return (T) new SplashViewModel(router, appComponent.getCache());
         }
         return null;
     }

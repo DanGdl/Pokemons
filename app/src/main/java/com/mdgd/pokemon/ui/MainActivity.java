@@ -7,8 +7,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import com.mdgd.mvi.HostActivity;
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.arch.HostActivity;
 import com.mdgd.pokemon.ui.error.ErrorFragment;
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract;
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract;

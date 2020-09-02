@@ -4,34 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mdgd.pokemon.PokemonsApp;
-import com.mdgd.pokemon.models.AppComponent;
-import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.repo.PokemonsRepo;
-
-import javax.inject.Inject;
+import com.mdgd.pokemon.models.AppModule;
 
 public class PokemonsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final PokemonsContract.Router router;
+    private final AppModule appComponent;
 
-    @Inject
-    public PokemonsRepo repo;
-
-    @Inject
-    public Cache cache;
-
-    public PokemonsViewModelFactory(PokemonsContract.Router router) {
+    public PokemonsViewModelFactory(AppModule appComponent, PokemonsContract.Router router) {
+        this.appComponent = appComponent;
         this.router = router;
-        final AppComponent appComponent = PokemonsApp.getInstance().getAppComponent();
-        appComponent.injectPokemonsRepo(this);
-        appComponent.injectPokemonsCache(this);
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass == PokemonsViewModel.class) {
-            return (T) new PokemonsViewModel(router, repo, cache);
+            return (T) new PokemonsViewModel(router, appComponent.getPokemonsRepo(), appComponent.getCache());
         }
         return null;
     }

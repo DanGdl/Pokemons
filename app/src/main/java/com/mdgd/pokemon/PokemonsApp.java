@@ -2,14 +2,13 @@ package com.mdgd.pokemon;
 
 import android.app.Application;
 
-import com.mdgd.pokemon.models.AppComponent;
-import com.mdgd.pokemon.models.DaggerAppComponent;
+import com.mdgd.pokemon.models.AppModule;
 import com.mdgd.pokemon.models.DefaultAppModule;
 
 public class PokemonsApp extends Application {
 
     private static PokemonsApp instance;
-    private AppComponent appComponent;
+    private AppModule appComponent;
 
     public static PokemonsApp getInstance() {
         return instance;
@@ -19,10 +18,10 @@ public class PokemonsApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        appComponent = DaggerAppComponent.builder().appModule(new DefaultAppModule(this)).build();
+        appComponent = new DefaultAppModule(this);
     }
 
-    public AppComponent getAppComponent() {
+    public AppModule getAppComponent() {
         return appComponent;
     }
 }
