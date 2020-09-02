@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.splash;
 
-import com.mdgd.pokemon.ui.arch.ScreenState;
+import com.mdgd.mvi.ScreenState;
 
 public class SplashScreenState extends ScreenState<SplashContract.View> {
 

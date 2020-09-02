@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.splash;
 
-import com.mdgd.pokemon.ui.arch.FragmentContract;
+import com.mdgd.mvi.FragmentContract;
 
 public class SplashContract {
 

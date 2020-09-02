@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.arch;
+package com.mdgd.mvi;
 
 import androidx.annotation.CallSuper;
 import androidx.lifecycle.Lifecycle;

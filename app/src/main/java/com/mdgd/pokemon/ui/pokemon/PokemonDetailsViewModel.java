@@ -3,6 +3,7 @@ package com.mdgd.pokemon.ui.pokemon;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.mdgd.mvi.MviViewModel;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.cache.Cache;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
@@ -12,7 +13,6 @@ import com.mdgd.pokemon.models.repo.schemas.Form;
 import com.mdgd.pokemon.models.repo.schemas.GameIndex;
 import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.mdgd.pokemon.models.repo.schemas.Type;
-import com.mdgd.pokemon.ui.arch.MviViewModel;
 import com.mdgd.pokemon.ui.pokemon.infra.ImagePropertyData;
 import com.mdgd.pokemon.ui.pokemon.infra.LabelPropertyData;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;

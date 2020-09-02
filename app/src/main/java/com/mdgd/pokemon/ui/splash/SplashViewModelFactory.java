@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.models.AppComponent;
 import com.mdgd.pokemon.models.cache.Cache;
 
@@ -16,10 +15,9 @@ public class SplashViewModelFactory extends ViewModelProvider.NewInstanceFactory
     @Inject
     public Cache cache;
 
-    public SplashViewModelFactory(SplashContract.Router router) {
+    public SplashViewModelFactory(AppComponent appComponent, SplashContract.Router router) {
         super();
         this.router = router;
-        final AppComponent appComponent = PokemonsApp.getInstance().getAppComponent();
         appComponent.injectPokemonsCache(this);
     }
 

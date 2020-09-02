@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon.infra;
 
-import com.mdgd.pokemon.ui.arch.ScreenState;
+import com.mdgd.mvi.ScreenState;
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract;
 
 import java.util.List;

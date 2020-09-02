@@ -12,9 +12,10 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.mdgd.mvi.HostedFragment;
+import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.bg.UploadWorker;
-import com.mdgd.pokemon.ui.arch.HostedFragment;
 
 public class SplashFragment extends HostedFragment<SplashScreenState, SplashContract.ViewModel, SplashContract.Host> implements SplashContract.View, SplashContract.Router {
 
@@ -24,7 +25,7 @@ public class SplashFragment extends HostedFragment<SplashScreenState, SplashCont
 
     @Override
     protected SplashContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new SplashViewModelFactory(this)).get(SplashViewModel.class);
+        return new ViewModelProvider(this, new SplashViewModelFactory(PokemonsApp.getInstance().getAppComponent(), this)).get(SplashViewModel.class);
     }
 
     @Nullable

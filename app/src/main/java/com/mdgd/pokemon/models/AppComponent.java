@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {DefaultAppModule.class})
 public interface AppComponent {
     void injectPokemonsRepo(PokemonsViewModelFactory factory);
 

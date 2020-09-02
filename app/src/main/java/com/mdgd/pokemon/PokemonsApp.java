@@ -3,8 +3,8 @@ package com.mdgd.pokemon;
 import android.app.Application;
 
 import com.mdgd.pokemon.models.AppComponent;
-import com.mdgd.pokemon.models.AppModule;
 import com.mdgd.pokemon.models.DaggerAppComponent;
+import com.mdgd.pokemon.models.DefaultAppModule;
 
 public class PokemonsApp extends Application {
 
@@ -19,7 +19,7 @@ public class PokemonsApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+        appComponent = DaggerAppComponent.builder().appModule(new DefaultAppModule(this)).build();
     }
 
     public AppComponent getAppComponent() {

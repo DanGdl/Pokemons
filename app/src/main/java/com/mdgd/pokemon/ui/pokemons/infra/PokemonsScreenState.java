@@ -1,7 +1,7 @@
 package com.mdgd.pokemon.ui.pokemons.infra;
 
+import com.mdgd.mvi.ScreenState;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.ui.arch.ScreenState;
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract;
 
 import java.util.LinkedList;

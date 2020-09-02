@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.arch;
+package com.mdgd.mvi;
 
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.MutableLiveData;

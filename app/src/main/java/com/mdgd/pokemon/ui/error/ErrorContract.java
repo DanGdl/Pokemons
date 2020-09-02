@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.error;
 
-import com.mdgd.pokemon.ui.arch.FragmentContract;
+import com.mdgd.mvi.FragmentContract;
 
 public class ErrorContract {
 

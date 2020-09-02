@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mdgd.mvi.HostedFragment;
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.arch.HostedFragment;
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;

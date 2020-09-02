@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.error;
 
-import com.mdgd.pokemon.ui.arch.ScreenState;
+import com.mdgd.mvi.ScreenState;
 
 public class ErrorFragmentState extends ScreenState<ErrorContract.View> {
     @Override

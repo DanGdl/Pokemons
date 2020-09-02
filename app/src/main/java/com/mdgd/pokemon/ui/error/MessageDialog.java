@@ -1,8 +1,8 @@
 package com.mdgd.pokemon.ui.error;
 
-import com.mdgd.pokemon.ui.arch.FragmentContract;
-import com.mdgd.pokemon.ui.arch.HostedDialogFragment;
-import com.mdgd.pokemon.ui.arch.ScreenState;
+import com.mdgd.mvi.FragmentContract;
+import com.mdgd.mvi.HostedDialogFragment;
+import com.mdgd.mvi.ScreenState;
 
 public abstract class MessageDialog<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
         extends HostedDialogFragment<STATE, VIEW_MODEL, HOST> {

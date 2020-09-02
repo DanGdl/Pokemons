@@ -17,10 +17,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class AppModule {
+public class DefaultAppModule {
     private final Context app;
 
-    public AppModule(Context app) {
+    public DefaultAppModule(Context app) {
         this.app = app;
     }
 

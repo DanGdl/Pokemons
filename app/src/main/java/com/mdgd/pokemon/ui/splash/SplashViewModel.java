@@ -3,8 +3,8 @@ package com.mdgd.pokemon.ui.splash;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.mdgd.mvi.MviViewModel;
 import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.ui.arch.MviViewModel;
 
 import java.util.concurrent.TimeUnit;
 
