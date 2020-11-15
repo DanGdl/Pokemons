@@ -30,6 +30,7 @@ public class SplashViewModel extends MviViewModel<SplashScreenState> implements 
                             Observable.timer(1, TimeUnit.SECONDS)
                                     .observeOn(AndroidSchedulers.mainThread()),
                             cache.getProgressObservable()
+                                    .skip(1) // skip default value
                                     .observeOn(AndroidSchedulers.mainThread()),
                             (e, result) -> result)
                             .firstOrError()

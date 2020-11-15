@@ -12,9 +12,9 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 public class CacheImpl implements Cache {
-    private BehaviorSubject<Optional<PokemonFullDataSchema>> pokemon = BehaviorSubject.createDefault(Optional.absent());
-    private BehaviorSubject<List<PokemonFullDataSchema>> pokemons = BehaviorSubject.createDefault(new LinkedList<>());
-    private BehaviorSubject<Result<Long>> progress = BehaviorSubject.createDefault(new Result<>(0L));
+    private final BehaviorSubject<Optional<PokemonFullDataSchema>> pokemon = BehaviorSubject.createDefault(Optional.absent());
+    private final BehaviorSubject<List<PokemonFullDataSchema>> pokemons = BehaviorSubject.createDefault(new LinkedList<>());
+    private final BehaviorSubject<Result<Long>> progress = BehaviorSubject.createDefault(new Result<>(0L));
 
     @Override
     public void putSelected(PokemonFullDataSchema pokemon) {

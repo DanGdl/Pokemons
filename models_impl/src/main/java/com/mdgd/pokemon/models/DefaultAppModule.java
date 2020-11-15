@@ -13,9 +13,11 @@ import com.mdgd.pokemon.models.repo.network.PokemonsNetwork;
 
 public class DefaultAppModule implements AppModule {
     private final Context app;
+    private final Cache cache;
 
     public DefaultAppModule(Context app) {
         this.app = app;
+        cache = new CacheImpl();
     }
 
     public Context getApp() {
@@ -35,6 +37,6 @@ public class DefaultAppModule implements AppModule {
     }
 
     public Cache getCache() {
-        return new CacheImpl();
+        return cache;
     }
 }
