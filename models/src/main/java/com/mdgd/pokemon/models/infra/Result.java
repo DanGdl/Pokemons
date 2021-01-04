@@ -27,4 +27,8 @@ public class Result<T> {
     public Throwable getError() {
         return error.get();
     }
+
+    public boolean hasValue() {
+        return value.isPresent();
+    }
 }

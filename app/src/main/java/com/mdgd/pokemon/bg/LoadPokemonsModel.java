@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class LoadPokemonsModel implements LoadPokemonsContract.ServiceModel {
 
-    private CompositeDisposable disposables = new CompositeDisposable();
+    private final CompositeDisposable disposables = new CompositeDisposable();
     private final PokemonsRepo repo;
     private final Cache cache;
 
@@ -25,9 +25,9 @@ public class LoadPokemonsModel implements LoadPokemonsContract.ServiceModel {
         disposables.addAll(
                 // complete task, dispose all subscriptions
                 cache.getProgressObservable()
-                        .filter(event -> event.getValue() == -1)
+                        .filter(event -> event.hasValue() && event.getValue() == -1)
                         .delay(50, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-                        .subscribe(event -> disposables.clear()),
+                        .subscribe(event -> disposables.clear(), error -> cache.setLoadingProgress(new Result<>(error))),
 
                 repo.loadPokemons()
                         .doFinally(() -> cache.setLoadingProgress(new Result<>(PokemonsRepo.LOADING_COMPLETE)))
