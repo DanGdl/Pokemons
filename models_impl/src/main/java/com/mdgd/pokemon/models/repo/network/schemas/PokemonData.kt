@@ -1,22 +1,6 @@
-package com.mdgd.pokemon.models.repo.network.schemas;
+package com.mdgd.pokemon.models.repo.network.schemas
 
-public class PokemonData {
-    private String name;
-    private String url;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+class PokemonData {
+    var name: String? = null
+    var url: String? = null
 }

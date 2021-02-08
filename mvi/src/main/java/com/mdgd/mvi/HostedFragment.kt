@@ -1,85 +1,68 @@
-package com.mdgd.mvi;
+package com.mdgd.mvi
 
-import android.content.Context;
-import android.os.Bundle;
+import android.content.Context
+import android.os.Bundle
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
+import java.lang.reflect.ParameterizedType
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.navigation.fragment.NavHostFragment;
+abstract class HostedFragment<STATE : ScreenState<*>, VIEW_MODEL : FragmentContract.ViewModel<STATE>, HOST : FragmentContract.Host>
+    : NavHostFragment(), FragmentContract.View, Observer<STATE> {
 
-import java.lang.reflect.ParameterizedType;
+    protected var model: VIEW_MODEL? = null
+        private set
 
-public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
-        extends NavHostFragment
-        implements FragmentContract.View, Observer<STATE> {
+    protected var fragmentHost: HOST? = null
+        private set
 
-    private VIEW_MODEL model;
-    private HOST fragmentHost;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         // keep the call back
-        try {
-            fragmentHost = (HOST) context;
-        } catch (Throwable e) {
-            final String hostClassName = ((Class) ((ParameterizedType) getClass().
-                    getGenericSuperclass())
-                    .getActualTypeArguments()[1]).getCanonicalName();
-            throw new RuntimeException("Activity must implement " + hostClassName
-                    + " to attach " + this.getClass().getSimpleName(), e);
+        fragmentHost = try {
+            context as HOST
+        } catch (e: Throwable) {
+            val hostClassName = ((javaClass.genericSuperclass as ParameterizedType)
+                    .actualTypeArguments[1] as Class<*>).canonicalName
+            throw RuntimeException("Activity must implement " + hostClassName
+                    + " to attach " + this.javaClass.simpleName, e)
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setModel(createModel());
-        if (getModel() != null) {
-            getLifecycle().addObserver(getModel());
-            getModel().getStateObservable().observe(this, this);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setModel(createModel())
+        if (model != null) {
+            lifecycle.addObserver(model!!)
+            model!!.getStateObservable().observe(this, this)
         }
     }
 
-    protected abstract VIEW_MODEL createModel();
+    protected abstract fun createModel(): VIEW_MODEL
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
+    override fun onDetach() {
+        super.onDetach()
         // release the call back
-        fragmentHost = null;
+        fragmentHost = null
     }
 
-    @Override
-    public void onDestroy() {
+    override fun onDestroy() {
         // order matters
-        if (getModel() != null) {
-            getModel().getStateObservable().removeObservers(this);
-            getLifecycle().removeObserver(getModel());
+        if (model != null) {
+            model!!.getStateObservable().removeObservers(this)
+            lifecycle.removeObserver(model!!)
         }
-        super.onDestroy();
+        super.onDestroy()
     }
 
-
-    @Override
-    public void onChanged(STATE screenState) {
-        screenState.visit(this);
+    override fun onChanged(screenState: STATE) {
+        screenState.visit(this as Nothing)
     }
 
-    protected boolean hasHost() {
-        return fragmentHost != null;
+    protected fun hasHost(): Boolean {
+        return fragmentHost != null
     }
 
-    protected HOST getFragmentHost() {
-        return fragmentHost;
-    }
-
-    protected VIEW_MODEL getModel() {
-        return model;
-    }
-
-    protected void setModel(VIEW_MODEL model) {
-        this.model = model;
+    protected fun setModel(model: VIEW_MODEL) {
+        this.model = model
     }
 }

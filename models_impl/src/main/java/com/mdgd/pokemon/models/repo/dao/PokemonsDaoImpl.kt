@@ -1,48 +1,40 @@
-package com.mdgd.pokemon.models.repo.dao;
+package com.mdgd.pokemon.models.repo.dao
 
-import android.content.Context;
+import android.content.Context
+import androidx.room.Room
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
+import java.util.*
 
-import androidx.room.Room;
+class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
+    private val pokemonsRoomDao: PokemonsRoomDao? = Room.databaseBuilder(ctx, AppDatabase::class.java, "PokemonsAppDB").build().pokemonsDao()
 
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
-
-public class PokemonsDaoImpl implements PokemonsDao {
-    private final PokemonsRoomDao pokemonsRoomDao;
-
-    public PokemonsDaoImpl(Context ctx) {
-        pokemonsRoomDao = Room.databaseBuilder(ctx, AppDatabase.class, "PokemonsAppDB").build().pokemonsDao();
+    override fun save(list: List<PokemonDetails>): Completable {
+        return Completable.fromAction { pokemonsRoomDao!!.save(list) }
     }
 
-    @Override
-    public Completable save(List<PokemonDetails> list) {
-        return Completable.fromAction(() -> pokemonsRoomDao.save(list));
-    }
-
-    @Override
-    public Single<Result<List<PokemonFullDataSchema>>> getPage(int page, int pageSize) {
-        final int offset = page * pageSize;
-        return Single.fromCallable(() -> {
-            final int rows = pokemonsRoomDao.countRows();
-            if (rows == 0) {
-                return new Result<>(new ArrayList<>(0));
-            } else if (pokemonsRoomDao.countRows() <= offset) {
-                return new Result<>(new Exception("No more pokemons in DAO"));
-            } else {
-                return new Result<>(pokemonsRoomDao.getPage(offset, pageSize));
+    override fun getPage(page: Int, pageSize: Int): Single<Result<List<PokemonFullDataSchema>>> {
+        val offset = page * pageSize
+        return Single.fromCallable {
+            val rows = pokemonsRoomDao!!.countRows()
+            when {
+                rows == 0 -> {
+                    return@fromCallable Result<List<PokemonFullDataSchema>>(ArrayList(0))
+                }
+                pokemonsRoomDao.countRows() <= offset -> {
+                    return@fromCallable Result<List<PokemonFullDataSchema>>(Exception("No more pokemons in DAO"))
+                }
+                else -> {
+                    return@fromCallable Result(pokemonsRoomDao.getPage(offset, pageSize))
+                }
             }
-        });
+        }
     }
 
-    @Override
-    public long getCount() {
-        return pokemonsRoomDao.countRows();
+    override fun getCount(): Long {
+        return pokemonsRoomDao!!.countRows().toLong()
     }
 }

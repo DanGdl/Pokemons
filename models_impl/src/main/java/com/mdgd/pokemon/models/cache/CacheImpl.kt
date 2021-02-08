@@ -1,69 +1,56 @@
-package com.mdgd.pokemon.models.cache;
+package com.mdgd.pokemon.models.cache
 
-import com.google.common.base.Optional;
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.google.common.base.Optional
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+class CacheImpl : Cache {
+    private val pokemon = BehaviorSubject.createDefault(Optional.absent<PokemonFullDataSchema>())
+    private val pokemons = BehaviorSubject.createDefault<List<PokemonFullDataSchema>>(LinkedList())
+    private val progress = BehaviorSubject.createDefault(Result(0L))
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-
-public class CacheImpl implements Cache {
-    private final BehaviorSubject<Optional<PokemonFullDataSchema>> pokemon = BehaviorSubject.createDefault(Optional.absent());
-    private final BehaviorSubject<List<PokemonFullDataSchema>> pokemons = BehaviorSubject.createDefault(new LinkedList<>());
-    private final BehaviorSubject<Result<Long>> progress = BehaviorSubject.createDefault(new Result<>(0L));
-
-    @Override
-    public void putSelected(PokemonFullDataSchema pokemon) {
-        this.pokemon.onNext(Optional.of(pokemon));
+    override fun putSelected(pokemon: PokemonFullDataSchema?) {
+        this.pokemon.onNext(Optional.of(pokemon))
     }
 
-    @Override
-    public Optional<PokemonFullDataSchema> getSelectedPokemon() {
-        return pokemon.getValue();
+    override fun getSelectedPokemon(): Optional<PokemonFullDataSchema> {
+        return pokemon.value
     }
 
-    @Override
-    public void addPokemons(List<PokemonFullDataSchema> list) {
-        final List<PokemonFullDataSchema> old = pokemons.getValue();
-        final List<PokemonFullDataSchema> pokemonDetails = new ArrayList<>(old.size() + list.size());
-        pokemonDetails.addAll(old);
-        pokemonDetails.addAll(list);
-        pokemons.onNext(pokemonDetails);
+    override fun addPokemons(list: List<PokemonFullDataSchema>) {
+        val old = pokemons.value
+        val pokemonDetails: MutableList<PokemonFullDataSchema> = ArrayList(old.size + list.size)
+        pokemonDetails.addAll(old)
+        pokemonDetails.addAll(list)
+        pokemons.onNext(pokemonDetails)
     }
 
-    @Override
-    public List<PokemonFullDataSchema> getPokemons() {
-        return new ArrayList<>(pokemons.getValue());
+    override fun getPokemons(): List<PokemonFullDataSchema> {
+        return ArrayList(pokemons.value)
     }
 
-    @Override
-    public void setPokemons(List<PokemonFullDataSchema> list) {
-        pokemons.onNext(new ArrayList<>(list));
+    fun setPokemons(list: List<PokemonFullDataSchema>?) {
+        pokemons.onNext(ArrayList(list))
     }
 
-    @Override
-    public Observable<Optional<PokemonFullDataSchema>> getSelectedPokemonObservable() {
-        return pokemon.hide();
+    override fun getSelectedPokemonObservable(): Observable<Optional<PokemonFullDataSchema>> {
+        return pokemon.hide()
     }
 
-    @Override
-    public Observable<List<PokemonFullDataSchema>> getPokemonsObservable() {
+    override fun getPokemonsObservable(): Observable<List<PokemonFullDataSchema>> {
         return pokemons
-                .map(list -> (List<PokemonFullDataSchema>) new ArrayList<>(list))
-                .hide();
+                .map { list: List<PokemonFullDataSchema> -> ArrayList(list) as List<PokemonFullDataSchema> }
+                .hide()
     }
 
-    @Override
-    public void putLoadingProgress(Result<Long> value) {
-        progress.onNext(value);
+    override fun putLoadingProgress(value: Result<Long>) {
+        progress.onNext(value)
     }
 
-    @Override
-    public Observable<Result<Long>> getProgressObservable() {
-        return progress;
+    override fun getProgressObservable(): Observable<Result<Long>> {
+        return progress
     }
 }

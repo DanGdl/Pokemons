@@ -1,229 +1,194 @@
-package com.mdgd.pokemon.models.repo.dao;
+package com.mdgd.pokemon.models.repo.dao
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Transaction;
-
-import com.mdgd.pokemon.models.repo.dao.schemas.MoveFullSchema;
-import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
-import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
-import com.mdgd.pokemon.models.repo.schemas.Ability;
-import com.mdgd.pokemon.models.repo.schemas.Form;
-import com.mdgd.pokemon.models.repo.schemas.GameIndex;
-import com.mdgd.pokemon.models.repo.schemas.Move;
-import com.mdgd.pokemon.models.repo.schemas.Stat;
-import com.mdgd.pokemon.models.repo.schemas.Type;
-import com.mdgd.pokemon.models.repo.schemas.VersionGroupDetail;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import androidx.room.*
+import com.mdgd.pokemon.models.repo.dao.schemas.MoveFullSchema
+import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
+import com.mdgd.pokemon.models.repo.schemas.*
+import java.util.*
 
 @Dao
-public abstract class PokemonsRoomDao {
+abstract class PokemonsRoomDao {
 
     @Transaction
-    void save(List<PokemonDetails> pokemons) {
-        final List<PokemonSchema> schemas = new ArrayList<>();
-        final List<Ability> abilities = new ArrayList<>();
-        final List<GameIndex> gameIndexes = new ArrayList<>();
-        final List<Form> forms = new ArrayList<>();
-        final List<MoveSchema> moveSchemas = new ArrayList<>();
-        final List<Move> moves = new ArrayList<>();
-        final List<Type> types = new ArrayList<>();
-        final List<Stat> stats = new ArrayList<>();
-
-        for (PokemonDetails pd : pokemons) {
-            PokemonSchema schema = new PokemonSchema();
-            schema.setBaseExperience(pd.getBaseExperience());
-            schema.setHeight(pd.getHeight());
-            schema.setId(pd.getId());
-            schema.setIsDefault(pd.getIsDefault());
-            schema.setLocationAreaEncounters(pd.getLocationAreaEncounters());
-            schema.setName(pd.getName());
-            schema.setOrder(pd.getOrder());
-            schema.setSpecies(pd.getSpecies());
-            schema.setSprites(pd.getSprites());
-            schema.setWeight(pd.getWeight());
-
-            schemas.add(schema);
-
-            for (Ability a : pd.getAbilities()) {
-                a.setPokemonId(schema.getId());
+    open fun save(pokemons: List<PokemonDetails>) {
+        val schemas: MutableList<PokemonSchema> = ArrayList()
+        val abilities: MutableList<Ability> = ArrayList()
+        val gameIndexes: MutableList<GameIndex> = ArrayList()
+        val forms: MutableList<Form> = ArrayList()
+        val moveSchemas: MutableList<MoveSchema> = ArrayList()
+        val moves: MutableList<Move> = ArrayList()
+        val types: MutableList<Type> = ArrayList()
+        val stats: MutableList<Stat> = ArrayList()
+        for (pd in pokemons) {
+            val schema = PokemonSchema()
+            schema.baseExperience = pd.baseExperience
+            schema.height = pd.height
+            schema.id = pd.id!!.toLong()
+            schema.isDefault = pd.isDefault
+            schema.locationAreaEncounters = pd.locationAreaEncounters
+            schema.name = pd.name
+            schema.order = pd.order
+            schema.species = pd.species
+            schema.sprites = pd.sprites
+            schema.weight = pd.weight
+            schemas.add(schema)
+            for (a in pd.abilities) {
+                a.setPokemonId(schema.id)
             }
-            abilities.addAll(pd.getAbilities());
-
-            for (GameIndex a : pd.getGameIndices()) {
-                a.setPokemonId(schema.getId());
+            abilities.addAll(pd.abilities)
+            for (a in pd.gameIndices) {
+                a.setPokemonId(schema.id)
             }
-            gameIndexes.addAll(pd.getGameIndices());
-
-            for (Form a : pd.getForms()) {
-                a.setPokemonId(schema.getId());
+            gameIndexes.addAll(pd.gameIndices)
+            for (a in pd.forms) {
+                a.setPokemonId(schema.id)
             }
-            forms.addAll(pd.getForms());
-
-            for (Move a : pd.getMoves()) {
-                final MoveSchema moveSchema = new MoveSchema();
-                moveSchema.setMove(a.getMove());
-                moveSchema.setPokemonId(schema.getId());
-                moveSchemas.add(moveSchema);
+            forms.addAll(pd.forms)
+            for (a in pd.moves) {
+                val moveSchema = MoveSchema()
+                moveSchema.move = a.move
+                moveSchema.pokemonId = schema.id
+                moveSchemas.add(moveSchema)
             }
-            moves.addAll(pd.getMoves());
-
-            for (Stat a : pd.getStats()) {
-                a.setPokemonId(schema.getId());
+            moves.addAll(pd.moves)
+            for (a in pd.stats) {
+                a.setPokemonId(schema.id)
             }
-            stats.addAll(pd.getStats());
-
-            for (Type a : pd.getTypes()) {
-                a.setPokemonId(schema.getId());
+            stats.addAll(pd.stats)
+            for (a in pd.types!!) {
+                a.setPokemonId(schema.id)
             }
-            types.addAll(pd.getTypes());
+            types.addAll(pd.types!!)
         }
-
-        savePokemons(schemas);
-        saveAbilities(abilities);
-        saveGameIndexes(gameIndexes);
-        saveForms(forms);
-        final List<Long> ids = saveMoves(moveSchemas);
-        final List<VersionGroupDetail> details = new ArrayList<>();
-        for (int i = 0; i < ids.size(); i++) {
-            final Move move = moves.get(i);
-            for (VersionGroupDetail a : move.getVersionGroupDetails()) {
-                a.setMoveId(ids.get(i));
+        savePokemons(schemas)
+        saveAbilities(abilities)
+        saveGameIndexes(gameIndexes)
+        saveForms(forms)
+        val ids = saveMoves(moveSchemas)
+        val details: MutableList<VersionGroupDetail> = ArrayList()
+        for (i in ids.indices) {
+            val move = moves[i]
+            for (a in move.versionGroupDetails) {
+                a.setMoveId(ids[i])
             }
-            details.addAll(move.getVersionGroupDetails());
+            details.addAll(move.versionGroupDetails)
         }
-        saveVersionGroupDetails(details);
-        saveTypes(types);
-        saveStats(stats);
+        saveVersionGroupDetails(details)
+        saveTypes(types)
+        saveStats(stats)
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void saveAbilities(List<Ability> list);
+    protected abstract fun saveAbilities(list: List<Ability>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void saveGameIndexes(List<GameIndex> list);
+    protected abstract fun saveGameIndexes(list: List<GameIndex>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void saveForms(List<Form> list);
+    protected abstract fun saveForms(list: List<Form>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract List<Long> saveMoves(List<MoveSchema> list);
+    protected abstract fun saveMoves(list: List<MoveSchema>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void saveTypes(List<Type> list);
+    protected abstract fun saveTypes(list: List<Type>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void saveStats(List<Stat> list);
+    protected abstract fun saveStats(list: List<Stat>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void saveVersionGroupDetails(List<VersionGroupDetail> details);
+    protected abstract fun saveVersionGroupDetails(details: List<VersionGroupDetail>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract void savePokemons(List<PokemonSchema> list);
+    protected abstract fun savePokemons(list: List<PokemonSchema>)
 
     @Query("SELECT COUNT(*) FROM pokemons")
-    public abstract int countRows();
+    abstract fun countRows(): Int
 
-
-    public List<PokemonFullDataSchema> getPage(int offset, int pageSize) {
-        final Map<Long, PokemonFullDataSchema> pokemonsMap = new LinkedHashMap<>();
-        final List<PokemonSchema> pokemons = getPokemonsForPage(offset, pageSize);
-
-        for (PokemonSchema s : pokemons) {
-            final PokemonFullDataSchema fullSchema = new PokemonFullDataSchema();
-            fullSchema.setPokemonSchema(s);
-            pokemonsMap.put(s.getId(), fullSchema);
+    fun getPage(offset: Int, pageSize: Int): List<PokemonFullDataSchema> {
+        val pokemonsMap: MutableMap<Long, PokemonFullDataSchema> = LinkedHashMap()
+        val pokemons = getPokemonsForPage(offset, pageSize)
+        for (s in pokemons) {
+            val fullSchema = PokemonFullDataSchema()
+            fullSchema.pokemonSchema = s
+            pokemonsMap[s.id] = fullSchema
         }
-
-        final List<Ability> abilities = getPokemonAbilities(pokemonsMap.keySet());
-        final List<Form> forms = getPokemonForms(pokemonsMap.keySet());
-        final List<GameIndex> gameIndexes = getPokemonGameIndexes(pokemonsMap.keySet());
-        final List<Type> type = getPokemonTypes(pokemonsMap.keySet());
-        final List<Stat> stats = getPokemonStats(pokemonsMap.keySet());
-
-        final Map<Long, MoveFullSchema> movesMap = new HashMap<>();
-        final List<MoveSchema> moves = getPokemonMoves(pokemonsMap.keySet());
-        for (MoveSchema s : moves) {
-            final MoveFullSchema fullSchema = new MoveFullSchema();
-            fullSchema.setMove(s);
-            movesMap.put(s.getId(), fullSchema);
+        val abilities = getPokemonAbilities(pokemonsMap.keys)
+        val forms = getPokemonForms(pokemonsMap.keys)
+        val gameIndexes = getPokemonGameIndexes(pokemonsMap.keys)
+        val type = getPokemonTypes(pokemonsMap.keys)
+        val stats = getPokemonStats(pokemonsMap.keys)
+        val movesMap: MutableMap<Long, MoveFullSchema> = HashMap()
+        val moves = getPokemonMoves(pokemonsMap.keys)
+        for (s in moves) {
+            val fullSchema = MoveFullSchema()
+            fullSchema.move = s
+            movesMap[s.id] = fullSchema
         }
-        final List<VersionGroupDetail> versionGroupDetails = new ArrayList<>();
-        final List<Long> moveIds = new ArrayList<>(movesMap.keySet());
-        final int page = 250;
-        int startIdx = 0;
-        int endIdx = page;
+        val versionGroupDetails: MutableList<VersionGroupDetail> = ArrayList()
+        val moveIds: List<Long> = ArrayList(movesMap.keys)
+        val page = 250
+        var startIdx = 0
+        var endIdx = page
         while (true) {
-            endIdx = Math.min(endIdx, moveIds.size());
-            versionGroupDetails.addAll(getVersionGroupDetails(moveIds.subList(startIdx, endIdx)));
-            startIdx = endIdx;
-            endIdx = Math.min(startIdx + page, moveIds.size());
-            if (startIdx >= moveIds.size()) {
-                break;
+            endIdx = Math.min(endIdx, moveIds.size)
+            versionGroupDetails.addAll(getVersionGroupDetails(moveIds.subList(startIdx, endIdx))!!)
+            startIdx = endIdx
+            endIdx = Math.min(startIdx + page, moveIds.size)
+            if (startIdx >= moveIds.size) {
+                break
             }
         }
-
-        for (VersionGroupDetail a : versionGroupDetails) {
-            movesMap.get(a.getMoveId()).getVersionGroupDetails().add(a);
+        for (a in versionGroupDetails) {
+            movesMap[a.getMoveId()]?.versionGroupDetails?.add(a)
         }
-
-
-        for (Ability a : abilities) {
-            pokemonsMap.get(a.getPokemonId()).getAbilities().add(a);
+        for (a in abilities) {
+            pokemonsMap[a.getPokemonId()]?.abilities?.add(a)
         }
-        for (Form a : forms) {
-            pokemonsMap.get(a.getPokemonId()).getForms().add(a);
+        for (a in forms) {
+            pokemonsMap[a.getPokemonId()]?.forms?.add(a)
         }
-        for (GameIndex a : gameIndexes) {
-            pokemonsMap.get(a.getPokemonId()).getGameIndices().add(a);
+        for (a in gameIndexes) {
+            pokemonsMap[a.getPokemonId()]?.gameIndices?.add(a)
         }
-        for (Type a : type) {
-            pokemonsMap.get(a.getPokemonId()).getTypes().add(a);
+        for (a in type) {
+            pokemonsMap[a.getPokemonId()]?.types?.add(a)
         }
-        for (Stat a : stats) {
-            pokemonsMap.get(a.getPokemonId()).getStats().add(a);
+        for (a in stats) {
+            pokemonsMap[a.getPokemonId()]?.stats?.add(a)
         }
-        for (MoveFullSchema a : movesMap.values()) {
-            pokemonsMap.get(a.getMove().getPokemonId()).getMoves().add(a);
+        for (a in movesMap.values) {
+            pokemonsMap[a.move?.pokemonId]?.moves?.add(a)
         }
-
-        final List<PokemonFullDataSchema> schemas = new ArrayList<>(pokemonsMap.values());
-        Collections.shuffle(schemas);
-        return schemas;
+        val schemas: List<PokemonFullDataSchema> = ArrayList(pokemonsMap.values)
+        Collections.shuffle(schemas)
+        return schemas
     }
 
     @Query("SELECT * FROM versiongroupdetails WHERE moveId IN (:ids)")
-    protected abstract List<VersionGroupDetail> getVersionGroupDetails(Collection<Long> ids);
+    protected abstract fun getVersionGroupDetails(ids: Collection<Long>?): List<VersionGroupDetail>
 
     @Query("SELECT * FROM moves WHERE pokemonId IN (:ids)")
-    protected abstract List<MoveSchema> getPokemonMoves(Collection<Long> ids);
+    protected abstract fun getPokemonMoves(ids: Collection<Long>?): List<MoveSchema>
 
     @Query("SELECT * FROM stats WHERE pokemonId IN (:ids)")
-    protected abstract List<Stat> getPokemonStats(Collection<Long> ids);
+    protected abstract fun getPokemonStats(ids: Collection<Long>?): List<Stat>
 
     @Query("SELECT * FROM types WHERE pokemonId IN (:ids)")
-    protected abstract List<Type> getPokemonTypes(Collection<Long> ids);
+    protected abstract fun getPokemonTypes(ids: Collection<Long>?): List<Type>
 
     @Query("SELECT * FROM game_indexes WHERE pokemonId IN (:ids)")
-    protected abstract List<GameIndex> getPokemonGameIndexes(Collection<Long> ids);
+    protected abstract fun getPokemonGameIndexes(ids: Collection<Long>?): List<GameIndex>
 
     @Query("SELECT * FROM forms WHERE pokemonId IN (:ids)")
-    protected abstract List<Form> getPokemonForms(Collection<Long> ids);
+    protected abstract fun getPokemonForms(ids: Collection<Long>?): List<Form>
 
     @Query("SELECT * FROM abilities WHERE pokemonId IN (:ids)")
-    protected abstract List<Ability> getPokemonAbilities(Collection<Long> ids);
+    protected abstract fun getPokemonAbilities(ids: Collection<Long>?): List<Ability>
 
     @Query("SELECT * FROM pokemons LIMIT :pageSize OFFSET :offset")
-    protected abstract List<PokemonSchema> getPokemonsForPage(int offset, int pageSize);
+    protected abstract fun getPokemonsForPage(offset: Int, pageSize: Int): List<PokemonSchema>
 }

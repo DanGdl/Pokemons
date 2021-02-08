@@ -1,42 +1,39 @@
-package com.mdgd.pokemon.models;
+package com.mdgd.pokemon.models
 
-import android.content.Context;
+import android.content.Context
+import com.mdgd.pokemon.models.cache.Cache
+import com.mdgd.pokemon.models.cache.CacheImpl
+import com.mdgd.pokemon.models.repo.PokemonsRepo
+import com.mdgd.pokemon.models.repo.PokemonsRepository
+import com.mdgd.pokemon.models.repo.dao.PokemonsDao
+import com.mdgd.pokemon.models.repo.dao.PokemonsDaoImpl
+import com.mdgd.pokemon.models.repo.network.Network
+import com.mdgd.pokemon.models.repo.network.PokemonsNetwork
 
-import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.cache.CacheImpl;
-import com.mdgd.pokemon.models.repo.PokemonsRepo;
-import com.mdgd.pokemon.models.repo.PokemonsRepository;
-import com.mdgd.pokemon.models.repo.dao.PokemonsDao;
-import com.mdgd.pokemon.models.repo.dao.PokemonsDaoImpl;
-import com.mdgd.pokemon.models.repo.network.Network;
-import com.mdgd.pokemon.models.repo.network.PokemonsNetwork;
+class DefaultAppModule(val app: Context) : AppModule {
+    private val cache: Cache
 
-public class DefaultAppModule implements AppModule {
-    private final Context app;
-    private final Cache cache;
-
-    public DefaultAppModule(Context app) {
-        this.app = app;
-        cache = new CacheImpl();
+    init {
+        cache = CacheImpl()
     }
 
-    public Context getApp() {
-        return app;
+    override fun getAppContext(): Context {
+        return app
     }
 
-    public Network getPokemonsNetwork() {
-        return new PokemonsNetwork();
+    override fun getPokemonsNetwork(): Network {
+        return PokemonsNetwork()
     }
 
-    public PokemonsDao getPokemonsDao() {
-        return new PokemonsDaoImpl(app);
+    override fun getPokemonsDao(): PokemonsDao {
+        return PokemonsDaoImpl(app)
     }
 
-    public PokemonsRepo getPokemonsRepo() {
-        return new PokemonsRepository(getPokemonsDao(), getPokemonsNetwork());
+    override fun getPokemonsRepo(): PokemonsRepo {
+        return PokemonsRepository(getPokemonsDao(), getPokemonsNetwork())
     }
 
-    public Cache getCache() {
-        return cache;
+    override fun getCache(): Cache {
+        return cache
     }
 }

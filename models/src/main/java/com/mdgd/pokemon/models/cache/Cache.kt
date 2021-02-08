@@ -14,6 +14,6 @@ interface Cache {
     fun getPokemons(): List<PokemonFullDataSchema>
     fun getPokemonsObservable(): Observable<List<PokemonFullDataSchema>>
 
-    fun putLoadingProgress(value: Result<Long?>?)
+    fun putLoadingProgress(value: Result<Long>)
     fun getProgressObservable(): Observable<Result<Long>>
 }

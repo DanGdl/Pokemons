@@ -1,31 +1,14 @@
-package com.mdgd.pokemon.models.repo.schemas;
+package com.mdgd.pokemon.models.repo.schemas
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-public class Stat_ {
-
+class Stat_ {
     @SerializedName("name")
     @Expose
-    private String name;
+    var name: String? = null
+
     @SerializedName("url")
     @Expose
-    private String url;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
+    var url: String? = null
 }

@@ -1,18 +1,16 @@
-package com.mdgd.pokemon.models.repo.network;
+package com.mdgd.pokemon.models.repo.network
 
-import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
-import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList;
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList
+import io.reactivex.rxjava3.core.Single
+import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.http.Url
 
-import io.reactivex.rxjava3.core.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-import retrofit2.http.Url;
-
-public interface PokemonsRetrofitApi {
-
+interface PokemonsRetrofitApi {
     @GET("pokemon")
-    Single<PokemonsList> loadPage(@Query("limit") int pageSize, @Query("offset") int offset);
+    fun loadPage(@Query("limit") pageSize: Int, @Query("offset") offset: Int): Single<PokemonsList>
 
     @GET
-    Single<PokemonDetails> getPokemonsDetails(@Url String url);
+    fun getPokemonsDetails(@Url url: String?): Single<PokemonDetails>
 }
