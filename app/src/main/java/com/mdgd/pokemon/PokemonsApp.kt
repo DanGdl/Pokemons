@@ -1,27 +1,22 @@
-package com.mdgd.pokemon;
+package com.mdgd.pokemon
 
-import android.app.Application;
+import androidx.multidex.MultiDexApplication
+import com.mdgd.pokemon.models.AppModule
+import com.mdgd.pokemon.models_impl.DefaultAppModule
 
-import com.mdgd.pokemon.models.AppModule;
-import com.mdgd.pokemon.models.DefaultAppModule;
+class PokemonsApp : MultiDexApplication() {
 
-public class PokemonsApp extends Application {
+    var appComponent: AppModule? = null
+        private set
 
-    private static PokemonsApp instance;
-    private AppModule appComponent;
-
-    public static PokemonsApp getInstance() {
-        return instance;
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+        appComponent = DefaultAppModule(this)
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        instance = this;
-        appComponent = new DefaultAppModule(this);
-    }
-
-    public AppModule getAppComponent() {
-        return appComponent;
+    companion object {
+        var instance: PokemonsApp? = null
+            private set
     }
 }

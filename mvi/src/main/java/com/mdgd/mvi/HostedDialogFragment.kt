@@ -54,13 +54,13 @@ abstract class HostedDialogFragment<STATE : ScreenState<*>, VIEW_MODEL : Fragmen
         super.onDestroy()
     }
 
-    protected abstract fun createModel(): VIEW_MODEL
+    protected abstract fun createModel(): VIEW_MODEL?
 
     protected fun hasHost(): Boolean {
         return fragmentHost != null
     }
 
-    protected fun setModel(model: VIEW_MODEL) {
+    protected fun setModel(model: VIEW_MODEL?) {
         this.model = model
     }
 }

@@ -11,6 +11,7 @@ interface Cache {
     fun getSelectedPokemonObservable(): Observable<Optional<PokemonFullDataSchema>>
 
     fun addPokemons(list: List<PokemonFullDataSchema>)
+    fun setPokemons(list: List<PokemonFullDataSchema>)
     fun getPokemons(): List<PokemonFullDataSchema>
     fun getPokemonsObservable(): Observable<List<PokemonFullDataSchema>>
 

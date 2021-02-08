@@ -1,13 +1,9 @@
-package com.mdgd.pokemon.bg;
+package com.mdgd.pokemon.bg
 
-public class LoadPokemonsContract {
-
-    public interface ServiceModel {
-
-        void load();
+class LoadPokemonsContract {
+    interface ServiceModel {
+        fun load()
     }
 
-    public interface LoadPokemonContext {
-
-    }
+    interface LoadPokemonContext
 }

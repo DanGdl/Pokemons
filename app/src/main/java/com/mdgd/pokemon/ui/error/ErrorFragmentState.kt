@@ -1,10 +1,7 @@
-package com.mdgd.pokemon.ui.error;
+package com.mdgd.pokemon.ui.error
 
-import com.mdgd.mvi.ScreenState;
+import com.mdgd.mvi.ScreenState
 
-public class ErrorFragmentState extends ScreenState<ErrorContract.View> {
-    @Override
-    public void visit(ErrorContract.View screen) {
-
-    }
+class ErrorFragmentState : ScreenState<ErrorContract.View>() {
+    override fun visit(screen: ErrorContract.View) {}
 }

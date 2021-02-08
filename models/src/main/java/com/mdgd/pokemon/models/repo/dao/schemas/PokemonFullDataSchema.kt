@@ -11,32 +11,32 @@ class PokemonFullDataSchema {
     @Expose
     @SerializedName("abilities")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Ability::class)
-    var abilities: List<Ability> = ArrayList()
+    var abilities: MutableList<Ability> = ArrayList()
 
     @Expose
     @SerializedName("forms")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Form::class)
-    var forms: List<Form> = ArrayList()
+    var forms: MutableList<Form> = ArrayList()
 
     @Expose
     @SerializedName("game_indices")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = GameIndex::class)
-    var gameIndices: List<GameIndex> = ArrayList()
+    var gameIndices: MutableList<GameIndex> = ArrayList()
 
     @Expose
     @SerializedName("moves")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Move::class)
-    var moves: List<MoveFullSchema> = ArrayList()
+    var moves: MutableList<MoveFullSchema> = ArrayList()
 
     @Expose
     @SerializedName("stats")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Stat::class)
-    var stats: List<Stat> = ArrayList()
+    var stats: MutableList<Stat> = ArrayList()
 
     @Expose
     @SerializedName("types")
     @Relation(parentColumn = "id", entityColumn = "pokemonId", entity = Type::class)
-    var types: List<Type> = ArrayList()
+    var types: MutableList<Type> = ArrayList()
 
     @Embedded
     var pokemonSchema: PokemonSchema? = null

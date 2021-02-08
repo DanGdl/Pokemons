@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -33,7 +34,7 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenSt
     }
 
     @Override
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    protected void onAny(LifecycleOwner owner, @NonNull Lifecycle.Event event) {
         super.onAny(owner, event);
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(cache.getSelectedPokemonObservable()

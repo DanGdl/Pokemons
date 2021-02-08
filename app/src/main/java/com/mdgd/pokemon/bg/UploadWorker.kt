@@ -1,27 +1,16 @@
-package com.mdgd.pokemon.bg;
+package com.mdgd.pokemon.bg
 
+import android.content.Context
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import com.mdgd.pokemon.PokemonsApp.Companion.instance
+import com.mdgd.pokemon.bg.LoadPokemonsContract.ServiceModel
 
-import android.content.Context;
+class UploadWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+    private val model: ServiceModel = PokemonsLoadingModelFactory(instance!!.appComponent!!).create()
 
-import androidx.annotation.NonNull;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-
-import com.mdgd.pokemon.PokemonsApp;
-
-public class UploadWorker extends Worker {
-
-    private final LoadPokemonsContract.ServiceModel model;
-
-    public UploadWorker(@NonNull Context context, @NonNull WorkerParameters params) {
-        super(context, params);
-        model = new PokemonsLoadingModelFactory(PokemonsApp.getInstance().getAppComponent()).create();
-    }
-
-    @Override
-    public Result doWork() {
-        model.load();
-        return Result.success();
+    override fun doWork(): Result {
+        model.load()
+        return Result.success()
     }
 }
-

@@ -52,7 +52,7 @@ public class MainActivity extends HostActivity implements SplashContract.Host, P
             error.printStackTrace();
         }
         if (getSupportFragmentManager().findFragmentByTag("error") == null) {
-            final ErrorFragment errorFragment = ErrorFragment.newInstance(R.string.dialog_error_title, R.string.dialog_error_message);
+            final ErrorFragment errorFragment = ErrorFragment.Companion.newInstance(R.string.dialog_error_title, R.string.dialog_error_message);
             errorFragment.setError(error);
             errorFragment.show(getSupportFragmentManager(), "error");
         }

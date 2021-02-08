@@ -11,6 +11,7 @@ android {
         targetSdkVersion project.target
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,6 +33,8 @@ dependencies {
     implementation project(':models')
     implementation project(':models_impl')
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "androidx.multidex:multidex:2.0.1"
+
     implementation "androidx.appcompat:appcompat:$compat"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'

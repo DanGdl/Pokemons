@@ -12,5 +12,5 @@ class MoveFullSchema {
 
     @Expose
     @SerializedName("version_group_details")
-    var versionGroupDetails: List<VersionGroupDetail> = ArrayList()
+    var versionGroupDetails: MutableList<VersionGroupDetail> = ArrayList()
 }

@@ -1,37 +1,26 @@
-package com.mdgd.pokemon.bg;
+package com.mdgd.pokemon.bg
 
-import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.PokemonsRepo;
+import com.mdgd.pokemon.bg.LoadPokemonsContract.ServiceModel
+import com.mdgd.pokemon.models.cache.Cache
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.PokemonsRepo
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
-import java.util.concurrent.TimeUnit;
+class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache) : ServiceModel {
+    private val disposables = CompositeDisposable()
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
-public class LoadPokemonsModel implements LoadPokemonsContract.ServiceModel {
-
-    private CompositeDisposable disposables = new CompositeDisposable();
-    private final PokemonsRepo repo;
-    private final Cache cache;
-
-    public LoadPokemonsModel(PokemonsRepo repo, Cache cache) {
-        this.repo = repo;
-        this.cache = cache;
-    }
-
-    @Override
-    public void load() {
-        disposables.addAll(
-                // complete task, dispose all subscriptions
+    override fun load() {
+        disposables.addAll( // complete task, dispose all subscriptions
                 cache.getProgressObservable()
-                        .filter(event -> event.getValue() == -1)
+                        .filter { event: Result<Long> -> event.getValue() == -1L }
                         .delay(50, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-                        .subscribe(event -> disposables.clear()),
+                        .subscribe { _ -> disposables.clear() },
 
                 repo.loadPokemons()
-                        .doFinally(() -> cache.putLoadingProgress(new Result<>(PokemonsRepo.LOADING_COMPLETE)))
-                        .subscribe(cache::putLoadingProgress, error -> cache.putLoadingProgress(new Result<>(error)))
-        );
+                        .doFinally { cache.putLoadingProgress(Result(PokemonsRepo.LOADING_COMPLETE)) }
+                        .subscribe({ value: Result<Long> -> cache.putLoadingProgress(value) }, { error: Throwable? -> cache.putLoadingProgress(Result(error!!)) })
+        )
     }
 }

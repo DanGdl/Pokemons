@@ -1,16 +1,11 @@
-package com.mdgd.pokemon.bg;
+package com.mdgd.pokemon.bg
 
-import com.mdgd.pokemon.models.AppModule;
+import com.mdgd.pokemon.bg.LoadPokemonsContract.ServiceModel
+import com.mdgd.pokemon.models.AppModule
 
-public class PokemonsLoadingModelFactory {
+class PokemonsLoadingModelFactory(var appComponent: AppModule) {
 
-    public AppModule appComponent;
-
-    public PokemonsLoadingModelFactory(AppModule appComponent) {
-        this.appComponent = appComponent;
-    }
-
-    public LoadPokemonsContract.ServiceModel create() {
-        return new LoadPokemonsModel(appComponent.getPokemonsRepo(), appComponent.getCache());
+    fun create(): ServiceModel {
+        return LoadPokemonsModel(appComponent.getPokemonsRepo(), appComponent.getCache())
     }
 }

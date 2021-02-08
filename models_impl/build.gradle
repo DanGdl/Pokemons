@@ -50,9 +50,10 @@ dependencies {
     // rx
     implementation "io.reactivex.rxjava3:rxjava:$rx_java"
     implementation "io.reactivex.rxjava3:rxandroid:$rx_android"
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:$ktx"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
 repositories {
     mavenCentral()
 }
