@@ -14,7 +14,7 @@ class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache
     override fun load() {
         disposables.addAll( // complete task, dispose all subscriptions
                 cache.getProgressObservable()
-                        .filter { event: Result<Long> -> event.getValue() == -1L }
+                        .filter { event: Result<Long> -> event.hasValue() && event.getValue() == -1L }
                         .delay(50, TimeUnit.MILLISECONDS, Schedulers.trampoline())
                         .subscribe { _ -> disposables.clear() },
 

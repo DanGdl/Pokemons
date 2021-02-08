@@ -27,4 +27,8 @@ class Result<T> {
     fun getError(): Throwable {
         return error.get()
     }
+
+    fun hasValue(): Boolean {
+        return value.isPresent
+    }
 }
