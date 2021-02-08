@@ -1,56 +1,44 @@
-package com.mdgd.pokemon.ui.pokemon;
+package com.mdgd.pokemon.ui.pokemon
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.mdgd.mvi.HostedFragment
+import com.mdgd.pokemon.PokemonsApp.Companion.instance
+import com.mdgd.pokemon.R
+import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter
+import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState
+import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class PokemonDetailsFragment : HostedFragment<PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
+    private val adapter = PokemonPropertiesAdapter()
 
-import com.mdgd.mvi.HostedFragment;
-import com.mdgd.pokemon.PokemonsApp;
-import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
-
-import java.util.List;
-
-public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>
-        implements PokemonDetailsContract.View {
-
-    private final PokemonPropertiesAdapter adapter = new PokemonPropertiesAdapter();
-
-    public static PokemonDetailsFragment newInstance() {
-        return new PokemonDetailsFragment();
+    companion object {
+        fun newInstance(): PokemonDetailsFragment {
+            return PokemonDetailsFragment()
+        }
     }
 
-    @Override
-    protected PokemonDetailsContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new PokemonDetailsViewModelFactory(PokemonsApp.getInstance().getAppComponent())).get(PokemonDetailsViewModel.class);
+    override fun createModel(): PokemonDetailsContract.ViewModel {
+        return ViewModelProvider(this, PokemonDetailsViewModelFactory(instance!!.appComponent!!)).get(PokemonDetailsViewModel::class.java)
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pokemon_properties, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_pokemon_properties, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        final RecyclerView recycler = view.findViewById(R.id.pokemon_details_recycler);
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recycler.setAdapter(adapter);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val recycler: RecyclerView = view.findViewById(R.id.pokemon_details_recycler)
+        recycler.layoutManager = LinearLayoutManager(activity)
+        recycler.adapter = adapter
     }
 
-    @Override
-    public void setItems(List<PokemonProperty> items) {
-        adapter.setItems(items);
+    override fun setItems(items: List<PokemonProperty>) {
+        adapter.setItems(items)
     }
 }

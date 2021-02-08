@@ -1,170 +1,129 @@
-package com.mdgd.pokemon.ui.pokemons;
+package com.mdgd.pokemon.ui.pokemons
 
-import android.content.res.Resources;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.mdgd.pokemon.R
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.PokemonsAdapter.PokemonViewHolder
+import com.squareup.picasso.Picasso
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
+class PokemonsAdapter : RecyclerView.Adapter<PokemonViewHolder>() {
+    private val items: MutableList<PokemonFullDataSchema> = ArrayList()
+    private val clicksSubject = PublishSubject.create<PokemonFullDataSchema>()
 
-import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.models.repo.schemas.Stat;
-import com.squareup.picasso.Picasso;
+    val onItemClickSubject: Observable<PokemonFullDataSchema>
+        get() = clicksSubject
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.PublishSubject;
-
-public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.PokemonViewHolder> {
-    private final List<PokemonFullDataSchema> items = new ArrayList<>();
-    private final PublishSubject<PokemonFullDataSchema> clicksSubject = PublishSubject.create();
-
-    @NonNull
-    @Override
-    public PokemonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
         // todo: add empty view?
-        return new PokemonViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false), clicksSubject);
+        return PokemonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_pokemon, parent, false), clicksSubject)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull PokemonViewHolder holder, int position) {
-        holder.bindItem(items.get(position), position);
+    override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
+        holder.bindItem(items[position], position)
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
+    override fun getItemCount(): Int {
+        return items.size
     }
 
-    public void setItems(List<PokemonFullDataSchema> items) {
-        this.items.clear();
-        this.items.addAll(items);
-        notifyDataSetChanged();
+    fun setItems(items: List<PokemonFullDataSchema>) {
+        this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
     }
 
-    public void updateItems(List<PokemonFullDataSchema> list) {
-        final List<PokemonFullDataSchema> oldList = new ArrayList<>(items);
-
-        this.items.clear();
-        this.items.addAll(list);
-
-        DiffUtil.calculateDiff(new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return oldList.size();
+    fun updateItems(list: List<PokemonFullDataSchema>) {
+        val oldList: List<PokemonFullDataSchema> = ArrayList(items)
+        items.clear()
+        items.addAll(list)
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int {
+                return oldList.size
             }
 
-            @Override
-            public int getNewListSize() {
-                return oldList.size();
+            override fun getNewListSize(): Int {
+                return oldList.size
             }
 
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return oldList.get(oldItemPosition) == list.get(newItemPosition);
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldList[oldItemPosition] == list[newItemPosition]
             }
 
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return oldList.get(oldItemPosition) == list.get(newItemPosition);
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldList[oldItemPosition] == list[newItemPosition]
             }
-        }).dispatchUpdatesTo(this);
+        }).dispatchUpdatesTo(this)
     }
 
-    public void addItems(List<PokemonFullDataSchema> items) {
-        this.items.addAll(items);
-        notifyDataSetChanged();
+    fun addItems(items: List<PokemonFullDataSchema>?) {
+        this.items.addAll(items!!)
+        notifyDataSetChanged()
     }
 
-    public Observable<PokemonFullDataSchema> getOnItemClickSubject() {
-        return clicksSubject;
+    override fun onViewAttachedToWindow(holder: PokemonViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.setupSubscriptions()
     }
 
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull PokemonViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        holder.setupSubscriptions();
+    override fun onViewDetachedFromWindow(holder: PokemonViewHolder) {
+        holder.clearSubscriptions()
+        super.onViewDetachedFromWindow(holder)
     }
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull PokemonViewHolder holder) {
-        holder.clearSubscriptions();
-        super.onViewDetachedFromWindow(holder);
-    }
+    inner class PokemonViewHolder(itemView: View, private val clicksSubject: PublishSubject<PokemonFullDataSchema>) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private val image: ImageView = itemView.findViewById(R.id.item_pokemon_image)
+        private val name: TextView = itemView.findViewById(R.id.item_pokemon_name)
+        private val attack: TextView = itemView.findViewById(R.id.item_pokemon_attack)
+        private val defence: TextView = itemView.findViewById(R.id.item_pokemon_defence)
+        private val speed: TextView = itemView.findViewById(R.id.item_pokemon_speed)
 
-
-    public class PokemonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final PublishSubject<PokemonFullDataSchema> clicksSubject;
-        private final ImageView image;
-        private final TextView name;
-        private final TextView attack;
-        private final TextView defence;
-        private final TextView speed;
-
-        public PokemonViewHolder(@NonNull View itemView, PublishSubject<PokemonFullDataSchema> clicksSubject) {
-            super(itemView);
-            this.clicksSubject = clicksSubject;
-
-            image = itemView.findViewById(R.id.item_pokemon_image);
-            name = itemView.findViewById(R.id.item_pokemon_name);
-            attack = itemView.findViewById(R.id.item_pokemon_attack);
-            defence = itemView.findViewById(R.id.item_pokemon_defence);
-            speed = itemView.findViewById(R.id.item_pokemon_speed);
-        }
-
-        public void bindItem(PokemonFullDataSchema pokemon, int position) {
-            final String url = pokemon.getPokemonSchema().getSprites().getOther().getOfficialArtwork().getFrontDefault();
-            Picasso.get().load(url).into(image);
-
-            name.setText(pokemon.getPokemonSchema().getName());
-            final Resources resources = itemView.getContext().getResources();
-
-            String attackVal = "--";
-            for (Stat s : pokemon.getStats()) {
-                if ("attack".equals(s.getStat().getName())) {
-                    attackVal = String.valueOf(s.getBaseStat());
+        fun bindItem(pokemon: PokemonFullDataSchema, position: Int) {
+            val url = pokemon.pokemonSchema!!.sprites!!.other!!.officialArtwork!!.frontDefault
+            Picasso.get().load(url).into(image)
+            name.text = pokemon.pokemonSchema!!.name
+            val resources = itemView.context.resources
+            var attackVal = "--"
+            for (s in pokemon.stats) {
+                if ("attack" == s.stat!!.name) {
+                    attackVal = s.baseStat.toString()
                 }
             }
-            attack.setText(resources.getString(R.string.item_pokemon_attack, attackVal));
-
-            String defenceVal = "--";
-            for (Stat s : pokemon.getStats()) {
-                if ("defense".equals(s.getStat().getName())) {
-                    defenceVal = String.valueOf(s.getBaseStat());
+            attack.text = resources.getString(R.string.item_pokemon_attack, attackVal)
+            var defenceVal = "--"
+            for (s in pokemon.stats) {
+                if ("defense" == s.stat!!.name) {
+                    defenceVal = s.baseStat.toString()
                 }
             }
-            defence.setText(resources.getString(R.string.item_pokemon_defence, defenceVal));
-
-            String speedVal = "--";
-            for (Stat s : pokemon.getStats()) {
-                if ("speed".equals(s.getStat().getName())) {
-                    speedVal = String.valueOf(s.getBaseStat());
+            defence.text = resources.getString(R.string.item_pokemon_defence, defenceVal)
+            var speedVal = "--"
+            for (s in pokemon.stats) {
+                if ("speed" == s.stat!!.name) {
+                    speedVal = s.baseStat.toString()
                 }
             }
-            speed.setText(resources.getString(R.string.item_pokemon_speed, speedVal));
+            speed.text = resources.getString(R.string.item_pokemon_speed, speedVal)
         }
 
-        @Override
-        public void onClick(View view) {
-            clicksSubject.onNext(items.get(getAdapterPosition()));
+        override fun onClick(view: View) {
+            clicksSubject.onNext(items[adapterPosition])
         }
 
-
-        public void setupSubscriptions() {
-            itemView.setOnClickListener(this);
+        fun setupSubscriptions() {
+            itemView.setOnClickListener(this)
         }
 
-        public void clearSubscriptions() {
-            itemView.setOnClickListener(null);
+        fun clearSubscriptions() {
+            itemView.setOnClickListener(null)
         }
     }
 }

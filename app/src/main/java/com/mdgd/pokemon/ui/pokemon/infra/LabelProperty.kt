@@ -1,8 +1,6 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-public interface LabelProperty extends TitleProperty {
-
-    String getText();
-
-    String getTitleStr();
+interface LabelProperty : TitleProperty {
+    val text: String
+    val titleStr: String
 }

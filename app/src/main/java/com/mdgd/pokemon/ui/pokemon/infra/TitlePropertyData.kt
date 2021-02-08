@@ -1,31 +1,6 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-public class TitlePropertyData implements TitleProperty {
-
-    private final int titleResId;
-    private final int nestingLevel;
-
-    public TitlePropertyData(int titleResId) {
-        this(titleResId, 0);
-    }
-
-    public TitlePropertyData(int titleResId, int nestingLevel) {
-        this.titleResId = titleResId;
-        this.nestingLevel = nestingLevel;
-    }
-
-    @Override
-    public int getTitleResId() {
-        return titleResId;
-    }
-
-    @Override
-    public int getType() {
-        return PROPERTY_TITLE;
-    }
-
-    @Override
-    public int getNestingLevel() {
-        return nestingLevel;
-    }
+open class TitlePropertyData @JvmOverloads constructor(override val titleResId: Int, override val nestingLevel: Int = 0) : TitleProperty {
+    override val type: Int
+        get() = PokemonProperty.Companion.PROPERTY_TITLE
 }

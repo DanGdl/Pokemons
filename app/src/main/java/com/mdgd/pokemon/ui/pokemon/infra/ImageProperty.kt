@@ -1,5 +1,5 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-public interface ImageProperty extends PokemonProperty {
-    String getImageUrl();
+interface ImageProperty : PokemonProperty {
+    val imageUrl: String
 }

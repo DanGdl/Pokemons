@@ -1,140 +1,135 @@
-package com.mdgd.pokemon.ui.pokemons;
+package com.mdgd.pokemon.ui.pokemons
 
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import com.mdgd.mvi.MviViewModel
+import com.mdgd.pokemon.models.cache.Cache
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.PokemonsRepo
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator
+import com.mdgd.pokemon.ui.pokemons.infra.FilterData
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createAddDataState
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createErrorState
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createLoadingState
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createSetDataState
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createUpdateDataState
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import java.util.*
 
-import com.mdgd.mvi.MviViewModel;
-import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.PokemonsRepo;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.models.repo.schemas.Stat;
-import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator;
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import io.reactivex.rxjava3.subjects.PublishSubject;
-
-public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> implements PokemonsContract.ViewModel {
-
-    private final PublishSubject<Integer> loadPageSubject = PublishSubject.create();
-    private final BehaviorSubject<FilterData> filtersSubject = BehaviorSubject.createDefault(new FilterData());
-    private final PokemonsContract.Router router;
-    private final PokemonsRepo repo;
-    private final Cache cache;
-    private final Map<String, CharacteristicComparator> comparators = new HashMap<String, CharacteristicComparator>() {{
-        put(FilterData.FILTER_ATTACK, (p1, p2) -> compareProperty("attack", p1, p2));
-        put(FilterData.FILTER_DEFENCE, (p1, p2) -> compareProperty("defense", p1, p2));
-        put(FilterData.FILTER_SPEED, (p1, p2) -> compareProperty("speed", p1, p2));
-    }};
-
-    public PokemonsViewModel(PokemonsContract.Router router, PokemonsRepo repo, Cache cache) {
-        this.router = router;
-        this.repo = repo;
-        this.cache = cache;
+class PokemonsViewModel(private val router: PokemonsContract.Router, private val repo: PokemonsRepo, private val cache: Cache) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
+    private val loadPageSubject = PublishSubject.create<Int>()
+    private val filtersSubject = BehaviorSubject.createDefault(FilterData())
+    private val comparators: Map<String, CharacteristicComparator?> = object : HashMap<String, CharacteristicComparator>() {
+        init {
+            put(FilterData.FILTER_ATTACK, object : CharacteristicComparator {
+                override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
+                    return compareProperty("attack", p1, p2)
+                }
+            })
+            put(FilterData.FILTER_DEFENCE, object : CharacteristicComparator {
+                override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
+                    return compareProperty("defense", p1, p2)
+                }
+            })
+            put(FilterData.FILTER_SPEED, object : CharacteristicComparator {
+                override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
+                    return compareProperty("speed", p1, p2)
+                }
+            })
+        }
     }
 
-    private int compareProperty(String property, PokemonFullDataSchema p1, PokemonFullDataSchema p2) {
-        int val1 = -1;
-        for (Stat s : p1.getStats()) {
-            if (property.equals(s.getStat().getName())) {
-                val1 = s.getBaseStat();
+    private fun compareProperty(property: String, p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
+        var val1 = -1
+        for (s in p1.stats) {
+            if (property == s.stat!!.name) {
+                val1 = s.baseStat!!
             }
         }
-        int val2 = -1;
-        for (Stat s : p2.getStats()) {
-            if (property.equals(s.getStat().getName())) {
-                val2 = s.getBaseStat();
+        var val2 = -1
+        for (s in p2.stats) {
+            if (property == s.stat!!.name) {
+                val2 = s.baseStat!!
             }
         }
-        return Integer.compare(val1, val2);
+        return val1.compareTo(val2)
     }
 
-    @Override
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
-        super.onAny(owner, event);
+    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+        super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(
                     loadPageSubject
-                            .doOnNext(ignore -> postState(PokemonsScreenState.createLoadingState()))
-                            .switchMapSingle(page -> repo.getPage(page)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .map(result -> mapToState(page, result))
-                                    .onErrorReturn(PokemonsScreenState::createErrorState))
-                            .subscribe(this::setState, Throwable::printStackTrace),
-
-                    // do we need to sort list once more when there is a filter and new page arrived?
+                            .doOnNext { postState(createLoadingState()) }
+                            .switchMapSingle { page: Int ->
+                                repo.getPage(page)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .map { result: Result<List<PokemonFullDataSchema>> -> mapToState(page, result) }
+                                        .onErrorReturn { error: Throwable? -> createErrorState(error) }
+                            }
+                            .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() },  // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
-                            .map(filters -> sort(filters, cache.getPokemons()))
-                            .subscribe(this::setState, Throwable::printStackTrace)
-
-            );
-            loadPageSubject.onNext(0);
+                            .map { filters: FilterData -> sort(filters, cache.getPokemons()) }
+                            .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() }
+            )
+            loadPageSubject.onNext(0)
         }
     }
 
-    private PokemonsScreenState sort(FilterData filters, List<PokemonFullDataSchema> pokemons) {
+    private fun sort(filters: FilterData, pokemons: List<PokemonFullDataSchema>): PokemonsScreenState {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
-        if (!filters.isEmpty()) {
-            Collections.sort(pokemons, (pokemon1, pokemon2) -> {
-                int compare = 0;
-                for (String filter : filters.getFilters()) {
-                    if (comparators.get(filter) != null) {
-                        compare = comparators.get(filter).compare(pokemon2, pokemon1); // swap, instead of multiply on -1
+        if (!filters.isEmpty) {
+            Collections.sort(pokemons) { pokemon1: PokemonFullDataSchema?, pokemon2: PokemonFullDataSchema? ->
+                var compare = 0
+                for (filter in filters.filters) {
+                    if (comparators[filter] != null) {
+                        compare = comparators[filter]!!.compare(pokemon2!!, pokemon1!!) // swap, instead of multiply on -1
                         if (compare != 0) {
-                            break;
+                            break
                         }
                     }
                 }
-                return compare;
-            });
+                compare
+            }
         }
-        return PokemonsScreenState.createUpdateDataState(pokemons);
+        return createUpdateDataState(pokemons)
     }
 
-    private PokemonsScreenState mapToState(Integer page, Result<List<PokemonFullDataSchema>> result) {
-        if (result.isError()) {
-            return PokemonsScreenState.createErrorState(result.getError());
+    private fun mapToState(page: Int, result: Result<List<PokemonFullDataSchema>>): PokemonsScreenState {
+        return if (result.isError()) {
+            createErrorState(result.getError())
         } else {
-            final List<PokemonFullDataSchema> list = result.getValue();
+            val list = result.getValue()
             if (page == 0) {
-                cache.setPokemons(list);
-                return PokemonsScreenState.createSetDataState(list);
+                cache.setPokemons(list)
+                createSetDataState(list)
             } else {
-                cache.addPokemons(list);
-                return PokemonsScreenState.createAddDataState(list);
+                cache.addPokemons(list)
+                createAddDataState(list)
             }
         }
     }
 
-
-    @Override
-    public void reload() {
-        loadPageSubject.onNext(0);
+    override fun reload() {
+        loadPageSubject.onNext(0)
     }
 
-    @Override
-    public void loadPage(int page) {
-        loadPageSubject.onNext(page);
+    override fun loadPage(page: Int) {
+        loadPageSubject.onNext(page)
     }
 
-    @Override
-    public void sort(FilterData filterData) {
-        filtersSubject.onNext(filterData);
+    override fun sort(filterData: FilterData) {
+        filtersSubject.onNext(filterData)
     }
 
-    @Override
-    public void onItemClicked(PokemonFullDataSchema pokemon) {
-        cache.putSelected(pokemon);
-        router.proceedToNextScreen();
+    override fun onItemClicked(pokemon: PokemonFullDataSchema?) {
+        cache.putSelected(pokemon)
+        router.proceedToNextScreen()
     }
 }

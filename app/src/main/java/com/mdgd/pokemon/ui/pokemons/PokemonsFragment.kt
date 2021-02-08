@@ -1,177 +1,154 @@
-package com.mdgd.pokemon.ui.pokemons;
+package com.mdgd.pokemon.ui.pokemons
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.mdgd.mvi.HostedFragment
+import com.mdgd.pokemon.PokemonsApp
+import com.mdgd.pokemon.R
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.infra.FilterData
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+class PokemonsFragment : HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>(), PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+    private val filters: MutableList<String> = ArrayList(3)
+    private val onDestroyDisposables = CompositeDisposable()
+    private val adapter = PokemonsAdapter()
+    private var refreshSwipe: SwipeRefreshLayout? = null
 
-import com.mdgd.mvi.HostedFragment;
-import com.mdgd.pokemon.PokemonsApp;
-import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
+    companion object {
+        fun newInstance(): PokemonsFragment {
+            return PokemonsFragment()
+        }
+    }
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-public class PokemonsFragment extends HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>
-        implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-
-    private final List<String> filters = new ArrayList<>(3);
-    private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
-    private final PokemonsAdapter adapter = new PokemonsAdapter();
-    private SwipeRefreshLayout refreshSwipe;
     // maybe paging library?
-    private final EndlessScrollListener scrollListener = new EndlessScrollListener() {
-        @Override
-        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+    private val scrollListener: EndlessScrollListener = object : EndlessScrollListener() {
+        override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
             if (refreshSwipe != null) {
-                refreshSwipe.setRefreshing(true);
+                refreshSwipe!!.isRefreshing = true
             }
-            getModel().loadPage(page);
+            model!!.loadPage(page)
         }
-    };
-    private RecyclerView recyclerView;
-    private ImageButton filterAttack;
-    private ImageButton filterDefence;
-    private ImageButton filterSpeed;
-    private View refresh;
+    }
+    private var recyclerView: RecyclerView? = null
+    private var filterAttack: ImageButton? = null
+    private var filterDefence: ImageButton? = null
+    private var filterSpeed: ImageButton? = null
+    private var refresh: View? = null
 
-    public static PokemonsFragment newInstance() {
-        return new PokemonsFragment();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        onDestroyDisposables.add(adapter.onItemClickSubject.subscribe { pokemon: PokemonFullDataSchema? -> model!!.onItemClicked(pokemon) })
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        onDestroyDisposables.add(adapter.getOnItemClickSubject().subscribe(pokemon -> getModel().onItemClicked(pokemon)));
+    override fun createModel(): PokemonsContract.ViewModel {
+        return ViewModelProvider(this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!, this)).get(PokemonsViewModel::class.java)
     }
 
-    @Override
-    protected PokemonsContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new PokemonsViewModelFactory(PokemonsApp.getInstance().getAppComponent(), this)).get(PokemonsViewModel.class);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_pokemons, container, false)
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pokemons, container, false);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.pokemons_recycler)
+        recyclerView?.layoutManager = LinearLayoutManager(activity)
+        recyclerView?.addOnScrollListener(scrollListener)
+        recyclerView?.adapter = adapter
+
+        refresh = view.findViewById(R.id.pokemons_refresh)
+        refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh)
+        filterAttack = view.findViewById(R.id.pokemons_filter_attack)
+        filterDefence = view.findViewById(R.id.pokemons_filter_defence)
+        filterSpeed = view.findViewById(R.id.pokemons_filter_movement)
+
+        refresh?.setOnClickListener(this)
+        refreshSwipe?.setOnRefreshListener(this)
+        filterAttack?.setOnClickListener(this)
+        filterDefence?.setOnClickListener(this)
+        filterSpeed?.setOnClickListener(this)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        recyclerView = view.findViewById(R.id.pokemons_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addOnScrollListener(scrollListener);
-        recyclerView.setAdapter(adapter);
-        refresh = view.findViewById(R.id.pokemons_refresh);
-        refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh);
-        filterAttack = view.findViewById(R.id.pokemons_filter_attack);
-        filterDefence = view.findViewById(R.id.pokemons_filter_defence);
-        filterSpeed = view.findViewById(R.id.pokemons_filter_movement);
-
-        refresh.setOnClickListener(this);
-        refreshSwipe.setOnRefreshListener(this);
-
-        filterAttack.setOnClickListener(this);
-        filterDefence.setOnClickListener(this);
-        filterSpeed.setOnClickListener(this);
-    }
-
-    @Override
-    public void proceedToNextScreen() {
+    override fun proceedToNextScreen() {
         if (hasHost()) {
-            getFragmentHost().proceedToPokemonScreen();
+            fragmentHost!!.proceedToPokemonScreen()
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == refresh) {
-            if (!refreshSwipe.isRefreshing()) {
-                refreshSwipe.setRefreshing(true);
+    override fun onClick(view: View) {
+        if (view === refresh) {
+            if (!refreshSwipe!!.isRefreshing) {
+                refreshSwipe!!.isRefreshing = true
             }
         } else {
-            if (filterAttack == view) {
-                setupFilter(filterAttack, FilterData.FILTER_ATTACK);
-            } else if (filterDefence == view) {
-                setupFilter(filterDefence, FilterData.FILTER_DEFENCE);
-            } else if (filterSpeed == view) {
-                setupFilter(filterSpeed, FilterData.FILTER_SPEED);
+            if (filterAttack === view) {
+                setupFilter(filterAttack, FilterData.FILTER_ATTACK)
+            } else if (filterDefence === view) {
+                setupFilter(filterDefence, FilterData.FILTER_DEFENCE)
+            } else if (filterSpeed === view) {
+                setupFilter(filterSpeed, FilterData.FILTER_SPEED)
             }
-            getModel().sort(new FilterData(new ArrayList<>(filters)));
+            model!!.sort(FilterData(ArrayList(filters)))
         }
     }
 
-    private void setupFilter(ImageButton filterView, String filterTag) {
+    private fun setupFilter(filterView: ImageButton?, filterTag: String) {
         if (filters.contains(filterTag)) {
-            filters.remove(filterTag);
-            filterView.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
+            filters.remove(filterTag)
+            filterView!!.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive))
         } else {
-            filters.add(filterTag);
-            filterView.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
+            filters.add(filterTag)
+            filterView!!.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active))
         }
     }
 
-    @Override
-    public void onRefresh() {
-        getModel().reload();
+    override fun onRefresh() {
+        model!!.reload()
     }
 
-    @Override
-    public void onDestroy() {
-        onDestroyDisposables.clear();
-        super.onDestroy();
+    override fun onDestroy() {
+        onDestroyDisposables.clear()
+        super.onDestroy()
     }
 
-    @Override
-    public void showProgress() {
-        if (refreshSwipe != null && !refreshSwipe.isRefreshing()) {
-            refreshSwipe.setRefreshing(true);
+    override fun showProgress() {
+        if (refreshSwipe != null && !refreshSwipe!!.isRefreshing) {
+            refreshSwipe!!.isRefreshing = true
         }
     }
 
-    @Override
-    public void hideProgress() {
-        if (refreshSwipe != null && refreshSwipe.isRefreshing()) {
-            refreshSwipe.setRefreshing(false);
+    override fun hideProgress() {
+        if (refreshSwipe != null && refreshSwipe!!.isRefreshing) {
+            refreshSwipe!!.isRefreshing = false
         }
     }
 
-    @Override
-    public void setItems(List<PokemonFullDataSchema> list) {
-        adapter.setItems(list);
+    override fun setItems(list: List<PokemonFullDataSchema>) {
+        adapter.setItems(list)
     }
 
-    @Override
-    public void addItems(List<PokemonFullDataSchema> list) {
-        adapter.addItems(list);
+    override fun addItems(list: List<PokemonFullDataSchema>) {
+        adapter.addItems(list)
     }
 
-    @Override
-    public void updateItems(List<PokemonFullDataSchema> list) {
-        adapter.updateItems(list);
-        recyclerView.scrollToPosition(0);
+    override fun updateItems(list: List<PokemonFullDataSchema>) {
+        adapter.updateItems(list)
+        recyclerView!!.scrollToPosition(0)
     }
 
-    @Override
-    public void showError(Throwable error) {
+    override fun showError(error: Throwable?) {
         if (hasHost()) {
-            getFragmentHost().showError(error);
+            fragmentHost!!.showError(error)
         }
     }
 }

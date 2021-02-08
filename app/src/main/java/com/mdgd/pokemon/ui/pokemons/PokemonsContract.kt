@@ -1,46 +1,33 @@
-package com.mdgd.pokemon.ui.pokemons;
+package com.mdgd.pokemon.ui.pokemons
 
-import com.mdgd.mvi.FragmentContract;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
+import com.mdgd.mvi.FragmentContract
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.infra.FilterData
+import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
 
-import java.util.List;
-
-public class PokemonsContract {
-
-    public interface ViewModel extends FragmentContract.ViewModel<PokemonsScreenState> {
-        void reload();
-
-        void loadPage(int page);
-
-        void sort(FilterData filterData);
-
-        void onItemClicked(PokemonFullDataSchema pokemon);
-
+class PokemonsContract {
+    interface ViewModel : FragmentContract.ViewModel<PokemonsScreenState> {
+        fun reload()
+        fun loadPage(page: Int)
+        fun sort(filterData: FilterData)
+        fun onItemClicked(pokemon: PokemonFullDataSchema?)
     }
 
-    public interface View extends FragmentContract.View {
-        void showProgress();
-
-        void hideProgress();
-
-        void setItems(List<PokemonFullDataSchema> list);
-
-        void addItems(List<PokemonFullDataSchema> list);
-
-        void updateItems(List<PokemonFullDataSchema> list);
-
-        void showError(Throwable error);
+    interface View : FragmentContract.View {
+        fun showProgress()
+        fun hideProgress()
+        fun setItems(list: List<PokemonFullDataSchema>)
+        fun addItems(list: List<PokemonFullDataSchema>)
+        fun updateItems(list: List<PokemonFullDataSchema>)
+        fun showError(error: Throwable?)
     }
 
-    public interface Host extends FragmentContract.Host {
-        void proceedToPokemonScreen();
-
-        void showError(Throwable error);
+    interface Host : FragmentContract.Host {
+        fun proceedToPokemonScreen()
+        fun showError(error: Throwable?)
     }
 
-    public interface Router {
-        void proceedToNextScreen();
+    interface Router {
+        fun proceedToNextScreen()
     }
 }

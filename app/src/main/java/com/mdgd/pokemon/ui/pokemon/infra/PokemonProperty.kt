@@ -1,14 +1,14 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-public interface PokemonProperty {
-    int PROPERTY_IMAGE = 1;
-    int PROPERTY_LABEL = 2;
-    int PROPERTY_TITLE = 3;
-    int PROPERTY_TEXT = 4;
+interface PokemonProperty {
+    val type: Int
+    val nestingLevel: Int
+        get() = 0
 
-    int getType();
-
-    default int getNestingLevel() {
-        return 0;
+    companion object {
+        const val PROPERTY_IMAGE = 1
+        const val PROPERTY_LABEL = 2
+        const val PROPERTY_TITLE = 3
+        const val PROPERTY_TEXT = 4
     }
 }

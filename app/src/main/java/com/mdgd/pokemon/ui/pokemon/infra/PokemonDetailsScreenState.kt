@@ -1,28 +1,21 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-import com.mdgd.mvi.ScreenState;
-import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract;
+import com.mdgd.mvi.ScreenState
+import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract
 
-import java.util.List;
+class PokemonDetailsScreenState(private val action: Int, private val items: List<PokemonProperty>) : ScreenState<PokemonDetailsContract.View>() {
 
-public class PokemonDetailsScreenState extends ScreenState<PokemonDetailsContract.View> {
-    private static final int ACTION_SET = 1;
-
-    private final List<PokemonProperty> items;
-    private final int action;
-
-    public PokemonDetailsScreenState(int action, List<PokemonProperty> items) {
-        this.action = action;
-        this.items = items;
-    }
-
-    public static PokemonDetailsScreenState createSetDataState(List<PokemonProperty> properties) {
-        return new PokemonDetailsScreenState(ACTION_SET, properties);
-    }
-
-    public void visit(PokemonDetailsContract.View screen) {
+    override fun visit(screen: PokemonDetailsContract.View) {
         if (action == ACTION_SET) {
-            screen.setItems(items);
+            screen.setItems(items)
+        }
+    }
+
+    companion object {
+        private const val ACTION_SET = 1
+
+        fun createSetDataState(properties: List<PokemonProperty>): PokemonDetailsScreenState {
+            return PokemonDetailsScreenState(ACTION_SET, properties)
         }
     }
 }

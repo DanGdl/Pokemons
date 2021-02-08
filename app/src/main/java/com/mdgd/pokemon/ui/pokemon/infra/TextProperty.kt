@@ -1,5 +1,5 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-public interface TextProperty extends PokemonProperty {
-    String getText();
+interface TextProperty : PokemonProperty {
+    val text: String
 }

@@ -1,29 +1,24 @@
-package com.mdgd.pokemon.ui.pokemons.infra;
+package com.mdgd.pokemon.ui.pokemons.infra
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*
 
-public class FilterData {
-    public static final String FILTER_ATTACK = "attack";
-    public static final String FILTER_DEFENCE = "defence";
-    public static final String FILTER_SPEED = "speed";
+class FilterData {
+    val filters: List<String>
 
-    private final List<String> filters;
-
-
-    public FilterData() {
-        this.filters = new LinkedList<>();
+    constructor() {
+        filters = LinkedList()
     }
 
-    public FilterData(List<String> filters) {
-        this.filters = filters;
+    constructor(filters: List<String>) {
+        this.filters = filters
     }
 
-    public boolean isEmpty() {
-        return filters.isEmpty();
-    }
+    val isEmpty: Boolean
+        get() = filters.isEmpty()
 
-    public List<String> getFilters() {
-        return filters;
+    companion object {
+        const val FILTER_ATTACK = "attack"
+        const val FILTER_DEFENCE = "defence"
+        const val FILTER_SPEED = "speed"
     }
 }

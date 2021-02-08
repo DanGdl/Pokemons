@@ -1,34 +1,19 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.infra
 
-public class LabelPropertyData extends TitlePropertyData implements LabelProperty {
+class LabelPropertyData : TitlePropertyData, LabelProperty {
+    override val text: String
+    override val titleStr: String
 
-    private final String text;
-    private final String textStr;
-
-    public LabelPropertyData(int labelResId, String text) {
-        super(labelResId, 0);
-        this.text = text;
-        this.textStr = "";
+    constructor(labelResId: Int, text: String) : super(labelResId, 0) {
+        this.text = text
+        titleStr = ""
     }
 
-    public LabelPropertyData(String name, String text, int nestingLevel) {
-        super(0, nestingLevel);
-        this.textStr = name;
-        this.text = text;
+    constructor(name: String, text: String, nestingLevel: Int) : super(0, nestingLevel) {
+        titleStr = name
+        this.text = text
     }
 
-    @Override
-    public int getType() {
-        return PROPERTY_LABEL;
-    }
-
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public String getTitleStr() {
-        return textStr;
-    }
+    override val type: Int
+        get() = PokemonProperty.Companion.PROPERTY_LABEL
 }
