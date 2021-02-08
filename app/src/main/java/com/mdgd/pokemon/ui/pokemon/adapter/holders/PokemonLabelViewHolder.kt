@@ -1,33 +1,25 @@
-package com.mdgd.pokemon.ui.pokemon.adapter.holders;
+package com.mdgd.pokemon.ui.pokemon.adapter.holders
 
-import android.view.View;
-import android.widget.TextView;
+import android.view.View
+import android.widget.TextView
+import com.mdgd.pokemon.R
+import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder
+import com.mdgd.pokemon.ui.pokemon.infra.LabelProperty
 
-import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
-import com.mdgd.pokemon.ui.pokemon.infra.LabelProperty;
+class PokemonLabelViewHolder(view: View) : PokemonPropertyViewHolder<LabelProperty>(view) {
+    private val label: TextView = view.findViewById(R.id.pokemon_details_label_text)
+    private val value: TextView = view.findViewById(R.id.pokemon_details_label_value)
 
-public class PokemonLabelViewHolder extends PokemonPropertyViewHolder<LabelProperty> {
-
-    private final TextView label;
-    private final TextView value;
-
-    public PokemonLabelViewHolder(View view) {
-        super(view);
-        label = view.findViewById(R.id.pokemon_details_label_text);
-        value = view.findViewById(R.id.pokemon_details_label_value);
-    }
-
-    @Override
-    public void bind(LabelProperty property, int position) {
+    override fun bind(property: LabelProperty, position: Int) {
         label.setPaddingRelative(
-                label.getResources().getDimensionPixelSize(R.dimen.pokemon_details_nesting_level_padding) * (1 + property.getNestingLevel()),
-                0, 0, 0);
-        if (property.getTitleResId() != 0) {
-            label.setText(property.getTitleResId());
+                label.resources.getDimensionPixelSize(R.dimen.pokemon_details_nesting_level_padding) * (1 + property.nestingLevel),
+                0, 0, 0)
+
+        if (property.titleResId == 0) {
+            label.text = property.titleStr
         } else {
-            label.setText(property.getTitleStr());
+            label.setText(property.titleResId)
         }
-        value.setText(property.getText());
+        value.text = property.text
     }
 }

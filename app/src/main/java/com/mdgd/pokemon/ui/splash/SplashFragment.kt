@@ -1,58 +1,50 @@
-package com.mdgd.pokemon.ui.splash;
+package com.mdgd.pokemon.ui.splash
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import com.mdgd.mvi.HostedFragment
+import com.mdgd.pokemon.PokemonsApp
+import com.mdgd.pokemon.R
+import com.mdgd.pokemon.bg.UploadWorker
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
+class SplashFragment : HostedFragment<SplashScreenState, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View, SplashContract.Router {
 
-import com.mdgd.mvi.HostedFragment;
-import com.mdgd.pokemon.PokemonsApp;
-import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.bg.UploadWorker;
-
-public class SplashFragment extends HostedFragment<SplashScreenState, SplashContract.ViewModel, SplashContract.Host> implements SplashContract.View, SplashContract.Router {
-
-    public static SplashFragment newInstance() {
-        return new SplashFragment();
-    }
-
-    @Override
-    protected SplashContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new SplashViewModelFactory(PokemonsApp.getInstance().getAppComponent(), this)).get(SplashViewModel.class);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_splash, container, false);
-    }
-
-    @Override
-    public void proceedToNextScreen() {
-        if (hasHost()) {
-            getFragmentHost().proceedToPokemonsScreen();
+    companion object {
+        fun newInstance(): SplashFragment {
+            return SplashFragment()
         }
     }
 
-    @Override
-    public void launchWorker() {
+    override fun createModel(): SplashContract.ViewModel {
+        return ViewModelProvider(this, SplashViewModelFactory(PokemonsApp.instance?.appComponent!!, this)).get(SplashViewModel::class.java)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_splash, container, false)
+    }
+
+    override fun proceedToNextScreen() {
         if (hasHost()) {
-            final WorkRequest uploadWorkRequest = new OneTimeWorkRequest.Builder(UploadWorker.class).build();
-            WorkManager.getInstance(getContext()).enqueue(uploadWorkRequest);
+            fragmentHost!!.proceedToPokemonsScreen()
         }
     }
 
-    @Override
-    public void showError(Throwable error) {
+    override fun launchWorker() {
         if (hasHost()) {
-            getFragmentHost().showError(error);
+            val uploadWorkRequest: WorkRequest = OneTimeWorkRequest.Builder(UploadWorker::class.java).build()
+            WorkManager.getInstance(requireContext()).enqueue(uploadWorkRequest)
+        }
+    }
+
+    override fun showError(error: Throwable?) {
+        if (hasHost()) {
+            fragmentHost!!.showError(error)
         }
     }
 }

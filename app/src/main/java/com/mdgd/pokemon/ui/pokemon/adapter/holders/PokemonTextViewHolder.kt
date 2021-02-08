@@ -1,27 +1,18 @@
-package com.mdgd.pokemon.ui.pokemon.adapter.holders;
+package com.mdgd.pokemon.ui.pokemon.adapter.holders
 
-import android.view.View;
-import android.widget.TextView;
+import android.view.View
+import android.widget.TextView
+import com.mdgd.pokemon.R
+import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder
+import com.mdgd.pokemon.ui.pokemon.infra.TextProperty
 
-import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
-import com.mdgd.pokemon.ui.pokemon.infra.TextProperty;
+class PokemonTextViewHolder(view: View) : PokemonPropertyViewHolder<TextProperty>(view) {
+    private val label: TextView = view.findViewById(R.id.pokemon_details_text)
 
-public class PokemonTextViewHolder extends PokemonPropertyViewHolder<TextProperty> {
-
-    private final TextView label;
-
-    public PokemonTextViewHolder(View view) {
-        super(view);
-        label = view.findViewById(R.id.pokemon_details_text);
-    }
-
-    @Override
-    public void bind(TextProperty property, int position) {
-        label.setText(property.getText());
-
+    override fun bind(property: TextProperty, position: Int) {
+        label.text = property.text
         label.setPaddingRelative(
-                label.getResources().getDimensionPixelSize(R.dimen.pokemon_details_nesting_level_padding) * (2 + property.getNestingLevel()),
-                label.getPaddingTop(), label.getPaddingEnd(), label.getPaddingBottom());
+                label.resources.getDimensionPixelSize(R.dimen.pokemon_details_nesting_level_padding) * (2 + property.nestingLevel),
+                label.paddingTop, label.paddingEnd, label.paddingBottom)
     }
 }

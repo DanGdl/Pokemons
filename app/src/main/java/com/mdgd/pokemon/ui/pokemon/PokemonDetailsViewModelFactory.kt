@@ -1,25 +1,14 @@
-package com.mdgd.pokemon.ui.pokemon;
+package com.mdgd.pokemon.ui.pokemon
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.mdgd.pokemon.models.AppModule
 
-import com.mdgd.pokemon.models.AppModule;
+class PokemonDetailsViewModelFactory(private val appComponent: AppModule) : ViewModelProvider.NewInstanceFactory() {
 
-public class PokemonDetailsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-
-    private final AppModule appComponent;
-
-    public PokemonDetailsViewModelFactory(AppModule appComponent) {
-        this.appComponent = appComponent;
-    }
-
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass == PokemonDetailsViewModel.class) {
-            return (T) new PokemonDetailsViewModel(appComponent.getCache());
-        }
-        return null;
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return if (modelClass == PokemonDetailsViewModel::class.java) {
+            PokemonDetailsViewModel(appComponent.getCache()) as T
+        } else super.create(modelClass)
     }
 }

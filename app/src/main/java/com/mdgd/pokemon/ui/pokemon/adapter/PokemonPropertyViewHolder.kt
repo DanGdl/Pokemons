@@ -1,24 +1,13 @@
-package com.mdgd.pokemon.ui.pokemon.adapter;
+package com.mdgd.pokemon.ui.pokemon.adapter
 
-import android.view.View;
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+abstract class PokemonPropertyViewHolder<T : PokemonProperty>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun setupSubscriptions() {}
 
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
+    fun clearSubscriptions() {}
 
-public abstract class PokemonPropertyViewHolder<T extends PokemonProperty> extends RecyclerView.ViewHolder {
-
-    public PokemonPropertyViewHolder(@NonNull View itemView) {
-        super(itemView);
-    }
-
-
-    public void setupSubscriptions() {
-    }
-
-    public void clearSubscriptions() {
-    }
-
-    public abstract void bind(T property, int position);
+    abstract fun bind(property: T, position: Int)
 }

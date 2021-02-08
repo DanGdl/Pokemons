@@ -1,20 +1,15 @@
-package com.mdgd.pokemon.ui.pokemon;
+package com.mdgd.pokemon.ui.pokemon
 
-import com.mdgd.mvi.FragmentContract;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
+import com.mdgd.mvi.FragmentContract
+import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState
+import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
-import java.util.List;
+class PokemonDetailsContract {
+    interface ViewModel : FragmentContract.ViewModel<PokemonDetailsScreenState>
 
-public class PokemonDetailsContract {
-
-    public interface ViewModel extends FragmentContract.ViewModel<PokemonDetailsScreenState> {
+    interface View : FragmentContract.View {
+        fun setItems(items: List<PokemonProperty>)
     }
 
-    public interface View extends FragmentContract.View {
-        void setItems(List<PokemonProperty> items);
-    }
-
-    public interface Host extends FragmentContract.Host {
-    }
+    interface Host : FragmentContract.Host
 }

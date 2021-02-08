@@ -1,27 +1,20 @@
-package com.mdgd.pokemon.ui.splash;
+package com.mdgd.pokemon.ui.splash
 
-import com.mdgd.mvi.FragmentContract;
+import com.mdgd.mvi.FragmentContract
 
-public class SplashContract {
+class SplashContract {
+    interface ViewModel : FragmentContract.ViewModel<SplashScreenState>
 
-    public interface ViewModel extends FragmentContract.ViewModel<SplashScreenState> {
+    interface View : FragmentContract.View
+
+    interface Host : FragmentContract.Host {
+        fun proceedToPokemonsScreen()
+        fun showError(error: Throwable?)
     }
 
-    public interface View extends FragmentContract.View {
-    }
-
-    public interface Host extends FragmentContract.Host {
-        void proceedToPokemonsScreen();
-
-        void showError(Throwable error);
-    }
-
-
-    public interface Router {
-        void proceedToNextScreen();
-
-        void launchWorker();
-
-        void showError(Throwable error);
+    interface Router {
+        fun proceedToNextScreen()
+        fun launchWorker()
+        fun showError(error: Throwable?)
     }
 }
