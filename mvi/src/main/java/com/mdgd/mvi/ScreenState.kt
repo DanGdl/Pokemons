@@ -1,6 +1,5 @@
-package com.mdgd.mvi;
+package com.mdgd.mvi
 
-public abstract class ScreenState<T extends FragmentContract.View> {
-
-    public abstract void visit(T screen);
+abstract class ScreenState<T : FragmentContract.View> {
+    abstract fun visit(screen: T)
 }

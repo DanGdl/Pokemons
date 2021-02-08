@@ -1,17 +1,13 @@
-package com.mdgd.mvi;
+package com.mdgd.mvi
 
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
 
-public class FragmentContract {
-
-    public interface ViewModel<T> extends LifecycleObserver {
-        MutableLiveData<T> getStateObservable();
+class FragmentContract {
+    interface ViewModel<T> : LifecycleObserver {
+        fun getStateObservable(): MutableLiveData<T>
     }
 
-    public interface View {
-    }
-
-    public interface Host {
-    }
+    interface View
+    interface Host
 }
