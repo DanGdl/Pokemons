@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion project.compile
@@ -41,4 +42,11 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_compiler"
 
     implementation "com.google.code.gson:gson:$gson"
+
+    implementation "androidx.core:core-ktx:$ktx"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+repositories {
+    mavenCentral()
 }

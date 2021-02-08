@@ -1,18 +1,16 @@
-package com.mdgd.pokemon.models.repo;
+package com.mdgd.pokemon.models.repo
 
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
-import java.util.List;
+interface PokemonsRepo {
+    fun getPage(page: Int): Single<Result<List<PokemonFullDataSchema>>>
+    fun loadPokemons(): Observable<Result<Long>>
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-
-public interface PokemonsRepo {
-    int PAGE_SIZE = 30;
-    long LOADING_COMPLETE = -1;
-
-    Single<Result<List<PokemonFullDataSchema>>> getPage(Integer page);
-
-    Observable<Result<Long>> loadPokemons();
+    companion object {
+        const val PAGE_SIZE = 30
+        const val LOADING_COMPLETE: Long = -1
+    }
 }

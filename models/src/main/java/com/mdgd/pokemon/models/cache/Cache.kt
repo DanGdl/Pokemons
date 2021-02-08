@@ -1,30 +1,19 @@
-package com.mdgd.pokemon.models.cache;
+package com.mdgd.pokemon.models.cache
 
-import com.google.common.base.Optional;
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.google.common.base.Optional
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import io.reactivex.rxjava3.core.Observable
 
-import java.util.List;
+interface Cache {
+    fun putSelected(pokemon: PokemonFullDataSchema?)
+    fun getSelectedPokemon(): Optional<PokemonFullDataSchema>
+    fun getSelectedPokemonObservable(): Observable<Optional<PokemonFullDataSchema>>
 
-import io.reactivex.rxjava3.annotations.Nullable;
-import io.reactivex.rxjava3.core.Observable;
+    fun addPokemons(list: List<PokemonFullDataSchema>)
+    fun getPokemons(): List<PokemonFullDataSchema>
+    fun getPokemonsObservable(): Observable<List<PokemonFullDataSchema>>
 
-public interface Cache {
-    void putSelected(PokemonFullDataSchema pokemon);
-
-    @Nullable Optional<PokemonFullDataSchema> getSelectedPokemon();
-
-    Observable<Optional<PokemonFullDataSchema>> getSelectedPokemonObservable();
-
-    void addPokemons(List<PokemonFullDataSchema> list);
-
-    List<PokemonFullDataSchema> getPokemons();
-
-    void setPokemons(List<PokemonFullDataSchema> list);
-
-    Observable<List<PokemonFullDataSchema>> getPokemonsObservable();
-
-    void setLoadingProgress(Result<Long> value);
-
-    Observable<Result<Long>> getProgressObservable();
+    fun putLoadingProgress(value: Result<Long?>?)
+    fun getProgressObservable(): Observable<Result<Long>>
 }

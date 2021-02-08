@@ -58,7 +58,7 @@ public class CacheImpl implements Cache {
     }
 
     @Override
-    public void setLoadingProgress(Result<Long> value) {
+    public void putLoadingProgress(Result<Long> value) {
         progress.onNext(value);
     }
 

@@ -30,8 +30,8 @@ public class LoadPokemonsModel implements LoadPokemonsContract.ServiceModel {
                         .subscribe(event -> disposables.clear()),
 
                 repo.loadPokemons()
-                        .doFinally(() -> cache.setLoadingProgress(new Result<>(PokemonsRepo.LOADING_COMPLETE)))
-                        .subscribe(cache::setLoadingProgress, error -> cache.setLoadingProgress(new Result<>(error)))
+                        .doFinally(() -> cache.putLoadingProgress(new Result<>(PokemonsRepo.LOADING_COMPLETE)))
+                        .subscribe(cache::putLoadingProgress, error -> cache.putLoadingProgress(new Result<>(error)))
         );
     }
 }

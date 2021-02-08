@@ -1,30 +1,30 @@
-package com.mdgd.pokemon.models.infra;
+package com.mdgd.pokemon.models.infra
 
-import com.google.common.base.Optional;
+import com.google.common.base.Optional
 
-public class Result<T> {
-    private final Optional<T> value;
-    private final Optional<Throwable> error;
+class Result<T> {
+    private val value: Optional<T>
+    private val error: Optional<Throwable>
 
-    public Result(T value) {
-        this.value = Optional.of(value);
-        this.error = Optional.absent();
+    constructor(value: T) {
+        this.value = Optional.of(value)
+        error = Optional.absent()
     }
 
-    public Result(Throwable error) {
-        this.value = Optional.absent();
-        this.error = Optional.of(error);
+    constructor(error: Throwable) {
+        value = Optional.absent()
+        this.error = Optional.of(error)
     }
 
-    public boolean isError() {
-        return !value.isPresent();
+    fun isError(): Boolean {
+        return !value.isPresent
     }
 
-    public T getValue() {
-        return value.get();
+    fun getValue(): T {
+        return value.get()
     }
 
-    public Throwable getError() {
-        return error.get();
+    fun getError(): Throwable {
+        return error.get()
     }
 }

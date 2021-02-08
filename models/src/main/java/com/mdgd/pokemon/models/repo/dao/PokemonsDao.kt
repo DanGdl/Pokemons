@@ -1,19 +1,13 @@
-package com.mdgd.pokemon.models.repo.dao;
+package com.mdgd.pokemon.models.repo.dao
 
-import com.mdgd.pokemon.models.infra.Result;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
+import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
-
-public interface PokemonsDao {
-
-    Completable save(List<PokemonDetails> list);
-
-    Single<Result<List<PokemonFullDataSchema>>> getPage(int page, int pageSize);
-
-    long getCount();
+interface PokemonsDao {
+    fun save(list: List<PokemonDetails>): Completable
+    fun getPage(page: Int, pageSize: Int): Single<Result<List<PokemonFullDataSchema>>>
+    fun getCount(): Long
 }

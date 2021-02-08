@@ -1,34 +1,15 @@
-package com.mdgd.pokemon.models.repo.schemas;
+package com.mdgd.pokemon.models.repo.schemas
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Move {
-
+class Move {
     @Expose
     @SerializedName("move")
-    private Move_ move;
+    var move: Move_? = null
 
     @Expose
     @SerializedName("version_group_details")
-    private List<VersionGroupDetail> versionGroupDetails = new ArrayList<>();
-
-    public Move_ getMove() {
-        return move;
-    }
-
-    public void setMove(Move_ move) {
-        this.move = move;
-    }
-
-    public List<VersionGroupDetail> getVersionGroupDetails() {
-        return versionGroupDetails;
-    }
-
-    public void setVersionGroupDetails(List<VersionGroupDetail> versionGroupDetails) {
-        this.versionGroupDetails = versionGroupDetails;
-    }
+    var versionGroupDetails: List<VersionGroupDetail> = ArrayList()
 }
