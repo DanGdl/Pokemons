@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion project.compile
@@ -36,7 +37,9 @@ dependencies {
 
     // room
     implementation "androidx.room:room-runtime:$room"
-    annotationProcessor "androidx.room:room-compiler:$room_compiler"
+    // annotationProcessor "androidx.room:room-compiler:$room_compiler" // java
+    kapt "androidx.room:room-compiler:$room_compiler"
+
 
     // retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
