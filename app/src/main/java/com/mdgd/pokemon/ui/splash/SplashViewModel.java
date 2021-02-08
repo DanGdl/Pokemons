@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.ui.splash;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -22,7 +23,7 @@ public class SplashViewModel extends MviViewModel<SplashScreenState> implements 
     }
 
     @Override
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    protected void onAny(LifecycleOwner owner, @NonNull Lifecycle.Event event) {
         super.onAny(owner, event);
         if (event == Lifecycle.Event.ON_START && !hasOnDestroyDisposables()) {
             observeTillDestroy(

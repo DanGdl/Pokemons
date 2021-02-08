@@ -16,11 +16,11 @@ class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache
                 cache.getProgressObservable()
                         .filter { event: Result<Long> -> event.hasValue() && event.getValue() == -1L }
                         .delay(50, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-                        .subscribe { _ -> disposables.clear() },
+                        .subscribe { disposables.clear() },
 
                 repo.loadPokemons()
                         .doFinally { cache.putLoadingProgress(Result(PokemonsRepo.LOADING_COMPLETE)) }
-                        .subscribe({ value: Result<Long> -> cache.putLoadingProgress(value) }, { error: Throwable? -> cache.putLoadingProgress(Result(error!!)) })
+                        .subscribe({ value: Result<Long> -> cache.putLoadingProgress(value) }, { error: Throwable -> cache.putLoadingProgress(Result(error)) })
         )
     }
 }
