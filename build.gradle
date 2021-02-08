@@ -2,9 +2,30 @@
 buildscript {
     ext.lifecycle_version = '2.1.0'
     ext.rxbinding3 = '3.1.0'
-    ext.nav_version = "2.3.0"
-    ext.work_version = "2.4.0"
-    ext.room_version = "2.2.5"
+    ext.nav_version = "2.3.3"
+    ext.work_version = "2.5.0"
+    ext.room = "2.2.6"
+    ext.room_compiler = "2.2.5"
+    ext.rx_java = "3.0.6"
+    ext.rx_android = "3.0.0"
+    ext.compat = "1.2.0"
+    ext.gson = "2.8.6"
+    ext.guava = "28.0-android"
+    ext.retrofit = "2.9.0"
+    ext.retrofit_gson = "2.6.0"
+    ext.retrofit_rx = "2.9.0"
+    ext.okhttp_log = "3.14.9"
+    ext.okhttp = "3.14.9"
+    ext.junit = "4.13.1"
+    ext.junit_android = "1.1.2"
+    ext.espresso = "3.3.0"
+
+    project.ext {
+        min = 20
+        target = 30
+        compile = 30
+        tools = "30.0.2"
+    }
 
     repositories {
         google()

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion project.compile
+    buildToolsVersion project.tools
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion project.min
+        targetSdkVersion project.target
         versionCode 1
         versionName "1.0"
 
@@ -29,29 +29,24 @@ android {
 dependencies {
     implementation project(':models')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "androidx.appcompat:appcompat:$compat"
 
-    api 'com.google.guava:guava:28.0-android'
+    api "com.google.guava:guava:$guava"
 
     // room
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-runtime:$room"
+    annotationProcessor "androidx.room:room-compiler:$room_compiler"
 
     // retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.6.0"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_rx"
 
     // okHttp
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_log"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp"
 
     // rx
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.6'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java"
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_android"
 }

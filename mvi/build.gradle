@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion project.compile
+    buildToolsVersion project.tools
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion project.min
+        targetSdkVersion project.target
         versionCode 1
         versionName "1.0"
 
@@ -24,11 +24,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "androidx.appcompat:appcompat:$compat"
 
     // rx
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.6'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java"
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_android"
 
     // lifecycle
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
@@ -37,9 +37,4 @@ dependencies {
     // navigation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
-
-
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion project.compile
+    buildToolsVersion project.tools
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion project.min
+        targetSdkVersion project.target
         versionCode 1
         versionName "1.0"
 
@@ -28,21 +28,17 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "androidx.appcompat:appcompat:$compat"
 
-    api 'com.google.guava:guava:28.0-android'
+    api "com.google.guava:guava:$guava"
 
     // rx
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.6'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java"
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_android"
 
     // room
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-runtime:$room"
+    annotationProcessor "androidx.room:room-compiler:$room_compiler"
 
-    implementation 'com.google.code.gson:gson:2.8.5'
-
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "com.google.code.gson:gson:$gson"
 }
