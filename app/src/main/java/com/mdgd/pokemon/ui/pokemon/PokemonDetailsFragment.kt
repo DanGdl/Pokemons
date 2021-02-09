@@ -41,4 +41,8 @@ class PokemonDetailsFragment : HostedFragment<PokemonDetailsScreenState, Pokemon
     override fun setItems(items: List<PokemonProperty>) {
         adapter.setItems(items)
     }
+
+    override fun onChanged(screenState: PokemonDetailsScreenState) {
+        screenState.visit(this)
+    }
 }

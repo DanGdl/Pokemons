@@ -47,4 +47,8 @@ class SplashFragment : HostedFragment<SplashScreenState, SplashContract.ViewMode
             fragmentHost!!.showError(error)
         }
     }
+
+    override fun onChanged(screenState: SplashScreenState) {
+        screenState.visit(this)
+    }
 }

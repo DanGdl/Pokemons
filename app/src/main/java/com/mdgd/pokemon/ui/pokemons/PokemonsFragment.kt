@@ -151,4 +151,8 @@ class PokemonsFragment : HostedFragment<PokemonsScreenState, PokemonsContract.Vi
             fragmentHost!!.showError(error)
         }
     }
+
+    override fun onChanged(screenState: PokemonsScreenState) {
+        screenState.visit(this)
+    }
 }

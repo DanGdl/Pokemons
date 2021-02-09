@@ -57,9 +57,11 @@ abstract class HostedFragment<
         super.onDestroy()
     }
 
-    override fun onChanged(screenState: STATE) {
-        screenState.visit(this)
-    }
+    abstract override fun onChanged(screenState: STATE);
+
+//    override fun onChanged(screenState: STATE) {
+//        screenState.visit(this)
+//    }
 
     protected fun hasHost(): Boolean {
         return fragmentHost != null
