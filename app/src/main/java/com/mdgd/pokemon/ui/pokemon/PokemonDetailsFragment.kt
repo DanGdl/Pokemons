@@ -14,7 +14,7 @@ import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
-class PokemonDetailsFragment : HostedFragment<PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
+class PokemonDetailsFragment : HostedFragment<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
     private val adapter = PokemonPropertiesAdapter()
 
     companion object {
@@ -40,9 +40,5 @@ class PokemonDetailsFragment : HostedFragment<PokemonDetailsScreenState, Pokemon
 
     override fun setItems(items: List<PokemonProperty>) {
         adapter.setItems(items)
-    }
-
-    override fun onChanged(screenState: PokemonDetailsScreenState) {
-        screenState.visit(this)
     }
 }

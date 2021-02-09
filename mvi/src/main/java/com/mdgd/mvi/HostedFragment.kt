@@ -7,7 +7,8 @@ import androidx.navigation.fragment.NavHostFragment
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
-        STATE : ScreenState<*>,
+        VIEW : FragmentContract.View,
+        STATE : ScreenState<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE>,
         HOST : FragmentContract.Host>
     : NavHostFragment(), FragmentContract.View, Observer<STATE> {
@@ -57,11 +58,11 @@ abstract class HostedFragment<
         super.onDestroy()
     }
 
-    abstract override fun onChanged(screenState: STATE);
+//    abstract override fun onChanged(screenState: STATE);
 
-//    override fun onChanged(screenState: STATE) {
-//        screenState.visit(this)
-//    }
+    override fun onChanged(screenState: STATE) {
+        screenState.visit(this as VIEW)
+    }
 
     protected fun hasHost(): Boolean {
         return fragmentHost != null

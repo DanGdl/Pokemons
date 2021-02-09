@@ -13,7 +13,7 @@ import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
 
-class SplashFragment : HostedFragment<SplashScreenState, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View, SplashContract.Router {
+class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View, SplashContract.Router {
 
     companion object {
         fun newInstance(): SplashFragment {
@@ -48,7 +48,7 @@ class SplashFragment : HostedFragment<SplashScreenState, SplashContract.ViewMode
         }
     }
 
-    override fun onChanged(screenState: SplashScreenState) {
-        screenState.visit(this)
-    }
+//    override fun onChanged(screenState: SplashScreenState) {
+//        screenState.visit(this)
+//    }
 }

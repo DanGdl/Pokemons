@@ -19,7 +19,7 @@ import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
-class PokemonsFragment : HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>(), PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>(), PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private val filters: MutableList<String> = ArrayList(3)
     private val onDestroyDisposables = CompositeDisposable()
     private val adapter = PokemonsAdapter()
@@ -150,9 +150,5 @@ class PokemonsFragment : HostedFragment<PokemonsScreenState, PokemonsContract.Vi
         if (hasHost()) {
             fragmentHost!!.showError(error)
         }
-    }
-
-    override fun onChanged(screenState: PokemonsScreenState) {
-        screenState.visit(this)
     }
 }
