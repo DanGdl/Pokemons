@@ -43,7 +43,7 @@ public class PokemonPropertiesAdapter extends RecyclerView.Adapter<PokemonProper
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PokemonPropertyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PokemonPropertyViewHolder<PokemonProperty> holder, int position) {
         holder.bind(items.get(position), position);
     }
 
@@ -53,13 +53,13 @@ public class PokemonPropertiesAdapter extends RecyclerView.Adapter<PokemonProper
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull PokemonPropertyViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull PokemonPropertyViewHolder<PokemonProperty> holder) {
         super.onViewAttachedToWindow(holder);
         holder.setupSubscriptions();
     }
 
     @Override
-    public void onViewDetachedFromWindow(@NonNull PokemonPropertyViewHolder holder) {
+    public void onViewDetachedFromWindow(@NonNull PokemonPropertyViewHolder<PokemonProperty> holder) {
         holder.clearSubscriptions();
         super.onViewDetachedFromWindow(holder);
     }
