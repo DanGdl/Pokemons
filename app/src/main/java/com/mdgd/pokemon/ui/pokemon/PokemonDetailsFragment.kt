@@ -11,7 +11,6 @@ import com.mdgd.mvi.HostedFragment
 import com.mdgd.pokemon.PokemonsApp.Companion.instance
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
 class PokemonDetailsFragment : HostedFragment<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>(), PokemonDetailsContract.View {

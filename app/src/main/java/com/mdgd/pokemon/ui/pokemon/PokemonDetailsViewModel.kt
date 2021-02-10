@@ -21,7 +21,7 @@ class PokemonDetailsViewModel(private val cache: Cache) : MviViewModel<PokemonDe
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(cache.getSelectedPokemonObservable()
                     .map { optional: Optional<PokemonFullDataSchema> -> if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList() }
-                    .subscribe { list: List<PokemonProperty> -> setState(PokemonDetailsScreenState.createSetDataState(list)) })
+                    .subscribe { list: List<PokemonProperty> -> setState(PokemonDetailsScreenState.SetData(list)) })
         }
     }
 

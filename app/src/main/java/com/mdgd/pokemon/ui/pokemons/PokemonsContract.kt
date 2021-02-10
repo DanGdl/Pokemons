@@ -3,7 +3,6 @@ package com.mdgd.pokemon.ui.pokemons
 import com.mdgd.mvi.FragmentContract
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
 
 class PokemonsContract {
     interface ViewModel : FragmentContract.ViewModel<PokemonsScreenState> {

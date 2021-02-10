@@ -15,7 +15,7 @@ import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
+import com.mdgd.pokemon.ui.pokemons.infra.ui.EndlessScrollListener
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 

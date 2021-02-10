@@ -9,12 +9,6 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createAddDataState
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createErrorState
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createLoadingState
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createSetDataState
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState.Companion.createUpdateDataState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
@@ -65,13 +59,13 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(
                     loadPageSubject
-                            .doOnNext { postState(createLoadingState()) }
+                            .doOnNext { postState(PokemonsScreenState.Loading()) }
                             .switchMapSingle { page: Int ->
                                 repo.getPage(page)
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .map { result: Result<List<PokemonFullDataSchema>> -> mapToState(page, result) }
-                                        .onErrorReturn { error: Throwable? -> createErrorState(error) }
+                                        .onErrorReturn { error: Throwable? -> PokemonsScreenState.Error(error) }
                             }
                             .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() },  // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
@@ -98,20 +92,20 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
                 compare
             }
         }
-        return createUpdateDataState(pokemons)
+        return PokemonsScreenState.UpdateData(pokemons)
     }
 
     private fun mapToState(page: Int, result: Result<List<PokemonFullDataSchema>>): PokemonsScreenState {
         return if (result.isError()) {
-            createErrorState(result.getError())
+            PokemonsScreenState.Error(result.getError())
         } else {
             val list = result.getValue()
             if (page == 0) {
                 cache.setPokemons(list)
-                createSetDataState(list)
+                PokemonsScreenState.SetData(list)
             } else {
                 cache.addPokemons(list)
-                createAddDataState(list)
+                PokemonsScreenState.AddData(list)
             }
         }
     }
