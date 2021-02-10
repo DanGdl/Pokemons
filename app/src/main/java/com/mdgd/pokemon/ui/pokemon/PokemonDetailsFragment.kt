@@ -22,6 +22,16 @@ class PokemonDetailsFragment : HostedFragment<PokemonDetailsContract.View, Pokem
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            // The getPrivacyPolicyLink() method will be created automatically.
+            // val pokemonI: String = PokemonDetailsFragmentArgs.fromBundle(arguments).getPokemonId()
+            model?.setPokemonId(PokemonDetailsFragmentArgs.fromBundle(requireArguments()).pokemonId)
+        }
+
+    }
+
     override fun createModel(): PokemonDetailsContract.ViewModel {
         return ViewModelProvider(this, PokemonDetailsViewModelFactory(instance!!.appComponent!!)).get(PokemonDetailsViewModel::class.java)
     }

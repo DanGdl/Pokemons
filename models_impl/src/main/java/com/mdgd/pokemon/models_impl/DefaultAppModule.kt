@@ -8,11 +8,13 @@ import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.network.Network
 import com.mdgd.pokemon.models_impl.cache.CacheImpl
 import com.mdgd.pokemon.models_impl.repo.PokemonsRepository
+import com.mdgd.pokemon.models_impl.repo.cache.PokemonsCacheImpl
 import com.mdgd.pokemon.models_impl.repo.dao.PokemonsDaoImpl
 import com.mdgd.pokemon.models_impl.repo.network.PokemonsNetwork
 
 class DefaultAppModule(val app: Context) : AppModule {
     private val cache: Cache = CacheImpl()
+    private val pokemonCache = PokemonsCacheImpl()
 
     override fun getAppContext(): Context {
         return app
@@ -27,7 +29,7 @@ class DefaultAppModule(val app: Context) : AppModule {
     }
 
     override fun getPokemonsRepo(): PokemonsRepo {
-        return PokemonsRepository(getPokemonsDao(), getPokemonsNetwork())
+        return PokemonsRepository(getPokemonsDao(), getPokemonsNetwork(), pokemonCache)
     }
 
     override fun getCache(): Cache {

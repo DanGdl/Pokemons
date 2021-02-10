@@ -2,11 +2,13 @@ package com.mdgd.pokemon.models_impl.repo.dao
 
 import android.content.Context
 import androidx.room.Room
+import com.google.common.base.Optional
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import java.util.*
 
@@ -37,5 +39,9 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
 
     override fun getCount(): Long {
         return pokemonsRoomDao!!.countRows().toLong()
+    }
+
+    override fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>> {
+        return pokemonsRoomDao!!.getPokemonById(pokemonId)
     }
 }

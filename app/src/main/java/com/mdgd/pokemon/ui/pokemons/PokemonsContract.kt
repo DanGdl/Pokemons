@@ -9,7 +9,7 @@ class PokemonsContract {
         fun reload()
         fun loadPage(page: Int)
         fun sort(filterData: FilterData)
-        fun onItemClicked(pokemon: PokemonFullDataSchema?)
+        fun onItemClicked(pokemon: PokemonFullDataSchema)
     }
 
     interface View : FragmentContract.View {
@@ -22,11 +22,11 @@ class PokemonsContract {
     }
 
     interface Host : FragmentContract.Host {
-        fun proceedToPokemonScreen()
+        fun proceedToPokemonScreen(pokemonId: Long?)
         fun showError(error: Throwable?)
     }
 
     interface Router {
-        fun proceedToNextScreen()
+        fun proceedToNextScreen(pokemonId: Long?)
     }
 }

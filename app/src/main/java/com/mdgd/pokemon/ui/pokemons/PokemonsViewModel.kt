@@ -3,7 +3,6 @@ package com.mdgd.pokemon.ui.pokemons
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.mdgd.mvi.MviViewModel
-import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
@@ -15,7 +14,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.*
 
-class PokemonsViewModel(private val router: PokemonsContract.Router, private val repo: PokemonsRepo, private val cache: Cache) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
+class PokemonsViewModel(private val router: PokemonsContract.Router, private val repo: PokemonsRepo) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
     private val loadPageSubject = PublishSubject.create<Int>()
     private val filtersSubject = BehaviorSubject.createDefault(FilterData())
     private val comparators: Map<String, CharacteristicComparator?> = object : HashMap<String, CharacteristicComparator>() {
@@ -69,7 +68,7 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
                             }
                             .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() },  // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
-                            .map { filters: FilterData -> sort(filters, cache.getPokemons()) }
+                            .map { filters: FilterData -> sort(filters, repo.getPokemons()) }
                             .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() }
             )
             loadPageSubject.onNext(0)
@@ -101,10 +100,8 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
         } else {
             val list = result.getValue()
             if (page == 0) {
-                cache.setPokemons(list)
                 PokemonsScreenState.SetData(list)
             } else {
-                cache.addPokemons(list)
                 PokemonsScreenState.AddData(list)
             }
         }
@@ -122,8 +119,7 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
         filtersSubject.onNext(filterData)
     }
 
-    override fun onItemClicked(pokemon: PokemonFullDataSchema?) {
-        cache.putSelected(pokemon)
-        router.proceedToNextScreen()
+    override fun onItemClicked(pokemon: PokemonFullDataSchema) {
+        router.proceedToNextScreen(pokemon.pokemonSchema?.id)
     }
 }

@@ -8,6 +8,7 @@ import com.mdgd.mvi.HostActivity
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.error.ErrorFragment.Companion.newInstance
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract
+import com.mdgd.pokemon.ui.pokemon.PokemonDetailsFragmentArgs
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
 import com.mdgd.pokemon.ui.splash.SplashContract
 
@@ -25,15 +26,16 @@ class MainActivity : HostActivity(), SplashContract.Host, PokemonsContract.Host,
     }
 
     override fun proceedToPokemonsScreen() {
-        navController!!.navigate(R.id.action_splashFragment_to_pokemonsFragment, null // doesn't work from xml...
-                , NavOptions.Builder()
-                .setPopUpTo(R.id.splashFragment, true)
-                .build()
+        navController!!.navigate(R.id.action_splashFragment_to_pokemonsFragment, null, // doesn't work from xml...
+                NavOptions.Builder()
+                        .setPopUpTo(R.id.splashFragment, true)
+                        .build()
         )
     }
 
-    override fun proceedToPokemonScreen() {
-        navController!!.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment)
+    override fun proceedToPokemonScreen(pokemonId: Long?) {
+        navController!!.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment, PokemonDetailsFragmentArgs(pokemonId
+                ?: -1).toBundle())
     }
 
     override fun showError(error: Throwable?) {

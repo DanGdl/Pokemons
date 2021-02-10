@@ -8,7 +8,7 @@ class PokemonDetailsViewModelFactory(private val appComponent: AppModule) : View
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return if (modelClass == PokemonDetailsViewModel::class.java) {
-            PokemonDetailsViewModel(appComponent.getCache()) as T
+            PokemonDetailsViewModel(appComponent.getPokemonsRepo()) as T
         } else super.create(modelClass)
     }
 }

@@ -1,13 +1,16 @@
 package com.mdgd.pokemon.models_impl.repo.dao
 
 import androidx.room.*
+import com.google.common.base.Optional
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveFullSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models.repo.schemas.*
+import io.reactivex.rxjava3.core.Observable
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Dao
 abstract class PokemonsRoomDao {
@@ -109,8 +112,14 @@ abstract class PokemonsRoomDao {
     abstract fun countRows(): Int
 
     fun getPage(offset: Int, pageSize: Int): List<PokemonFullDataSchema> {
-        val pokemonsMap: MutableMap<Long, PokemonFullDataSchema> = LinkedHashMap()
         val pokemons = getPokemonsForPage(offset, pageSize)
+        val schemas: List<PokemonFullDataSchema> = ArrayList(mapPokemons(pokemons))
+        Collections.shuffle(schemas)
+        return schemas
+    }
+
+    private fun mapPokemons(pokemons: List<PokemonSchema>): MutableCollection<PokemonFullDataSchema> {
+        val pokemonsMap: MutableMap<Long, PokemonFullDataSchema> = LinkedHashMap()
         for (s in pokemons) {
             val fullSchema = PokemonFullDataSchema()
             fullSchema.pokemonSchema = s
@@ -163,9 +172,7 @@ abstract class PokemonsRoomDao {
         for (a in movesMap.values) {
             pokemonsMap[a.move?.pokemonId]?.moves?.add(a)
         }
-        val schemas: List<PokemonFullDataSchema> = ArrayList(pokemonsMap.values)
-        Collections.shuffle(schemas)
-        return schemas
+        return pokemonsMap.values
     }
 
     @Query("SELECT * FROM versiongroupdetails WHERE moveId IN (:ids)")
@@ -191,4 +198,17 @@ abstract class PokemonsRoomDao {
 
     @Query("SELECT * FROM pokemons LIMIT :pageSize OFFSET :offset")
     protected abstract fun getPokemonsForPage(offset: Int, pageSize: Int): List<PokemonSchema>
+
+    @Query("SELECT * FROM pokemons WHERE id in (:ids)")
+    protected abstract fun getPokemonsById(ids: List<Long>): List<PokemonSchema>
+
+    fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>> {
+        val pokemonsById = getPokemonsById(listOf(pokemonId))
+        return if (pokemonsById.isEmpty()) {
+            Observable.just(Optional.absent())
+        } else {
+            val mappedPokemons = mapPokemons(pokemonsById)
+            Observable.just(Optional.fromNullable(mappedPokemons.firstOrNull()))
+        }
+    }
 }

@@ -48,7 +48,7 @@ class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenSta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onDestroyDisposables.add(adapter.onItemClickSubject.subscribe { pokemon: PokemonFullDataSchema? -> model!!.onItemClicked(pokemon) })
+        onDestroyDisposables.add(adapter.onItemClickSubject.subscribe { pokemon: PokemonFullDataSchema -> model!!.onItemClicked(pokemon) })
     }
 
     override fun createModel(): PokemonsContract.ViewModel {
@@ -79,9 +79,9 @@ class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenSta
         filterSpeed?.setOnClickListener(this)
     }
 
-    override fun proceedToNextScreen() {
+    override fun proceedToNextScreen(pokemonId: Long?) {
         if (hasHost()) {
-            fragmentHost!!.proceedToPokemonScreen()
+            fragmentHost!!.proceedToPokemonScreen(pokemonId)
         }
     }
 
