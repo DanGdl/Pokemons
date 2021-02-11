@@ -1,8 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import com.google.common.base.Optional
+import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.PokemonsRepo
@@ -12,29 +10,41 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import java.util.*
 
 class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonDetailsScreenState>(), PokemonDetailsContract.ViewModel {
-    private val pokemonIdSubject: BehaviorSubject<Long> = BehaviorSubject.create()
+//    private val pokemonIdSubject: BehaviorSubject<Long> = BehaviorSubject.create()
 
     override fun setPokemonId(pokemonId: Long) {
-        pokemonIdSubject.onNext(pokemonId)
-    }
-
-    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        super.onAny(owner, event)
-        if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
-            observeTillDestroy(pokemonIdSubject
-                    .switchMap { pokemonId: Long -> repo.getPokemonById(pokemonId) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map { optional: Optional<PokemonFullDataSchema> -> if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList() }
-                    .subscribe { list: List<PokemonProperty> -> setState(PokemonDetailsScreenState.SetData(list)) })
+//        pokemonIdSubject.onNext(pokemonId)
+        val async = viewModelScope.async {
+            supervisorScope {
+                val optional = repo.getPokemonById_S(pokemonId)
+                val list = if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList()
+                list
+            }
+        }
+        viewModelScope.launch {
+            supervisorScope {
+                setState(PokemonDetailsScreenState.SetData(async.await()))
+            }
         }
     }
+
+//    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+//        super.onAny(owner, event)
+//        if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
+//            observeTillDestroy(pokemonIdSubject
+//                    .switchMap { pokemonId: Long -> repo.getPokemonById(pokemonId) }
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .map { optional: Optional<PokemonFullDataSchema> -> if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList() }
+//                    .subscribe { list: List<PokemonProperty> -> setState(PokemonDetailsScreenState.SetData(list)) })
+//        }
+//    }
 
     private fun mapToListPokemon(pokemonDetails: PokemonFullDataSchema): List<PokemonProperty> {
         val properties: MutableList<PokemonProperty> = ArrayList()

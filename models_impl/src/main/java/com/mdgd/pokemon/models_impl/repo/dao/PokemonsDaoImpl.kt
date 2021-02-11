@@ -42,6 +42,36 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
     }
 
     override fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>> {
+        return Observable.just(pokemonsRoomDao!!.getPokemonById(pokemonId))
+    }
+
+
+    override suspend fun save_S(list: List<PokemonDetails>) {
+        pokemonsRoomDao!!.save(list)
+    }
+
+    override suspend fun getPage_S(page: Int, pageSize: Int): List<PokemonFullDataSchema> {
+        val offset = page * pageSize
+        val rows = pokemonsRoomDao!!.countRows()
+        return when {
+            rows == 0 -> {
+                ArrayList(0)
+            }
+            pokemonsRoomDao.countRows() <= offset -> {
+                // todo: any proper way to handle?
+                throw Exception("No more pokemons in DAO")
+            }
+            else -> {
+                pokemonsRoomDao.getPage(offset, pageSize)
+            }
+        }
+    }
+
+    override suspend fun getCount_S(): Long {
+        return pokemonsRoomDao!!.countRows().toLong()
+    }
+
+    override suspend fun getPokemonById_S(pokemonId: Long): Optional<PokemonFullDataSchema> {
         return pokemonsRoomDao!!.getPokemonById(pokemonId)
     }
 }

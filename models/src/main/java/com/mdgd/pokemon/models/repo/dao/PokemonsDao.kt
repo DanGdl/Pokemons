@@ -13,4 +13,9 @@ interface PokemonsDao {
     fun getPage(page: Int, pageSize: Int): Single<Result<List<PokemonFullDataSchema>>>
     fun getCount(): Long
     fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>>
+
+    suspend fun save_S(list: List<PokemonDetails>)
+    suspend fun getPage_S(page: Int, pageSize: Int): List<PokemonFullDataSchema>
+    suspend fun getCount_S(): Long
+    suspend fun getPokemonById_S(pokemonId: Long): Optional<PokemonFullDataSchema>
 }

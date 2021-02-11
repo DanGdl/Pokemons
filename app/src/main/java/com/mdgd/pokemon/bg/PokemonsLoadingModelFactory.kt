@@ -1,6 +1,5 @@
 package com.mdgd.pokemon.bg
 
-import com.mdgd.pokemon.bg.LoadPokemonsContract.ServiceModel
 import com.mdgd.pokemon.models.AppModule
 
 class PokemonsLoadingModelFactory(var appComponent: AppModule) {

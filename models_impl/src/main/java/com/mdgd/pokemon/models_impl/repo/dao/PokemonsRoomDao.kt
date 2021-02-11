@@ -8,7 +8,6 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models.repo.schemas.*
-import io.reactivex.rxjava3.core.Observable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -202,13 +201,12 @@ abstract class PokemonsRoomDao {
     @Query("SELECT * FROM pokemons WHERE id in (:ids)")
     protected abstract fun getPokemonsById(ids: List<Long>): List<PokemonSchema>
 
-    fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>> {
+    fun getPokemonById(pokemonId: Long): Optional<PokemonFullDataSchema> {
         val pokemonsById = getPokemonsById(listOf(pokemonId))
         return if (pokemonsById.isEmpty()) {
-            Observable.just(Optional.absent())
+            Optional.absent()
         } else {
-            val mappedPokemons = mapPokemons(pokemonsById)
-            Observable.just(Optional.fromNullable(mappedPokemons.firstOrNull()))
+            Optional.fromNullable(mapPokemons(pokemonsById).firstOrNull())
         }
     }
 }

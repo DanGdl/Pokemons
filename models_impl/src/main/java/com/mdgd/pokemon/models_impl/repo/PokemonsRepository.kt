@@ -9,7 +9,6 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.Network
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.ObservableSource
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleSource
 import io.reactivex.rxjava3.functions.Function
@@ -35,24 +34,6 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
                 })
     }
 
-    override fun loadPokemons(): Observable<Result<Long>> {
-        val count = dao.getCount()
-        return network.getPokemonsCount()
-                .flatMapObservable { result: Result<Long> ->
-                    when {
-                        result.isError() -> {
-                            return@flatMapObservable Observable.just(Result<Long>(result.getError()))
-                        }
-                        count == result.getValue() -> {
-                            return@flatMapObservable Observable.just(Result(count))
-                        }
-                        else -> {
-                            return@flatMapObservable loadPokemonsInner()
-                        }
-                    }
-                }
-    }
-
     override fun getPokemons() = cache.getPokemons()
 
     override fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>> {
@@ -65,19 +46,6 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
         return dao.getPokemonById(pokemonId)
     }
 
-    private fun loadPokemonsInner(): Observable<Result<Long>> {
-        return network.loadPokemons(PokemonsRepo.PAGE_SIZE * 3)
-                .flatMap(Function<Result<List<PokemonDetails>>, ObservableSource<Result<Long>>> { result: Result<List<PokemonDetails>> ->
-                    if (result.isError()) {
-                        return@Function Observable.just(Result<Long>(result.getError()))
-                    } else {
-                        return@Function dao.save(result.getValue())
-                                .toSingleDefault(Result(result.getValue().size.toLong()))
-                                .toObservable()
-                    }
-                })
-    }
-
     private fun loadPage(page: Int): Single<Result<List<PokemonFullDataSchema>>> {
         return network.loadPokemons(page, PokemonsRepo.PAGE_SIZE)
                 .flatMap(Function<Result<List<PokemonDetails>>, SingleSource<out Result<List<PokemonFullDataSchema>>>> { result: Result<List<PokemonDetails>> ->
@@ -88,5 +56,46 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
                                 .andThen(dao.getPage(page, PokemonsRepo.PAGE_SIZE))
                     }
                 })
+    }
+
+
+    override suspend fun getPage_S(page: Int): List<PokemonFullDataSchema> {
+        val list = dao.getPage_S(page, PokemonsRepo.PAGE_SIZE)
+        return if (list.isEmpty()) loadPage_S(page) else list
+    }
+
+    private suspend fun loadPage_S(page: Int): List<PokemonFullDataSchema> {
+        val list = network.loadPokemons_S(page, PokemonsRepo.PAGE_SIZE)
+        dao.save_S(list)
+        return dao.getPage_S(page, PokemonsRepo.PAGE_SIZE)
+    }
+
+    override suspend fun loadPokemons_S(): Long {
+        val count = dao.getCount_S()
+        val pokemonsCount = network.getPokemonsCount_S()
+        return when (count) {
+            pokemonsCount -> {
+                count
+            }
+            else -> {
+                loadPokemonsInner_S()
+            }
+        }
+    }
+
+    private suspend fun loadPokemonsInner_S(): Long {
+        val page = network.loadPokemons_S(PokemonsRepo.PAGE_SIZE)
+        dao.save_S(page)
+        return page.size.toLong()
+    }
+
+    override suspend fun getPokemonById_S(pokemonId: Long): Optional<PokemonFullDataSchema> {
+        val pokemons = cache.getPokemons()
+        for (p in pokemons) {
+            if (pokemonId == p.pokemonSchema?.id) {
+                return Optional.fromNullable(p)
+            }
+        }
+        return dao.getPokemonById_S(pokemonId)
     }
 }
