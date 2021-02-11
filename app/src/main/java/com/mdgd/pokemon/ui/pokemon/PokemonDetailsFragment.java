@@ -30,6 +30,14 @@ public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsScreenS
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            getModel().setPokemonId(PokemonDetailsFragmentArgs.fromBundle(getArguments()).getPokemonId());
+        }
+    }
+
+    @Override
     protected PokemonDetailsContract.ViewModel createModel() {
         return new ViewModelProvider(this, new PokemonDetailsViewModelFactory(PokemonsApp.getInstance().getAppComponent())).get(PokemonDetailsViewModel.class);
     }

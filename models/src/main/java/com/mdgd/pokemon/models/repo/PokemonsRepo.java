@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.models.repo;
 
+import com.google.common.base.Optional;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
@@ -17,4 +18,6 @@ public interface PokemonsRepo {
     Observable<Result<Long>> loadPokemons();
 
     List<PokemonFullDataSchema> getPokemons();
+
+    Observable<Optional<PokemonFullDataSchema>> getPokemonsById(Long id);
 }

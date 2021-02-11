@@ -93,9 +93,9 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     }
 
     @Override
-    public void proceedToNextScreen() {
+    public void proceedToNextScreen(long id) {
         if (hasHost()) {
-            getFragmentHost().proceedToPokemonScreen();
+            getFragmentHost().proceedToPokemonScreen(id);
         }
     }
 

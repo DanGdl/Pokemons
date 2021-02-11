@@ -9,6 +9,7 @@ import java.util.List;
 public class PokemonDetailsContract {
 
     public interface ViewModel extends FragmentContract.ViewModel<PokemonDetailsScreenState> {
+        void setPokemonId(long pokemonId);
     }
 
     public interface View extends FragmentContract.View {

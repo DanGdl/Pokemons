@@ -132,7 +132,6 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
 
     @Override
     public void onItemClicked(PokemonFullDataSchema pokemon) {
-        cache.putSelected(pokemon);
-        router.proceedToNextScreen();
+        router.proceedToNextScreen(pokemon.getPokemonSchema().getId());
     }
 }

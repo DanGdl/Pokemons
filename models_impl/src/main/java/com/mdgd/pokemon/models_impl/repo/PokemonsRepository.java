@@ -1,6 +1,8 @@
-package com.mdgd.pokemon.models.repo;
+package com.mdgd.pokemon.models_impl.repo;
 
+import com.google.common.base.Optional;
 import com.mdgd.pokemon.models.infra.Result;
+import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.cache.PokemonsCache;
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
@@ -54,6 +56,17 @@ public class PokemonsRepository implements PokemonsRepo {
     @Override
     public List<PokemonFullDataSchema> getPokemons() {
         return cache.getPokemons();
+    }
+
+    @Override
+    public Observable<Optional<PokemonFullDataSchema>> getPokemonsById(Long id) {
+        final List<PokemonFullDataSchema> pokemons = cache.getPokemons();
+        for (PokemonFullDataSchema p : pokemons) {
+            if (id == p.getPokemonSchema().getId()) {
+                return Observable.just(Optional.fromNullable(p));
+            }
+        }
+        return dao.getPokemonById(id);
     }
 
     private Observable<Result<Long>> loadPokemonsInner() {

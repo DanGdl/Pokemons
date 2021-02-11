@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.models.repo.dao;
+package com.mdgd.pokemon.models_impl.repo.dao;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

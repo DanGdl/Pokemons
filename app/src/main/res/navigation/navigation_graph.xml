@@ -31,7 +31,14 @@
         android:id="@+id/pokemonDetailsFragment"
         android:name="com.mdgd.pokemon.ui.pokemon.PokemonDetailsFragment"
         android:label="PokemonDetailsFragment"
-        tools:layout="@layout/fragment_pokemon_properties" />
+        tools:layout="@layout/fragment_pokemon_properties">
+
+        <argument
+            android:name="pokemonId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+
+    </fragment>
 
 
 </navigation>

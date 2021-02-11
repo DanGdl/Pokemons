@@ -18,7 +18,7 @@ public class PokemonDetailsViewModelFactory extends ViewModelProvider.NewInstanc
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass == PokemonDetailsViewModel.class) {
-            return (T) new PokemonDetailsViewModel(appComponent.getCache());
+            return (T) new PokemonDetailsViewModel(appComponent.getPokemonsRepo());
         }
         return null;
     }

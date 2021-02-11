@@ -1,11 +1,11 @@
 package com.mdgd.pokemon;
 
-import android.app.Application;
+import androidx.multidex.MultiDexApplication;
 
 import com.mdgd.pokemon.models.AppModule;
-import com.mdgd.pokemon.models.DefaultAppModule;
+import com.mdgd.pokemon.models_impl.DefaultAppModule;
 
-public class PokemonsApp extends Application {
+public class PokemonsApp extends MultiDexApplication {
 
     private static PokemonsApp instance;
     private AppModule appComponent;

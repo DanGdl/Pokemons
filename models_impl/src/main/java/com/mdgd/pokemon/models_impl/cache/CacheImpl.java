@@ -1,6 +1,7 @@
-package com.mdgd.pokemon.models.cache;
+package com.mdgd.pokemon.models_impl.cache;
 
 import com.google.common.base.Optional;
+import com.mdgd.pokemon.models.cache.Cache;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 

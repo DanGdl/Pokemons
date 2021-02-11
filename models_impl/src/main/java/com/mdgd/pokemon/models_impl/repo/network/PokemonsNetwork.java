@@ -1,7 +1,8 @@
-package com.mdgd.pokemon.models.repo.network;
+package com.mdgd.pokemon.models_impl.repo.network;
 
 import com.mdgd.pokemon.models.BuildConfig;
 import com.mdgd.pokemon.models.infra.Result;
+import com.mdgd.pokemon.models.repo.network.Network;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonData;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList;

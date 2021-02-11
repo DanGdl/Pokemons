@@ -1,17 +1,18 @@
-package com.mdgd.pokemon.models;
+package com.mdgd.pokemon.models_impl;
 
 import android.content.Context;
 
+import com.mdgd.pokemon.models.AppModule;
 import com.mdgd.pokemon.models.cache.Cache;
-import com.mdgd.pokemon.models.cache.CacheImpl;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
-import com.mdgd.pokemon.models.repo.PokemonsRepository;
 import com.mdgd.pokemon.models.repo.cache.PokemonsCache;
-import com.mdgd.pokemon.models.repo.cache.PokemonsCacheImpl;
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao;
-import com.mdgd.pokemon.models.repo.dao.PokemonsDaoImpl;
 import com.mdgd.pokemon.models.repo.network.Network;
-import com.mdgd.pokemon.models.repo.network.PokemonsNetwork;
+import com.mdgd.pokemon.models_impl.cache.CacheImpl;
+import com.mdgd.pokemon.models_impl.repo.PokemonsRepository;
+import com.mdgd.pokemon.models_impl.repo.cache.PokemonsCacheImpl;
+import com.mdgd.pokemon.models_impl.repo.dao.PokemonsDaoImpl;
+import com.mdgd.pokemon.models_impl.repo.network.PokemonsNetwork;
 
 public class DefaultAppModule implements AppModule {
     private final Context app;

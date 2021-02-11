@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.models.repo.dao;
+package com.mdgd.pokemon.models_impl.repo.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
+import com.google.common.base.Optional;
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveFullSchema;
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
@@ -137,8 +138,13 @@ public abstract class PokemonsRoomDao {
 
 
     public List<PokemonFullDataSchema> getPage(int offset, int pageSize) {
+        final List<PokemonFullDataSchema> schemas = mapPokemons(getPokemonsForPage(offset, pageSize));
+        Collections.shuffle(schemas);
+        return schemas;
+    }
+
+    private List<PokemonFullDataSchema> mapPokemons(List<PokemonSchema> pokemons) {
         final Map<Long, PokemonFullDataSchema> pokemonsMap = new LinkedHashMap<>();
-        final List<PokemonSchema> pokemons = getPokemonsForPage(offset, pageSize);
 
         for (PokemonSchema s : pokemons) {
             final PokemonFullDataSchema fullSchema = new PokemonFullDataSchema();
@@ -198,9 +204,7 @@ public abstract class PokemonsRoomDao {
             pokemonsMap.get(a.getMove().getPokemonId()).getMoves().add(a);
         }
 
-        final List<PokemonFullDataSchema> schemas = new ArrayList<>(pokemonsMap.values());
-        Collections.shuffle(schemas);
-        return schemas;
+        return new ArrayList<>(pokemonsMap.values());
     }
 
     @Query("SELECT * FROM versiongroupdetails WHERE moveId IN (:ids)")
@@ -226,4 +230,12 @@ public abstract class PokemonsRoomDao {
 
     @Query("SELECT * FROM pokemons LIMIT :pageSize OFFSET :offset")
     protected abstract List<PokemonSchema> getPokemonsForPage(int offset, int pageSize);
+
+    @Query("SELECT * FROM pokemons WHERE id in (:ids)")
+    protected abstract List<PokemonSchema> getPokemonsById(List<Long> ids);
+
+    public Optional<PokemonFullDataSchema> getPokemonById(Long id) {
+        final List<PokemonSchema> pokemonsById = getPokemonsById(new ArrayList<>(Collections.singletonList(id)));
+        return pokemonsById.isEmpty() ? Optional.absent() : Optional.fromNullable(mapPokemons(pokemonsById).get(0));
+    }
 }

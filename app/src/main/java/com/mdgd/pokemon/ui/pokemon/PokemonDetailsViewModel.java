@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.mdgd.mvi.MviViewModel;
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.models.cache.Cache;
+import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 import com.mdgd.pokemon.models.repo.schemas.Ability;
@@ -24,19 +24,28 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+
 public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenState> implements PokemonDetailsContract.ViewModel {
 
-    private final Cache cache;
+    private final BehaviorSubject<Long> pokemonIdSubject = BehaviorSubject.create();
+    private final PokemonsRepo repo;
 
-    public PokemonDetailsViewModel(Cache cache) {
-        this.cache = cache;
+    public PokemonDetailsViewModel(PokemonsRepo repo) {
+        this.repo = repo;
+    }
+
+    @Override
+    public void setPokemonId(long pokemonId) {
+        pokemonIdSubject.onNext(pokemonId);
     }
 
     @Override
     protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
         super.onAny(owner, event);
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
-            observeTillDestroy(cache.getSelectedPokemonObservable()
+            observeTillDestroy(pokemonIdSubject
+                    .switchMap(repo::getPokemonsById)
                     .map(optional -> optional.isPresent() ? mapToListPokemon(optional.get()) : new LinkedList<PokemonProperty>())
                     .subscribe(list -> setState(PokemonDetailsScreenState.createSetDataState(list))));
         }

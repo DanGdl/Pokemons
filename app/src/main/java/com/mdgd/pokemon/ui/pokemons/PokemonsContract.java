@@ -35,12 +35,12 @@ public class PokemonsContract {
     }
 
     public interface Host extends FragmentContract.Host {
-        void proceedToPokemonScreen();
+        void proceedToPokemonScreen(long id);
 
         void showError(Throwable error);
     }
 
     public interface Router {
-        void proceedToNextScreen();
+        void proceedToNextScreen(long id);
     }
 }

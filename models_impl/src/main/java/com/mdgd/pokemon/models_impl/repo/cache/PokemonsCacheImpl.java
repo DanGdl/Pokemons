@@ -1,5 +1,6 @@
-package com.mdgd.pokemon.models.repo.cache;
+package com.mdgd.pokemon.models_impl.repo.cache;
 
+import com.mdgd.pokemon.models.repo.cache.PokemonsCache;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
 import java.util.ArrayList;

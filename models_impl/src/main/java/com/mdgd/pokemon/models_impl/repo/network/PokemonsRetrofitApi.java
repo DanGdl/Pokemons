@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.models.repo.network;
+package com.mdgd.pokemon.models_impl.repo.network;
 
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails;
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList;
