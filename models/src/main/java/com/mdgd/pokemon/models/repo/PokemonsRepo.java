@@ -15,4 +15,6 @@ public interface PokemonsRepo {
     Single<Result<List<PokemonFullDataSchema>>> getPage(Integer page);
 
     Observable<Result<Long>> loadPokemons();
+
+    List<PokemonFullDataSchema> getPokemons();
 }

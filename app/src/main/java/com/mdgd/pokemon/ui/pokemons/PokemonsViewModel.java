@@ -74,7 +74,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
 
                     // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
-                            .map(filters -> sort(filters, cache.getPokemons()))
+                            .map(filters -> sort(filters, repo.getPokemons()))
                             .subscribe(this::setState, Throwable::printStackTrace)
 
             );
@@ -107,10 +107,8 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
         } else {
             final List<PokemonFullDataSchema> list = result.getValue();
             if (page == 0) {
-                cache.setPokemons(list);
                 return PokemonsScreenState.createSetDataState(list);
             } else {
-                cache.addPokemons(list);
                 return PokemonsScreenState.createAddDataState(list);
             }
         }
