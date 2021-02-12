@@ -21,7 +21,7 @@ class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache
             repo.loadInitialPages(initialAmount)
             cache.putLoadingProgress(Result(initialAmount))
 
-            cache.putLoadingProgress(Result(repo.loadPokemons_S(initialAmount)))
+            cache.putLoadingProgress(Result(repo.loadPokemons(initialAmount)))
             cancelScope()
         }
     }

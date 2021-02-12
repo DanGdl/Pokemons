@@ -27,10 +27,6 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.appcompat:appcompat:$compat"
 
-    // rx
-    implementation "io.reactivex.rxjava3:rxjava:$rx_java"
-    implementation "io.reactivex.rxjava3:rxandroid:$rx_android"
-
     // lifecycle
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
@@ -39,6 +35,7 @@ dependencies {
     // navigation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+
     implementation "androidx.core:core-ktx:$ktx"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

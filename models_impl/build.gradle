@@ -34,13 +34,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.appcompat:appcompat:$compat"
 
-    api "com.google.guava:guava:$guava"
-
     // room
     implementation "androidx.room:room-runtime:$room"
-    // annotationProcessor "androidx.room:room-compiler:$room_compiler" // java
     kapt "androidx.room:room-compiler:$room_compiler"
-
 
     // retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
@@ -51,13 +47,10 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_log"
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
 
-    // rx
-    implementation "io.reactivex.rxjava3:rxjava:$rx_java"
-    implementation "io.reactivex.rxjava3:rxandroid:$rx_android"
     implementation "androidx.core:core-ktx:$ktx"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    // coruotins
+    // coroutins
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutins"
 }
 

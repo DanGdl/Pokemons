@@ -35,8 +35,8 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<Pok
             val async = viewModelScope.async {
                 val pokemonId = pokemonIdChannel.receive()
                 supervisorScope {
-                    val optional = repo.getPokemonById_S(pokemonId)
-                    val list = if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList()
+                    val details = repo.getPokemonById(pokemonId)
+                    val list = if (details == null) LinkedList() else mapToListPokemon(details)
                     list
                 }
             }

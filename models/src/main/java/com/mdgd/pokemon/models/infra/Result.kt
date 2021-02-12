@@ -1,34 +1,33 @@
 package com.mdgd.pokemon.models.infra
 
-import com.google.common.base.Optional
-
+// TODO: use result from kotlin
 class Result<T> {
-    private val value: Optional<T>
-    private val error: Optional<Throwable>
+    private val value: T?
+    private val error: Throwable?
 
     constructor(value: T) {
-        this.value = Optional.of(value)
-        error = Optional.absent()
+        this.value = value
+        error = null
     }
 
     constructor(error: Throwable) {
-        value = Optional.absent()
-        this.error = Optional.of(error)
+        value = null
+        this.error = error
     }
 
     fun isError(): Boolean {
-        return !value.isPresent
+        return error != null
     }
 
     fun getValue(): T {
-        return value.get()
+        return value!!
     }
 
     fun getError(): Throwable {
-        return error.get()
+        return error!!
     }
 
     fun hasValue(): Boolean {
-        return value.isPresent
+        return error == null
     }
 }

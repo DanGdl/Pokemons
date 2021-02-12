@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.models_impl.repo.dao
 
 import androidx.room.*
-import com.google.common.base.Optional
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveFullSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
@@ -201,12 +200,12 @@ abstract class PokemonsRoomDao {
     @Query("SELECT * FROM pokemons WHERE id in (:ids)")
     protected abstract fun getPokemonsById(ids: List<Long>): List<PokemonSchema>
 
-    fun getPokemonById(pokemonId: Long): Optional<PokemonFullDataSchema> {
+    fun getPokemonById(pokemonId: Long): PokemonFullDataSchema? {
         val pokemonsById = getPokemonsById(listOf(pokemonId))
         return if (pokemonsById.isEmpty()) {
-            Optional.absent()
+            null
         } else {
-            Optional.fromNullable(mapPokemons(pokemonsById).firstOrNull())
+            mapPokemons(pokemonsById).firstOrNull()
         }
     }
 }

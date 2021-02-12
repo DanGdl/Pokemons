@@ -2,21 +2,22 @@ package com.mdgd.pokemon.ui.pokemons
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
-import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.BehaviorSubject
-import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import java.util.*
 
 class PokemonsViewModel(private val router: PokemonsContract.Router, private val repo: PokemonsRepo) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
-    private val loadPageSubject = PublishSubject.create<Int>()
-    private val filtersSubject = BehaviorSubject.createDefault(FilterData())
+    private val pageFlow = MutableStateFlow(0)
+    private val filterFlow = MutableStateFlow(FilterData())
     private val comparators: Map<String, CharacteristicComparator?> = object : HashMap<String, CharacteristicComparator>() {
         init {
             put(FilterData.FILTER_ATTACK, object : CharacteristicComparator {
@@ -36,6 +37,8 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
             })
         }
     }
+    private var launch: Job? = null
+
 
     private fun compareProperty(property: String, p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
         var val1 = -1
@@ -55,25 +58,31 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
 
     override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
-        if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
-            observeTillDestroy(
-                    loadPageSubject
-                            .doOnNext { postState(PokemonsScreenState.Loading()) }
-                            .switchMapSingle { page: Int ->
-                                repo.getPage(page)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .map { result: Result<List<PokemonFullDataSchema>> -> mapToState(page, result) }
-                                        .onErrorReturn { error: Throwable? -> PokemonsScreenState.Error(error) }
+        if (event == Lifecycle.Event.ON_CREATE && launch == null) {
+            launch = viewModelScope.launch {
+                pageFlow.collect { page: Int ->
+                    setState(PokemonsScreenState.Loading())
+                    supervisorScope {
+                        try {
+                            val pokemonsPage = repo.getPage(page)
+                            if (page == 0) {
+                                setState(PokemonsScreenState.SetData(pokemonsPage))
+                            } else {
+                                setState(PokemonsScreenState.AddData(pokemonsPage))
                             }
-                            .subscribe(
-                                    { state: PokemonsScreenState -> setState(state) },
-                                    { obj: Throwable -> obj.printStackTrace() }),  // do we need to sort list once more when there is a filter and new page arrived?
-                    filtersSubject
-                            .map { filters: FilterData -> sort(filters, repo.getPokemons()) }
-                            .subscribe({ state: PokemonsScreenState -> setState(state) }, { obj: Throwable -> obj.printStackTrace() })
-            )
-            loadPageSubject.onNext(0)
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            setState(PokemonsScreenState.Error(e))
+                        }
+                    }
+                }
+            }
+
+            viewModelScope.launch {
+                filterFlow.collect { data ->
+                    setState(sort(data, repo.getPokemons()))
+                }
+            }
         }
     }
 
@@ -96,29 +105,22 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
         return PokemonsScreenState.UpdateData(pokemons)
     }
 
-    private fun mapToState(page: Int, result: Result<List<PokemonFullDataSchema>>): PokemonsScreenState {
-        return if (result.isError()) {
-            PokemonsScreenState.Error(result.getError())
-        } else {
-            val list = result.getValue()
-            if (page == 0) {
-                PokemonsScreenState.SetData(list)
-            } else {
-                PokemonsScreenState.AddData(list)
-            }
+    override fun reload() {
+        viewModelScope.launch {
+            pageFlow.emit(0)
         }
     }
 
-    override fun reload() {
-        loadPageSubject.onNext(0)
-    }
-
     override fun loadPage(page: Int) {
-        loadPageSubject.onNext(page)
+        viewModelScope.launch {
+            pageFlow.emit(page)
+        }
     }
 
     override fun sort(filterData: FilterData) {
-        filtersSubject.onNext(filterData)
+        viewModelScope.launch {
+            filterFlow.emit(filterData)
+        }
     }
 
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {
