@@ -1,6 +1,5 @@
 package com.mdgd.pokemon.models_impl.repo.network
 
-import android.util.Log
 import com.mdgd.pokemon.models.BuildConfig
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.network.Network
@@ -9,10 +8,9 @@ import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -127,24 +125,19 @@ class PokemonsNetwork : Network {
             result.results!!
         }
         val details = Vector<PokemonDetails>(list.size)
-        // todo how to make it parallel?
         val channel = Channel<PokemonDetails>()
         supervisorScope {
-            Log.d("LOGG", "Loading details")
             for (item in list) {
-                withContext(Dispatchers.IO) {
-                    Log.d("LOGG", "Loading details for ${item.name}")
-                    val detail = service.getPokemonsDetails_S(item.url)
-                    Log.d("LOGG", "Send details for ${detail.name}")
-                    channel.send(detail)
+                launch {
+                    channel.send(service.getPokemonsDetails_S(item.url))
                 }
             }
-        }
-        Log.d("LOGG", "Receiving details")
-        while (details.size != list.size) {
-            val receive = channel.receive()
-            Log.d("LOGG", "Received details for ${receive.name}")
-            details.add(receive)
+
+            launch {
+                while (details.size != list.size) {
+                    details.add(channel.receive())
+                }
+            }
         }
         return ArrayList(details)
     }
