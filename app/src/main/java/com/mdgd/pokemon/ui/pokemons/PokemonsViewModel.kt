@@ -66,10 +66,12 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
                                         .map { result: Result<List<PokemonFullDataSchema>> -> mapToState(page, result) }
                                         .onErrorReturn { error: Throwable? -> PokemonsScreenState.Error(error) }
                             }
-                            .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() },  // do we need to sort list once more when there is a filter and new page arrived?
+                            .subscribe(
+                                    { state: PokemonsScreenState -> setState(state) },
+                                    { obj: Throwable -> obj.printStackTrace() }),  // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
                             .map { filters: FilterData -> sort(filters, repo.getPokemons()) }
-                            .subscribe({ state: PokemonsScreenState -> setState(state) }) { obj: Throwable -> obj.printStackTrace() }
+                            .subscribe({ state: PokemonsScreenState -> setState(state) }, { obj: Throwable -> obj.printStackTrace() })
             )
             loadPageSubject.onNext(0)
         }

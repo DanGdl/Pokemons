@@ -91,12 +91,16 @@ class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenSta
                 refreshSwipe!!.isRefreshing = true
             }
         } else {
-            if (filterAttack === view) {
-                setupFilter(filterAttack, FilterData.FILTER_ATTACK)
-            } else if (filterDefence === view) {
-                setupFilter(filterDefence, FilterData.FILTER_DEFENCE)
-            } else if (filterSpeed === view) {
-                setupFilter(filterSpeed, FilterData.FILTER_SPEED)
+            when {
+                filterAttack === view -> {
+                    setupFilter(filterAttack, FilterData.FILTER_ATTACK)
+                }
+                filterDefence === view -> {
+                    setupFilter(filterDefence, FilterData.FILTER_DEFENCE)
+                }
+                filterSpeed === view -> {
+                    setupFilter(filterSpeed, FilterData.FILTER_SPEED)
+                }
             }
             model!!.sort(FilterData(ArrayList(filters)))
         }
@@ -113,6 +117,7 @@ class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenSta
     }
 
     override fun onRefresh() {
+        scrollListener.resetState()
         model!!.reload()
     }
 
