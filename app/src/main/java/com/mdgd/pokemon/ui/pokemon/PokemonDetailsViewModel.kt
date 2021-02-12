@@ -1,5 +1,7 @@
 package com.mdgd.pokemon.ui.pokemon
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
 import com.mdgd.pokemon.R
@@ -10,41 +12,41 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import java.util.*
 
 class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonDetailsScreenState>(), PokemonDetailsContract.ViewModel {
-//    private val pokemonIdSubject: BehaviorSubject<Long> = BehaviorSubject.create()
+    private val pokemonIdChannel = Channel<Long>()
+    private var pokemonLoadingJob: Job? = null
 
     override fun setPokemonId(pokemonId: Long) {
-//        pokemonIdSubject.onNext(pokemonId)
-        val async = viewModelScope.async {
-            supervisorScope {
-                val optional = repo.getPokemonById_S(pokemonId)
-                val list = if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList()
-                list
-            }
-        }
         viewModelScope.launch {
-            supervisorScope {
-                setState(PokemonDetailsScreenState.SetData(async.await()))
-            }
+            pokemonIdChannel.send(pokemonId)
         }
     }
 
-//    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-//        super.onAny(owner, event)
-//        if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
-//            observeTillDestroy(pokemonIdSubject
-//                    .switchMap { pokemonId: Long -> repo.getPokemonById(pokemonId) }
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .map { optional: Optional<PokemonFullDataSchema> -> if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList() }
-//                    .subscribe { list: List<PokemonProperty> -> setState(PokemonDetailsScreenState.SetData(list)) })
-//        }
-//    }
+    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+        super.onAny(owner, event)
+        if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
+            val async = viewModelScope.async {
+                val pokemonId = pokemonIdChannel.receive()
+                supervisorScope {
+                    val optional = repo.getPokemonById_S(pokemonId)
+                    val list = if (optional.isPresent) mapToListPokemon(optional.get()) else LinkedList()
+                    list
+                }
+            }
+            pokemonLoadingJob = viewModelScope.launch {
+                supervisorScope {
+                    setState(PokemonDetailsScreenState.SetData(async.await()))
+                }
+            }
+        }
+    }
 
     private fun mapToListPokemon(pokemonDetails: PokemonFullDataSchema): List<PokemonProperty> {
         val properties: MutableList<PokemonProperty> = ArrayList()

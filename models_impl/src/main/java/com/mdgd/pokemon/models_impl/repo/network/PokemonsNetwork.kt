@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.models_impl.repo.network
 
+import android.util.Log
 import com.mdgd.pokemon.models.BuildConfig
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.network.Network
@@ -8,15 +9,19 @@ import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonsList
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.floor
+import kotlin.collections.ArrayList
 import kotlin.math.max
-import kotlin.math.min
 
 class PokemonsNetwork : Network {
     private val service: PokemonsRetrofitApi
@@ -66,16 +71,15 @@ class PokemonsNetwork : Network {
     }
 
 
-    override suspend fun loadPokemons_S(bulkSize: Int): List<PokemonDetails> {
-        val firstPage = service.loadPage_S(1, 0)
-        val nextPage = service.loadPage_S(firstPage.count, 0)
-        return mapToDetails2(nextPage, bulkSize)
+    override suspend fun loadPokemons_S(pokemonsCount: Long, offset: Long): List<PokemonDetails> {
+        val nextPage = service.loadPage_S(pokemonsCount.toInt(), offset.toInt())
+        return mapToDetails2(nextPage)
     }
 
     override suspend fun loadPokemons_S(page: Int, pageSize: Int): List<PokemonDetails> {
         val i = max(page - 1, 0)
         val dataPage = service.loadPage_S(pageSize, i * pageSize)
-        return mapToDetails2(dataPage, pageSize)
+        return mapToDetails2(dataPage)
     }
 
     override suspend fun getPokemonsCount_S(): Long {
@@ -116,35 +120,32 @@ class PokemonsNetwork : Network {
                 }
     }
 
-    private suspend fun mapToDetails2(result: PokemonsList, bulkSize: Int): List<PokemonDetails> {
+    private suspend fun mapToDetails2(result: PokemonsList): List<PokemonDetails> {
         val list = if (result.results == null) {
             ArrayList()
         } else {
             result.results!!
         }
-        val lists: MutableList<List<PokemonData>> = ArrayList(floor(list.size.toDouble() / bulkSize).toInt())
-        val page = min(bulkSize, 150)
-        var start = 0
-        var end = min(page, list.size)
-        for (i in 0..2) {
-            lists.add(list.subList(start, end))
-            start = end
-            end = min(end + page, list.size)
-            if (start == list.size) {
-                break
-            }
-        }
-        if (start != list.size) {
-            lists.add(list.subList(start, list.size))
-        }
-
-        val details = ArrayList<PokemonDetails>(list.size)
+        val details = Vector<PokemonDetails>(list.size)
         // todo how to make it parallel?
-        for (listItem in lists) {
-            for (item in listItem) {
-                details.add(service.getPokemonsDetails_S(item.url))
+        val channel = Channel<PokemonDetails>()
+        supervisorScope {
+            Log.d("LOGG", "Loading details")
+            for (item in list) {
+                withContext(Dispatchers.IO) {
+                    Log.d("LOGG", "Loading details for ${item.name}")
+                    val detail = service.getPokemonsDetails_S(item.url)
+                    Log.d("LOGG", "Send details for ${detail.name}")
+                    channel.send(detail)
+                }
             }
         }
-        return details
+        Log.d("LOGG", "Receiving details")
+        while (details.size != list.size) {
+            val receive = channel.receive()
+            Log.d("LOGG", "Received details for ${receive.name}")
+            details.add(receive)
+        }
+        return ArrayList(details)
     }
 }

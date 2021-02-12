@@ -1,40 +1,43 @@
 package com.mdgd.pokemon.bg
 
+import android.util.Log
 import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.PokemonsRepo
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
 
 class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache) : ServiceModel {
-    private val disposables = CompositeDisposable()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val exceptionHandler = CoroutineExceptionHandler { ctx, e ->
+        Log.d("LOGG", "Got error ${e.message}");
+        coroutineScope.launch {
+            Log.d("LOGG", "Handle error");
+            cache.putLoadingProgress(Result(e))
+
+            cancelScope()
+        }
+    }
 
     override fun load() {
-        coroutineScope.launch {
-            try {
-                val count = repo.loadPokemons_S()
-                cache.putLoadingProgress(Result(count))
-            } catch (e: Throwable) {
-                cache.putLoadingProgress(Result(e))
-            }
-            cache.putLoadingProgress(Result(PokemonsRepo.LOADING_COMPLETE))
-        }
+        coroutineScope.launch(exceptionHandler) {
+            val initialAmount = PokemonsRepo.PAGE_SIZE.toLong() * 2
+            Log.d("LOGG", "Call repo.loadInitialPages()");
+            repo.loadInitialPages(initialAmount)
 
-        // todo remove RX
-        disposables.addAll( // complete task, dispose all subscriptions
-                cache.getProgressObservable()
-                        .filter { event: Result<Long> -> event.hasValue() && event.getValue() == -1L }
-                        .delay(50, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-                        .subscribe {
-                            disposables.clear()
-                            coroutineScope.cancel()
-                        }
-        )
+            Log.d("LOGG", "Got result ofrepo.loadInitialPages()");
+            cache.putLoadingProgress(Result(initialAmount))
+
+            Log.d("LOGG", "Call repo.loadPokemons_S()");
+            val count = repo.loadPokemons_S(initialAmount)
+            cache.putLoadingProgress(Result(count))
+            Log.d("LOGG", "Got result of.loadPokemons_S()");
+            cancelScope()
+        }
+    }
+
+    private suspend fun cancelScope() {
+        Log.d("LOGG", "cancelScope");
+        delay(50)
+        coroutineScope.cancel()
     }
 }

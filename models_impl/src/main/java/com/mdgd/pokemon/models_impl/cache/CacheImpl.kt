@@ -2,17 +2,16 @@ package com.mdgd.pokemon.models_impl.cache
 
 import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.channels.Channel
 
 class CacheImpl : Cache {
-    private val progress = BehaviorSubject.createDefault(Result(0L))
+    private val progressChanel = Channel<Result<Long>>()
 
-    override fun putLoadingProgress(value: Result<Long>) {
-        progress.onNext(value)
+    override suspend fun putLoadingProgress(value: Result<Long>) {
+        progressChanel.send(value)
     }
 
-    override fun getProgressObservable(): Observable<Result<Long>> {
-        return progress
+    override fun getProgressChanel(): Channel<Result<Long>> {
+        return progressChanel
     }
 }

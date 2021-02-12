@@ -9,6 +9,10 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 interface PokemonsDao {
+    companion object {
+        const val NO_MORE_POKEMONS_MSG = "No more pokemons in DAO"
+    }
+
     fun save(list: List<PokemonDetails>): Completable
     fun getPage(page: Int, pageSize: Int): Single<Result<List<PokemonFullDataSchema>>>
     fun getCount(): Long

@@ -11,7 +11,7 @@ interface Network {
     fun getPokemonsCount(): Single<Result<Long>>
 
 
-    suspend fun loadPokemons_S(bulkSize: Int): List<PokemonDetails>
+    suspend fun loadPokemons_S(pokemonsCount: Long, offset: Long): List<PokemonDetails>
     suspend fun loadPokemons_S(page: Int, pageSize: Int): List<PokemonDetails>
     suspend fun getPokemonsCount_S(): Long
 }

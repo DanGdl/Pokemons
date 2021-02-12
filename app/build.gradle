@@ -68,7 +68,6 @@ dependencies {
     // (Java only)
     implementation "androidx.work:work-runtime:$work_version"
 
-
     testImplementation "junit:junit:$junit"
 
     androidTestImplementation "androidx.test.ext:junit:$junit_android"

@@ -28,7 +28,7 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
                     return@fromCallable Result<List<PokemonFullDataSchema>>(ArrayList(0))
                 }
                 pokemonsRoomDao.countRows() <= offset -> {
-                    return@fromCallable Result<List<PokemonFullDataSchema>>(Exception("No more pokemons in DAO"))
+                    return@fromCallable Result<List<PokemonFullDataSchema>>(Exception(PokemonsDao.NO_MORE_POKEMONS_MSG))
                 }
                 else -> {
                     return@fromCallable Result(pokemonsRoomDao.getPage(offset, pageSize))
@@ -58,8 +58,7 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
                 ArrayList(0)
             }
             pokemonsRoomDao.countRows() <= offset -> {
-                // todo: any proper way to handle?
-                throw Exception("No more pokemons in DAO")
+                throw Exception(PokemonsDao.NO_MORE_POKEMONS_MSG)
             }
             else -> {
                 pokemonsRoomDao.getPage(offset, pageSize)

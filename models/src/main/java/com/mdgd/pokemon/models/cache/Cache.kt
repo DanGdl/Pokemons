@@ -1,9 +1,9 @@
 package com.mdgd.pokemon.models.cache
 
 import com.mdgd.pokemon.models.infra.Result
-import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.channels.Channel
 
 interface Cache {
-    fun putLoadingProgress(value: Result<Long>)
-    fun getProgressObservable(): Observable<Result<Long>>
+    suspend fun putLoadingProgress(value: Result<Long>)
+    fun getProgressChanel(): Channel<Result<Long>>
 }

@@ -8,7 +8,6 @@ import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.Network
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleSource
 import io.reactivex.rxjava3.functions.Function
@@ -36,16 +35,6 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
 
     override fun getPokemons() = cache.getPokemons()
 
-    override fun getPokemonById(pokemonId: Long): Observable<Optional<PokemonFullDataSchema>> {
-        val pokemons = cache.getPokemons()
-        for (p in pokemons) {
-            if (pokemonId == p.pokemonSchema?.id) {
-                return Observable.just(Optional.fromNullable(p))
-            }
-        }
-        return dao.getPokemonById(pokemonId)
-    }
-
     private fun loadPage(page: Int): Single<Result<List<PokemonFullDataSchema>>> {
         return network.loadPokemons(page, PokemonsRepo.PAGE_SIZE)
                 .flatMap(Function<Result<List<PokemonDetails>>, SingleSource<out Result<List<PokemonFullDataSchema>>>> { result: Result<List<PokemonDetails>> ->
@@ -70,7 +59,7 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
         return dao.getPage_S(page, PokemonsRepo.PAGE_SIZE)
     }
 
-    override suspend fun loadPokemons_S(): Long {
+    override suspend fun loadPokemons_S(initialAmount: Long): Long {
         val count = dao.getCount_S()
         val pokemonsCount = network.getPokemonsCount_S()
         return when (count) {
@@ -78,13 +67,13 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
                 count
             }
             else -> {
-                loadPokemonsInner_S()
+                loadPokemonsInner_S(pokemonsCount, initialAmount)
             }
         }
     }
 
-    private suspend fun loadPokemonsInner_S(): Long {
-        val page = network.loadPokemons_S(PokemonsRepo.PAGE_SIZE)
+    private suspend fun loadPokemonsInner_S(pokemonsCount: Long, offset: Long): Long { //  = withContext(Dispatchers.IO)
+        val page = network.loadPokemons_S(pokemonsCount, offset)
         dao.save_S(page)
         return page.size.toLong()
     }
@@ -97,5 +86,12 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
             }
         }
         return dao.getPokemonById_S(pokemonId)
+    }
+
+    override suspend fun loadInitialPages(amount: Long) {
+        val count = dao.getCount_S()
+        if (count < amount) {
+            loadPokemonsInner_S(amount, 0)
+        }
     }
 }

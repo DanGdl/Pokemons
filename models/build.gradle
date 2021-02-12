@@ -45,6 +45,9 @@ dependencies {
 
     implementation "androidx.core:core-ktx:$ktx"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // coruotins
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutins"
 }
 
 repositories {
