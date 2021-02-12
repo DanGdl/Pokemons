@@ -5,21 +5,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.PokemonsAdapter.PokemonViewHolder
+import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
 import com.squareup.picasso.Picasso
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.util.*
 
-class PokemonsAdapter : RecyclerView.Adapter<PokemonViewHolder>() {
+class PokemonsAdapter(private val lifecycleScope: LifecycleCoroutineScope) : RecyclerView.Adapter<PokemonViewHolder>() {
     private val items: MutableList<PokemonFullDataSchema> = ArrayList()
-    private val clicksSubject = PublishSubject.create<PokemonFullDataSchema>()
+    private val clicksSubject = MutableStateFlow<ClickEvent<PokemonFullDataSchema>>(ClickEvent.EmptyData())
 
-    val onItemClickSubject: Observable<PokemonFullDataSchema>
+    val onItemClickSubject: Flow<ClickEvent<PokemonFullDataSchema>>
         get() = clicksSubject
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
@@ -79,7 +82,8 @@ class PokemonsAdapter : RecyclerView.Adapter<PokemonViewHolder>() {
         super.onViewDetachedFromWindow(holder)
     }
 
-    inner class PokemonViewHolder(itemView: View, private val clicksSubject: PublishSubject<PokemonFullDataSchema>) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class PokemonViewHolder(itemView: View, private val clicksSubject: MutableStateFlow<ClickEvent<PokemonFullDataSchema>>)
+        : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private val image: ImageView = itemView.findViewById(R.id.item_pokemon_image)
         private val name: TextView = itemView.findViewById(R.id.item_pokemon_name)
         private val attack: TextView = itemView.findViewById(R.id.item_pokemon_attack)
@@ -115,7 +119,9 @@ class PokemonsAdapter : RecyclerView.Adapter<PokemonViewHolder>() {
         }
 
         override fun onClick(view: View) {
-            clicksSubject.onNext(items[adapterPosition])
+            lifecycleScope.launch {
+                clicksSubject.emit(ClickEvent.ClickData(items[adapterPosition]))
+            }
         }
 
         fun setupSubscriptions() {

@@ -8,11 +8,9 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.util.*
 
 class PokemonsViewModel(private val router: PokemonsContract.Router, private val repo: PokemonsRepo) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
@@ -59,16 +57,20 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
     override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
+
+            // TODO: use flow operators
             launch = viewModelScope.launch {
                 pageFlow.collect { page: Int ->
                     setState(PokemonsScreenState.Loading())
                     supervisorScope {
                         try {
-                            val pokemonsPage = repo.getPage(page)
+                            val pageData = withContext(Dispatchers.IO) {
+                                repo.getPage(page)
+                            }
                             if (page == 0) {
-                                setState(PokemonsScreenState.SetData(pokemonsPage))
+                                setState(PokemonsScreenState.SetData(pageData))
                             } else {
-                                setState(PokemonsScreenState.AddData(pokemonsPage))
+                                setState(PokemonsScreenState.AddData(pageData))
                             }
                         } catch (e: Throwable) {
                             e.printStackTrace()

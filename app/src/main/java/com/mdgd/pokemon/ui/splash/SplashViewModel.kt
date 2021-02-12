@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class SplashViewModel(private val router: SplashContract.Router, private val cache: Cache) : MviViewModel<SplashScreenState>(), SplashContract.ViewModel {
 
-    private val exceptionHandler = CoroutineExceptionHandler { ctx, e ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         router.showError(e)
     }
     private var progressJob: Job? = null

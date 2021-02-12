@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -15,14 +16,21 @@ import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
+import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.infra.ui.EndlessScrollListener
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 
-class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>(), PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+class PokemonsFragment : HostedFragment<
+        PokemonsContract.View,
+        PokemonsScreenState,
+        PokemonsContract.ViewModel,
+        PokemonsContract.Host>(),
+        PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+
     private val filters: MutableList<String> = ArrayList(3)
-    private val onDestroyDisposables = CompositeDisposable()
-    private val adapter = PokemonsAdapter()
+    private val adapter = PokemonsAdapter(lifecycleScope)
     private var refreshSwipe: SwipeRefreshLayout? = null
 
     companion object {
@@ -48,7 +56,13 @@ class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenSta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onDestroyDisposables.add(adapter.onItemClickSubject.subscribe { pokemon: PokemonFullDataSchema -> model!!.onItemClicked(pokemon) })
+
+        lifecycleScope.launch {
+            adapter.onItemClickSubject.collect { pokemon ->
+                if (pokemon is ClickEvent.ClickData)
+                    model!!.onItemClicked(pokemon.data)
+            }
+        }
     }
 
     override fun createModel(): PokemonsContract.ViewModel {
@@ -119,11 +133,6 @@ class PokemonsFragment : HostedFragment<PokemonsContract.View, PokemonsScreenSta
     override fun onRefresh() {
         scrollListener.resetState()
         model!!.reload()
-    }
-
-    override fun onDestroy() {
-        onDestroyDisposables.clear()
-        super.onDestroy()
     }
 
     override fun showProgress() {

@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 
 class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache) : ServiceModel {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val exceptionHandler = CoroutineExceptionHandler { ctx, e ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         coroutineScope.launch {
             cache.putLoadingProgress(Result(e))
 

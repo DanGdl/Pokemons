@@ -12,11 +12,8 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.util.*
 
 class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonDetailsScreenState>(), PokemonDetailsContract.ViewModel {
@@ -35,7 +32,9 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<Pok
             val async = viewModelScope.async {
                 val pokemonId = pokemonIdChannel.receive()
                 supervisorScope {
-                    val details = repo.getPokemonById(pokemonId)
+                    val details = withContext(Dispatchers.IO) {
+                        repo.getPokemonById(pokemonId)
+                    }
                     val list = if (details == null) LinkedList() else mapToListPokemon(details)
                     list
                 }
