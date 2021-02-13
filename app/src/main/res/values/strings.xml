@@ -18,4 +18,5 @@
     <string name="empty" />
     <string name="dialog_error_title">Some error happened</string>
     <string name="dialog_error_message">Details:</string>
+    <string name="no_pokemons">Oooops!\nThere is no pokemons for some reason</string>
 </resources>

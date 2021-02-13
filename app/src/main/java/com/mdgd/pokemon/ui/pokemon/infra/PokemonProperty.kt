@@ -6,9 +6,9 @@ interface PokemonProperty {
         get() = 0
 
     companion object {
-        const val PROPERTY_IMAGE = 1
-        const val PROPERTY_LABEL = 2
-        const val PROPERTY_TITLE = 3
-        const val PROPERTY_TEXT = 4
+        const val PROPERTY_IMAGE = 2
+        const val PROPERTY_LABEL = 3
+        const val PROPERTY_TITLE = 4
+        const val PROPERTY_TEXT = 5
     }
 }

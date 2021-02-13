@@ -15,6 +15,7 @@ import com.mdgd.mvi.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
 import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.infra.ui.EndlessScrollListener
