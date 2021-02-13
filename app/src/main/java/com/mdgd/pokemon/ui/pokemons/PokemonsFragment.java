@@ -27,7 +27,7 @@ import java.util.List;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class PokemonsFragment extends HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>
-        implements PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+        implements PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private final List<String> filters = new ArrayList<>(3);
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
@@ -61,7 +61,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
 
     @Override
     protected PokemonsContract.ViewModel createModel() {
-        return new ViewModelProvider(this, new PokemonsViewModelFactory(PokemonsApp.getInstance().getAppComponent(), this)).get(PokemonsViewModel.class);
+        return new ViewModelProvider(this, new PokemonsViewModelFactory(PokemonsApp.getInstance().getAppComponent())).get(PokemonsViewModel.class);
     }
 
     @Nullable
@@ -129,6 +129,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
 
     @Override
     public void onRefresh() {
+        scrollListener.resetState();
         getModel().reload();
     }
 
@@ -155,11 +156,6 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     @Override
     public void setItems(List<PokemonFullDataSchema> list) {
         adapter.setItems(list);
-    }
-
-    @Override
-    public void addItems(List<PokemonFullDataSchema> list) {
-        adapter.addItems(list);
     }
 
     @Override

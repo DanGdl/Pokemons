@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenState> implements PokemonDetailsContract.ViewModel {
@@ -47,6 +49,8 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenSt
             observeTillDestroy(pokemonIdSubject
                     .switchMap(repo::getPokemonsById)
                     .map(optional -> optional.isPresent() ? mapToListPokemon(optional.get()) : new LinkedList<PokemonProperty>())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(list -> setState(PokemonDetailsScreenState.createSetDataState(list))));
         }
     }
@@ -109,5 +113,10 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenSt
         }
         properties.add(new TextPropertyData(gameIndicesText.toString(), 1));
         return properties;
+    }
+
+    @Override
+    protected PokemonDetailsScreenState getDefaultState() {
+        return PokemonDetailsScreenState.createSetDataState(new ArrayList(0));
     }
 }

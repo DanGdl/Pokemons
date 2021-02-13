@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public class MviViewModel<T> extends ViewModel implements FragmentContract.ViewModel<T> {
+public abstract class MviViewModel<T> extends ViewModel implements FragmentContract.ViewModel<T> {
     private final CompositeDisposable onStopDisposables = new CompositeDisposable();
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final MutableLiveData<T> stateHolder = new MutableLiveData<>();
@@ -53,4 +53,10 @@ public class MviViewModel<T> extends ViewModel implements FragmentContract.ViewM
     protected boolean hasOStopDisposables() {
         return onStopDisposables.size() != 0;
     }
+
+    protected T getLastState() {
+        return stateHolder.getValue() == null ? getDefaultState() : stateHolder.getValue();
+    }
+
+    protected abstract T getDefaultState();
 }

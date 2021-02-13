@@ -4,7 +4,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.mdgd.mvi.MviViewModel;
-import com.mdgd.pokemon.models.cache.Cache;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
@@ -13,6 +12,7 @@ import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,19 +27,15 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
 
     private final PublishSubject<Integer> loadPageSubject = PublishSubject.create();
     private final BehaviorSubject<FilterData> filtersSubject = BehaviorSubject.createDefault(new FilterData());
-    private final PokemonsContract.Router router;
     private final PokemonsRepo repo;
-    private final Cache cache;
     private final Map<String, CharacteristicComparator> comparators = new HashMap<String, CharacteristicComparator>() {{
         put(FilterData.FILTER_ATTACK, (p1, p2) -> compareProperty("attack", p1, p2));
         put(FilterData.FILTER_DEFENCE, (p1, p2) -> compareProperty("defense", p1, p2));
         put(FilterData.FILTER_SPEED, (p1, p2) -> compareProperty("speed", p1, p2));
     }};
 
-    public PokemonsViewModel(PokemonsContract.Router router, PokemonsRepo repo, Cache cache) {
-        this.router = router;
+    public PokemonsViewModel(PokemonsRepo repo) {
         this.repo = repo;
-        this.cache = cache;
     }
 
     private int compareProperty(String property, PokemonFullDataSchema p1, PokemonFullDataSchema p2) {
@@ -64,12 +60,12 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(
                     loadPageSubject
-                            .doOnNext(ignore -> postState(PokemonsScreenState.createLoadingState()))
+                            .doOnNext(ignore -> postState(PokemonsScreenState.createLoadingState(getLastState())))
                             .switchMapSingle(page -> repo.getPage(page)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .map(result -> mapToState(page, result))
-                                    .onErrorReturn(PokemonsScreenState::createErrorState))
+                                    .onErrorReturn(e -> PokemonsScreenState.createErrorState(e, getLastState())))
                             .subscribe(this::setState, Throwable::printStackTrace),
 
                     // do we need to sort list once more when there is a filter and new page arrived?
@@ -80,6 +76,11 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
             );
             loadPageSubject.onNext(0);
         }
+    }
+
+    @Override
+    protected PokemonsScreenState getDefaultState() {
+        return PokemonsScreenState.createSetDataState(new ArrayList<>(0));
     }
 
     private PokemonsScreenState sort(FilterData filters, List<PokemonFullDataSchema> pokemons) {
@@ -103,13 +104,13 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
 
     private PokemonsScreenState mapToState(Integer page, Result<List<PokemonFullDataSchema>> result) {
         if (result.isError()) {
-            return PokemonsScreenState.createErrorState(result.getError());
+            return PokemonsScreenState.createErrorState(result.getError(), getLastState());
         } else {
             final List<PokemonFullDataSchema> list = result.getValue();
             if (page == 0) {
                 return PokemonsScreenState.createSetDataState(list);
             } else {
-                return PokemonsScreenState.createAddDataState(list);
+                return PokemonsScreenState.createAddDataState(list, getLastState());
             }
         }
     }
@@ -132,6 +133,6 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
 
     @Override
     public void onItemClicked(PokemonFullDataSchema pokemon) {
-        router.proceedToNextScreen(pokemon.getPokemonSchema().getId());
+        setState(PokemonsScreenState.createShowDetails(pokemon.getPokemonSchema().getId(), getLastState()));
     }
 }

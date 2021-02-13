@@ -27,20 +27,16 @@ public class PokemonsContract {
 
         void setItems(List<PokemonFullDataSchema> list);
 
-        void addItems(List<PokemonFullDataSchema> list);
-
         void updateItems(List<PokemonFullDataSchema> list);
 
         void showError(Throwable error);
+
+        void proceedToNextScreen(long id);
     }
 
     public interface Host extends FragmentContract.Host {
         void proceedToPokemonScreen(long id);
 
         void showError(Throwable error);
-    }
-
-    public interface Router {
-        void proceedToNextScreen(long id);
     }
 }

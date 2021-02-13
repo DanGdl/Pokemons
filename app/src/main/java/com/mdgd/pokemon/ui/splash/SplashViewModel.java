@@ -13,11 +13,9 @@ import io.reactivex.rxjava3.core.Observable;
 
 public class SplashViewModel extends MviViewModel<SplashScreenState> implements SplashContract.ViewModel {
 
-    private final SplashContract.Router router;
     private final Cache cache;
 
-    public SplashViewModel(SplashContract.Router router, Cache cache) {
-        this.router = router;
+    public SplashViewModel(Cache cache) {
         this.cache = cache;
     }
 
@@ -37,12 +35,17 @@ public class SplashViewModel extends MviViewModel<SplashScreenState> implements 
                             // .map(e -> new Result<Long>(new Throwable("Dummy error"))) // error test
                             .subscribe(value -> {
                                 if (value.isError()) {
-                                    router.showError(value.getError());
+                                    setState(SplashScreenState.createShowError(value.getError()));
                                 } else if (value.getValue() != 0L) {
-                                    router.proceedToNextScreen();
+                                    setState(SplashScreenState.createNextScreen());
                                 }
-                            }, router::showError));
-            router.launchWorker();
+                            }, e -> setState(SplashScreenState.createShowError(e))));
+            setState(SplashScreenState.createLaunchWorkerState());
         }
+    }
+
+    @Override
+    protected SplashScreenState getDefaultState() {
+        return SplashScreenState.createDefaultState();
     }
 }

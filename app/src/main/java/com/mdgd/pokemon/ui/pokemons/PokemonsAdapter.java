@@ -78,11 +78,6 @@ public class PokemonsAdapter extends RecyclerView.Adapter<PokemonsAdapter.Pokemo
         }).dispatchUpdatesTo(this);
     }
 
-    public void addItems(List<PokemonFullDataSchema> items) {
-        this.items.addAll(items);
-        notifyDataSetChanged();
-    }
-
     public Observable<PokemonFullDataSchema> getOnItemClickSubject() {
         return clicksSubject;
     }

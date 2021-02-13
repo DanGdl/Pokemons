@@ -26,7 +26,7 @@ public class PokemonsRepository implements PokemonsRepo {
 
     @Override
     public Single<Result<List<PokemonFullDataSchema>>> getPage(Integer page) {
-        return dao.getPage(page, PAGE_SIZE)
+        return getPageFromDao(page)
                 .flatMap(result -> {
                     if (result.isError()) {
                         return Single.just(new Result<>(result.getError()));
@@ -34,6 +34,21 @@ public class PokemonsRepository implements PokemonsRepo {
                         final List<PokemonFullDataSchema> list = result.getValue();
                         return list.isEmpty() ? loadPage(page) : Single.just(new Result<>(list));
                     }
+                });
+    }
+
+    private Single<Result<List<PokemonFullDataSchema>>> getPageFromDao(int page) {
+        return dao.getPage(page, PokemonsRepo.PAGE_SIZE)
+                .map(result -> {
+                    if (!result.isError() && !result.getValue().isEmpty()) {
+                        List<PokemonFullDataSchema> list = result.getValue();
+                        if (page == 0) {
+                            cache.setPokemons(list);
+                        } else {
+                            cache.addPokemons(list);
+                        }
+                    }
+                    return result;
                 });
     }
 
@@ -89,16 +104,7 @@ public class PokemonsRepository implements PokemonsRepo {
                         return Single.just(new Result<>(result.getError()));
                     } else {
                         return dao.save(result.getValue())
-                                .andThen(dao.getPage(page, PAGE_SIZE))
-                                .doOnEvent((e, error) -> {
-                                    if (!result.isError()) {
-                                        if (page == 0) {
-                                            cache.setPokemons(e.getValue());
-                                        } else {
-                                            cache.addPokemons(e.getValue());
-                                        }
-                                    }
-                                });
+                                .andThen(getPageFromDao(page));
                     }
                 });
     }

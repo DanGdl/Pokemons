@@ -8,19 +8,15 @@ public class SplashContract {
     }
 
     public interface View extends FragmentContract.View {
-    }
+        void proceedToNextScreen();
 
-    public interface Host extends FragmentContract.Host {
-        void proceedToPokemonsScreen();
+        void launchWorker();
 
         void showError(Throwable error);
     }
 
-
-    public interface Router {
-        void proceedToNextScreen();
-
-        void launchWorker();
+    public interface Host extends FragmentContract.Host {
+        void proceedToPokemonsScreen();
 
         void showError(Throwable error);
     }
