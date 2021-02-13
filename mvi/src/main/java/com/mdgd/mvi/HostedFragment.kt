@@ -32,6 +32,17 @@ abstract class HostedFragment<
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        // release the call back
+        fragmentHost = null
+    }
+
+    protected fun hasHost(): Boolean {
+        return fragmentHost != null
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setModel(createModel())
@@ -43,12 +54,6 @@ abstract class HostedFragment<
 
     protected abstract fun createModel(): VIEW_MODEL
 
-    override fun onDetach() {
-        super.onDetach()
-        // release the call back
-        fragmentHost = null
-    }
-
     override fun onDestroy() {
         // order matters
         if (model != null) {
@@ -58,14 +63,8 @@ abstract class HostedFragment<
         super.onDestroy()
     }
 
-//    abstract override fun onChanged(screenState: STATE);
-
     override fun onChanged(screenState: STATE) {
         screenState.visit(this as VIEW)
-    }
-
-    protected fun hasHost(): Boolean {
-        return fragmentHost != null
     }
 
     protected fun setModel(model: VIEW_MODEL) {

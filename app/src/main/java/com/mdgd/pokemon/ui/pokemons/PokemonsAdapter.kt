@@ -16,7 +16,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
 
 class PokemonsAdapter(private val lifecycleScope: LifecycleCoroutineScope) : RecyclerView.Adapter<PokemonViewHolder>() {
     private val items: MutableList<PokemonFullDataSchema> = ArrayList()
@@ -48,28 +47,27 @@ class PokemonsAdapter(private val lifecycleScope: LifecycleCoroutineScope) : Rec
         val oldList: List<PokemonFullDataSchema> = ArrayList(items)
         items.clear()
         items.addAll(list)
+        dispatchChanges(oldList, items)
+    }
+
+    private fun dispatchChanges(oldList: List<PokemonFullDataSchema>, items: List<PokemonFullDataSchema>) {
         DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize(): Int {
                 return oldList.size
             }
 
             override fun getNewListSize(): Int {
-                return oldList.size
+                return items.size
             }
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return oldList[oldItemPosition] == list[newItemPosition]
+                return oldList[oldItemPosition] == items[newItemPosition]
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return oldList[oldItemPosition] == list[newItemPosition]
+                return oldList[oldItemPosition] == items[newItemPosition]
             }
         }).dispatchUpdatesTo(this)
-    }
-
-    fun addItems(items: List<PokemonFullDataSchema>?) {
-        this.items.addAll(items!!)
-        notifyDataSetChanged()
     }
 
     override fun onViewAttachedToWindow(holder: PokemonViewHolder) {
@@ -81,6 +79,7 @@ class PokemonsAdapter(private val lifecycleScope: LifecycleCoroutineScope) : Rec
         holder.clearSubscriptions()
         super.onViewDetachedFromWindow(holder)
     }
+
 
     inner class PokemonViewHolder(itemView: View, private val clicksSubject: MutableStateFlow<ClickEvent<PokemonFullDataSchema>>)
         : RecyclerView.ViewHolder(itemView), View.OnClickListener {

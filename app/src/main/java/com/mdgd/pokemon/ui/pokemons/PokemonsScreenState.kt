@@ -3,13 +3,17 @@ package com.mdgd.pokemon.ui.pokemons
 import com.mdgd.mvi.ScreenState
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 
-sealed class PokemonsScreenState : ScreenState<PokemonsContract.View> {
+sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullDataSchema>) : ScreenState<PokemonsContract.View> {
+    protected var isHandled = false
 
-
-    class Loading : PokemonsScreenState() {
+    class Loading(prevState: PokemonsScreenState) : PokemonsScreenState(prevState.list) {
 
         override fun visit(screen: PokemonsContract.View) {
-            screen.showProgress()
+            screen.setItems(list)
+            if (!isHandled) {
+                screen.showProgress()
+                isHandled = true
+            }
         }
 
         override fun equals(other: Any?): Boolean {
@@ -21,7 +25,7 @@ sealed class PokemonsScreenState : ScreenState<PokemonsContract.View> {
         }
     }
 
-    class SetData(private val list: List<PokemonFullDataSchema>) : PokemonsScreenState() {
+    class SetData(list: List<PokemonFullDataSchema>) : PokemonsScreenState(ArrayList(list)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
@@ -29,15 +33,19 @@ sealed class PokemonsScreenState : ScreenState<PokemonsContract.View> {
         }
     }
 
-    class AddData(private val list: List<PokemonFullDataSchema>) : PokemonsScreenState() {
+    class AddData(list: List<PokemonFullDataSchema>, prevState: PokemonsScreenState) : PokemonsScreenState(prevState.list) {
+
+        init {
+            super.list.addAll(list)
+        }
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
-            screen.addItems(list)
+            screen.setItems(list)
         }
     }
 
-    class UpdateData(private val list: List<PokemonFullDataSchema>) : PokemonsScreenState() {
+    class UpdateData(list: List<PokemonFullDataSchema>) : PokemonsScreenState(ArrayList(list)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
@@ -45,11 +53,29 @@ sealed class PokemonsScreenState : ScreenState<PokemonsContract.View> {
         }
     }
 
-    class Error(private val error: Throwable?) : PokemonsScreenState() {
+    class Error(private val error: Throwable?, prevState: PokemonsScreenState) : PokemonsScreenState(prevState.list) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
-            screen.showError(error)
+            screen.setItems(list)
+
+            if (!isHandled) {
+                screen.showError(error)
+                isHandled = true
+            }
+        }
+    }
+
+    class ShowDetails(private val id: Long?, lastState: PokemonsScreenState) : PokemonsScreenState(lastState.list) {
+
+        override fun visit(screen: PokemonsContract.View) {
+            screen.hideProgress()
+            screen.setItems(list)
+
+            if (!isHandled) {
+                screen.proceedToNextScreen(id)
+                isHandled = true
+            }
         }
     }
 }

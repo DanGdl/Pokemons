@@ -10,11 +10,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SplashViewModel(private val router: SplashContract.Router, private val cache: Cache) : MviViewModel<SplashScreenState>(), SplashContract.ViewModel {
+class SplashViewModel(private val cache: Cache) : MviViewModel<SplashScreenState>(), SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        router.showError(e)
+        setState(SplashScreenState.ShowError(e))
     }
+
     private var progressJob: Job? = null
 
     override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
@@ -24,12 +25,16 @@ class SplashViewModel(private val router: SplashContract.Router, private val cac
                 delay(1000)
                 val value = cache.getProgressChanel().receive()
                 if (value.isError()) {
-                    router.showError(value.getError())
+                    setState(SplashScreenState.ShowError(value.getError()))
                 } else if (value.getValue() != 0L) {
-                    router.proceedToNextScreen()
+                    setState(SplashScreenState.NextScreen)
                 }
             }
-            router.launchWorker()
+            setState(SplashScreenState.LaunchWorker)
         }
+    }
+
+    override fun getDefaultState(): SplashScreenState {
+        return SplashScreenState.None
     }
 }

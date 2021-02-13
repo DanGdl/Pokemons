@@ -27,7 +27,7 @@ class PokemonsFragment : HostedFragment<
         PokemonsScreenState,
         PokemonsContract.ViewModel,
         PokemonsContract.Host>(),
-        PokemonsContract.View, PokemonsContract.Router, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+        PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private val filters: MutableList<String> = ArrayList(3)
     private val adapter = PokemonsAdapter(lifecycleScope)
@@ -66,7 +66,7 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun createModel(): PokemonsContract.ViewModel {
-        return ViewModelProvider(this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!, this)).get(PokemonsViewModel::class.java)
+        return ViewModelProvider(this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!)).get(PokemonsViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -149,10 +149,6 @@ class PokemonsFragment : HostedFragment<
 
     override fun setItems(list: List<PokemonFullDataSchema>) {
         adapter.setItems(list)
-    }
-
-    override fun addItems(list: List<PokemonFullDataSchema>) {
-        adapter.addItems(list)
     }
 
     override fun updateItems(list: List<PokemonFullDataSchema>) {

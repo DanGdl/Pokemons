@@ -11,14 +11,26 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
     override fun getPokemons() = cache.getPokemons()
 
     override suspend fun getPage(page: Int): List<PokemonFullDataSchema> {
-        val list = dao.getPage(page, PokemonsRepo.PAGE_SIZE)
+        val list = getPageFromDao(page)
         return if (list.isEmpty()) loadPage(page) else list
     }
 
     private suspend fun loadPage(page: Int): List<PokemonFullDataSchema> {
         val list = network.loadPokemons(page, PokemonsRepo.PAGE_SIZE)
         dao.save(list)
-        return dao.getPage(page, PokemonsRepo.PAGE_SIZE)
+        return getPageFromDao(page)
+    }
+
+    private suspend fun getPageFromDao(page: Int): List<PokemonFullDataSchema> {
+        val list = dao.getPage(page, PokemonsRepo.PAGE_SIZE)
+        if (list.isNotEmpty()) {
+            if (page == 0) {
+                cache.setPokemons(list)
+            } else {
+                cache.addPokemons(list)
+            }
+        }
+        return list
     }
 
     override suspend fun loadPokemons(initialAmount: Long): Long {

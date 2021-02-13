@@ -16,17 +16,13 @@ class PokemonsContract {
         fun showProgress()
         fun hideProgress()
         fun setItems(list: List<PokemonFullDataSchema>)
-        fun addItems(list: List<PokemonFullDataSchema>)
         fun updateItems(list: List<PokemonFullDataSchema>)
         fun showError(error: Throwable?)
+        fun proceedToNextScreen(pokemonId: Long?)
     }
 
     interface Host : FragmentContract.Host {
         fun proceedToPokemonScreen(pokemonId: Long?)
         fun showError(error: Throwable?)
-    }
-
-    interface Router {
-        fun proceedToNextScreen(pokemonId: Long?)
     }
 }

@@ -12,37 +12,35 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonDetailsScreenState>(), PokemonDetailsContract.ViewModel {
-    private val pokemonIdChannel = Channel<Long>()
+    private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null
 
     override fun setPokemonId(pokemonId: Long) {
         viewModelScope.launch {
-            pokemonIdChannel.send(pokemonId)
+            pokemonIdFlow.emit(pokemonId)
         }
     }
 
     override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
-            val async = viewModelScope.async {
-                val pokemonId = pokemonIdChannel.receive()
-                supervisorScope {
-                    val details = withContext(Dispatchers.IO) {
-                        repo.getPokemonById(pokemonId)
-                    }
-                    val list = if (details == null) LinkedList() else mapToListPokemon(details)
-                    list
-                }
-            }
             pokemonLoadingJob = viewModelScope.launch {
-                supervisorScope {
-                    setState(PokemonDetailsScreenState.SetData(async.await()))
-                }
+                pokemonIdFlow
+                        .map { id: Long -> repo.getPokemonById(id) }
+                        .map { details: PokemonFullDataSchema? -> if (details == null) LinkedList() else mapToListPokemon(details) }
+                        .flowOn(Dispatchers.IO)
+                        .collect { setState(PokemonDetailsScreenState.SetData(it)) }
             }
         }
     }
@@ -99,5 +97,15 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<Pok
         }
         properties.add(TextPropertyData(gameIndicesText.toString(), 1))
         return properties
+    }
+
+    override fun onCleared() {
+        pokemonLoadingJob?.cancel()
+        pokemonLoadingJob = null
+        super.onCleared()
+    }
+
+    override fun getDefaultState(): PokemonDetailsScreenState {
+        return PokemonDetailsScreenState.SetData(ArrayList(0))
     }
 }

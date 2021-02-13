@@ -8,12 +8,14 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
-class PokemonsViewModel(private val router: PokemonsContract.Router, private val repo: PokemonsRepo) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
+class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
     private val comparators: Map<String, CharacteristicComparator?> = object : HashMap<String, CharacteristicComparator>() {
@@ -37,6 +39,9 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
     }
     private var launch: Job? = null
 
+    override fun getDefaultState(): PokemonsScreenState {
+        return PokemonsScreenState.SetData(ArrayList(0))
+    }
 
     private fun compareProperty(property: String, p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
         var val1 = -1
@@ -57,27 +62,20 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
     override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
-
-            // TODO: use flow operators
             launch = viewModelScope.launch {
-                pageFlow.collect { page: Int ->
-                    setState(PokemonsScreenState.Loading())
-                    supervisorScope {
-                        try {
-                            val pageData = withContext(Dispatchers.IO) {
-                                repo.getPage(page)
-                            }
-                            if (page == 0) {
-                                setState(PokemonsScreenState.SetData(pageData))
+                pageFlow
+                        .onEach { setState(PokemonsScreenState.Loading(getLastState())) }
+                        .flowOn(Dispatchers.Main)
+                        .map { page -> Pair(page, repo.getPage(page)) }
+                        .flowOn(Dispatchers.IO)
+                        .catch { e: Throwable -> setState(PokemonsScreenState.Error(e, getLastState())) }
+                        .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
+                            if (pagePair.first == 0) {
+                                setState(PokemonsScreenState.SetData(pagePair.second))
                             } else {
-                                setState(PokemonsScreenState.AddData(pageData))
+                                setState(PokemonsScreenState.AddData(pagePair.second, getLastState()))
                             }
-                        } catch (e: Throwable) {
-                            e.printStackTrace()
-                            setState(PokemonsScreenState.Error(e))
                         }
-                    }
-                }
             }
 
             viewModelScope.launch {
@@ -126,6 +124,12 @@ class PokemonsViewModel(private val router: PokemonsContract.Router, private val
     }
 
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {
-        router.proceedToNextScreen(pokemon.pokemonSchema?.id)
+        setState(PokemonsScreenState.ShowDetails(pokemon.pokemonSchema?.id, getLastState()))
+    }
+
+    override fun onCleared() {
+        launch?.cancel()
+        launch = null
+        super.onCleared()
     }
 }
