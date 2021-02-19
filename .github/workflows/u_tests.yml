@@ -1,13 +1,16 @@
 name: Unit_tests
 
 on:
+  push:
+    branches:
+      - 'dev'
   pull_request:
     branches:
       - 'dev'
 
 jobs:
   Unit-test:
-  name: Run unit tests on branch dev
+  name: Run unit tests on push or MR in branch dev
   runs-on: ubuntu-20.04
 
   steps:
