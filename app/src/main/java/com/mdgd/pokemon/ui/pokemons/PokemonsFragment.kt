@@ -43,9 +43,6 @@ class PokemonsFragment : HostedFragment<
     // maybe paging library?
     private val scrollListener: EndlessScrollListener = object : EndlessScrollListener() {
         override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-            if (refreshSwipe != null) {
-                refreshSwipe!!.isRefreshing = true
-            }
             model!!.loadPage(page)
         }
     }

@@ -112,6 +112,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
     }
 
     override fun loadPage(page: Int) {
+        setState(PokemonsScreenState.Loading(getLastState()))
         viewModelScope.launch {
             pageFlow.emit(page)
         }
