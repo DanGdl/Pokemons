@@ -18,11 +18,11 @@ class SplashViewModel(private val cache: Cache) : MviViewModel<SplashScreenState
 
     private var progressJob: Job? = null
 
-    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_START && progressJob == null) {
             progressJob = viewModelScope.launch(exceptionHandler) {
-                delay(1000)
+                delay(SplashContract.SPLASH_DELAY)
                 val value = cache.getProgressChanel().receive()
                 if (value.isError()) {
                     setState(SplashScreenState.ShowError(value.getError()))

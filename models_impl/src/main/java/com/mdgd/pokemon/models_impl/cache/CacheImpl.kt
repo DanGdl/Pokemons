@@ -5,7 +5,7 @@ import com.mdgd.pokemon.models.infra.Result
 import kotlinx.coroutines.channels.Channel
 
 class CacheImpl : Cache {
-    private val progressChanel = Channel<Result<Long>>()
+    private val progressChanel = Channel<Result<Long>>(Channel.Factory.CONFLATED)
 
     override suspend fun putLoadingProgress(value: Result<Long>) {
         progressChanel.send(value)

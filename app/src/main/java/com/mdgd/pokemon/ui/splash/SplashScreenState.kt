@@ -4,7 +4,7 @@ import com.mdgd.mvi.ScreenState
 
 sealed class SplashScreenState : ScreenState<SplashContract.View> {
 
-    class ShowError(private val e: Throwable) : SplashScreenState() {
+    class ShowError(val e: Throwable) : SplashScreenState() {
 
         override fun visit(screen: SplashContract.View) {
             screen.showError(e)
