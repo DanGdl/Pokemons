@@ -15,14 +15,6 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
                 isHandled = true
             }
         }
-
-        override fun equals(other: Any?): Boolean {
-            return this === other
-        }
-
-        override fun hashCode(): Int {
-            return System.identityHashCode(this)
-        }
     }
 
     class SetData(list: List<PokemonFullDataSchema>) : PokemonsScreenState(ArrayList(list)) {
