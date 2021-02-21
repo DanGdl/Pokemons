@@ -21,7 +21,6 @@ import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.infra.ui.EndlessScrollListener
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
 
 class PokemonsFragment : HostedFragment<
         PokemonsContract.View,
@@ -30,15 +29,8 @@ class PokemonsFragment : HostedFragment<
         PokemonsContract.Host>(),
         PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private val filters: MutableList<String> = ArrayList(3)
     private val adapter = PokemonsAdapter(lifecycleScope)
     private var refreshSwipe: SwipeRefreshLayout? = null
-
-    companion object {
-        fun newInstance(): PokemonsFragment {
-            return PokemonsFragment()
-        }
-    }
 
     // maybe paging library?
     private val scrollListener: EndlessScrollListener = object : EndlessScrollListener() {
@@ -97,6 +89,27 @@ class PokemonsFragment : HostedFragment<
         }
     }
 
+    override fun updateFilterButtons(activateFilter: Boolean, filter: String) {
+        val view = when (filter) {
+            FilterData.FILTER_ATTACK -> {
+                filterAttack
+            }
+            FilterData.FILTER_DEFENCE -> {
+                filterDefence
+            }
+            FilterData.FILTER_SPEED -> {
+                filterSpeed
+            }
+            else -> null
+        }
+
+        if (activateFilter) {
+            view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active))
+        } else {
+            view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive))
+        }
+    }
+
     override fun onClick(view: View) {
         if (view === refresh) {
             if (!refreshSwipe!!.isRefreshing) {
@@ -105,26 +118,15 @@ class PokemonsFragment : HostedFragment<
         } else {
             when {
                 filterAttack === view -> {
-                    setupFilter(filterAttack, FilterData.FILTER_ATTACK)
+                    model!!.sort(FilterData.FILTER_ATTACK)
                 }
                 filterDefence === view -> {
-                    setupFilter(filterDefence, FilterData.FILTER_DEFENCE)
+                    model!!.sort(FilterData.FILTER_DEFENCE)
                 }
                 filterSpeed === view -> {
-                    setupFilter(filterSpeed, FilterData.FILTER_SPEED)
+                    model!!.sort(FilterData.FILTER_SPEED)
                 }
             }
-            model!!.sort(FilterData(ArrayList(filters)))
-        }
-    }
-
-    private fun setupFilter(filterView: ImageButton?, filterTag: String) {
-        if (filters.contains(filterTag)) {
-            filters.remove(filterTag)
-            filterView!!.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive))
-        } else {
-            filters.add(filterTag)
-            filterView!!.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active))
         }
     }
 

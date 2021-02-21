@@ -15,12 +15,6 @@ import com.mdgd.pokemon.bg.UploadWorker
 
 class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View {
 
-    companion object {
-        fun newInstance(): SplashFragment {
-            return SplashFragment()
-        }
-    }
-
     override fun createModel(): SplashContract.ViewModel {
         return ViewModelProvider(this, SplashViewModelFactory(PokemonsApp.instance?.appComponent!!)).get(SplashViewModel::class.java)
     }

@@ -16,12 +16,6 @@ import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 class PokemonDetailsFragment : HostedFragment<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
     private val adapter = PokemonPropertiesAdapter()
 
-    companion object {
-        fun newInstance(): PokemonDetailsFragment {
-            return PokemonDetailsFragment()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
