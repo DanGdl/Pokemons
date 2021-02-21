@@ -7,7 +7,6 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.nhaarman.mockitokotlin2.firstValue
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
@@ -22,11 +21,6 @@ import org.mockito.Mockito
 class PokemonsViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val handler = CoroutineExceptionHandler { _, e ->
-        run {
-            e.printStackTrace()
-        }
-    }
     private lateinit var model: PokemonsViewModel
     private lateinit var repo: PokemonsRepo
 
@@ -64,7 +58,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchError() = runBlocking(handler) {
+    fun testSetup_LaunchError() = runBlocking {
         val error = RuntimeException("TestError")
         Mockito.`when`(repo.getPage(0)).thenThrow(error)
         Mockito.`when`(repo.getPokemons()).thenReturn(ArrayList())
