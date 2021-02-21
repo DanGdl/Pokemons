@@ -14,10 +14,7 @@ import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -32,11 +29,12 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<Pok
         }
     }
 
-    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {
                 pokemonIdFlow
+                        .filter { it != -1L }
                         .map { id: Long -> repo.getPokemonById(id) }
                         .map { details: PokemonFullDataSchema? -> if (details == null) LinkedList() else mapToListPokemon(details) }
                         .flowOn(Dispatchers.IO)

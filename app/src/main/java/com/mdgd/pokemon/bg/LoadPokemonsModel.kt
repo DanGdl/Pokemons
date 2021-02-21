@@ -6,13 +6,12 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import kotlinx.coroutines.*
 
 class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache) : ServiceModel {
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        val updateScope = CoroutineScope(Dispatchers.Main)
-        updateScope.launch {
+        coroutineScope.launch {
             cache.putLoadingProgress(Result(e))
             cancelScope()
-        }.invokeOnCompletion { updateScope.cancel() }
+        }
     }
 
     override fun load() {

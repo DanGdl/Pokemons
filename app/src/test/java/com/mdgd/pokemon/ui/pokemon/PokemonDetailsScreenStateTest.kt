@@ -1,6 +1,7 @@
 package com.mdgd.pokemon.ui.pokemon
 
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,11 +24,11 @@ class PokemonDetailsScreenStateTest {
     @Test
     fun testSetDataState() {
         val detailsCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<List<PokemonProperty>>()
-        // TODO: create mock data
-        PokemonDetailsScreenState.SetData(listOf()).visit(view)
+        val list = ArrayList<PokemonProperty>(0)
+        PokemonDetailsScreenState.SetData(list).visit(view)
 
         Mockito.verify(view, Mockito.times(1)).setItems(detailsCaptor.capture())
-        // TODO: verify captured data
+        Assert.assertEquals(list, detailsCaptor.firstValue)
         verifyNoMoreInteractions()
     }
 }

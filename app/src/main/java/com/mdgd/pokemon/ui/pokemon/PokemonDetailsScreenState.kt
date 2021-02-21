@@ -5,7 +5,7 @@ import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
 sealed class PokemonDetailsScreenState : ScreenState<PokemonDetailsContract.View> {
 
-    class SetData(private val items: List<PokemonProperty>) : PokemonDetailsScreenState() {
+    class SetData(val items: List<PokemonProperty>) : PokemonDetailsScreenState() {
 
         override fun visit(screen: PokemonDetailsContract.View) {
             screen.setItems(items)
