@@ -73,19 +73,20 @@ class PokemonsViewModelTest {
         Thread.sleep(2000)
 
         Mockito.verify(observerMock, Mockito.times(4)).onChanged(stateCaptor.capture())
-        val allStates = stateCaptor.allValues
-        Assert.assertTrue(allStates[0] is PokemonsScreenState.Loading)
-        Assert.assertTrue((allStates[0] as PokemonsScreenState.Loading).getItems().isEmpty())
-
-        Assert.assertTrue(allStates[1] is PokemonsScreenState.UpdateData)
-        Assert.assertTrue((allStates[1] as PokemonsScreenState.UpdateData).getItems().isEmpty())
-
-        Assert.assertTrue(allStates[2] is PokemonsScreenState.Loading)
-        Assert.assertTrue((allStates[2] as PokemonsScreenState.Loading).getItems().isEmpty())
-
-        Assert.assertTrue(allStates[3] is PokemonsScreenState.Error)
-        Assert.assertTrue((allStates[3] as PokemonsScreenState.Error).getItems().isEmpty())
-        Assert.assertEquals(error.message, (allStates[3] as PokemonsScreenState.Error).error?.message)
+        for (state in stateCaptor.allValues) {
+            when (state) {
+                is PokemonsScreenState.Loading -> {
+                    Assert.assertTrue(state.getItems().isEmpty())
+                }
+                is PokemonsScreenState.UpdateData -> {
+                    Assert.assertTrue(state.getItems().isEmpty())
+                }
+                is PokemonsScreenState.Error -> {
+                    Assert.assertTrue(state.getItems().isEmpty())
+                    Assert.assertEquals(error.message, state.error?.message)
+                }
+            }
+        }
 
         Mockito.verify(repo, Mockito.times(1)).getPage(0)
         Mockito.verify(repo, Mockito.times(1)).getPokemons()

@@ -38,18 +38,18 @@ class PokemonsNetwork : Network {
     }
 
     override suspend fun loadPokemons(pokemonsCount: Long, offset: Long): List<PokemonDetails> {
-        val nextPage = service.loadPage_S(pokemonsCount.toInt(), offset.toInt())
+        val nextPage = service.loadPage(pokemonsCount.toInt(), offset.toInt())
         return mapToDetails(nextPage)
     }
 
     override suspend fun loadPokemons(page: Int, pageSize: Int): List<PokemonDetails> {
         val i = max(page - 1, 0)
-        val dataPage = service.loadPage_S(pageSize, i * pageSize)
+        val dataPage = service.loadPage(pageSize, i * pageSize)
         return mapToDetails(dataPage)
     }
 
     override suspend fun getPokemonsCount(): Long {
-        return service.loadPage_S(1, 0).count.toLong()
+        return service.loadPage(1, 0).count.toLong()
     }
 
     private suspend fun mapToDetails(result: PokemonsList): List<PokemonDetails> {
@@ -63,7 +63,7 @@ class PokemonsNetwork : Network {
         supervisorScope {
             for (item in list) {
                 launch {
-                    channel.send(service.getPokemonsDetails_S(item.url))
+                    channel.send(service.getPokemonsDetails(item.url))
                 }
             }
 
