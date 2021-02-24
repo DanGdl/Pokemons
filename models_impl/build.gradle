@@ -41,7 +41,6 @@ dependencies {
     // retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_rx"
 
     // okHttp
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_log"
@@ -52,6 +51,13 @@ dependencies {
 
     // coroutins
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutins"
+
+    testImplementation "junit:junit:$junit"
+    testImplementation "org.mockito:mockito-core:3.7.0"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "android.arch.core:core-testing:1.1.1"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2"
+    testImplementation "com.google.code.gson:gson:$gson"
 }
 
 repositories {

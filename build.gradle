@@ -12,7 +12,6 @@ buildscript {
     ext.gson = "2.8.6"
     ext.retrofit = "2.9.0"
     ext.retrofit_gson = "2.6.2"
-    ext.retrofit_rx = "2.9.0"
     ext.okhttp_log = "4.9.0"
     ext.okhttp = "4.9.0"
     ext.junit = "4.13.2"
