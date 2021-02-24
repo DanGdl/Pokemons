@@ -10,7 +10,6 @@ import kotlinx.coroutines.supervisorScope
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -31,7 +30,6 @@ class PokemonsNetwork : Network {
         val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.createSynchronous())
                 .baseUrl("https://pokeapi.co/api/v2/")
                 .build()
         service = retrofit.create(PokemonsRetrofitApi::class.java)
