@@ -12,8 +12,8 @@ import com.mdgd.pokemon.ui.pokemon.infra.TextPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TitlePropertyData
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.runner.RunWith
@@ -44,7 +44,7 @@ class PokemonDetailsViewModelTest {
     }
 
     @Test
-    fun testSetup_NotingHappened() {
+    fun testSetup_NotingHappened() = runBlockingTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
         model.getStateObservable().observeForever(observerMock)
 
@@ -61,7 +61,7 @@ class PokemonDetailsViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchError() = runBlocking {
+    fun testSetup_LaunchError() = runBlockingTest {
         val error = RuntimeException("TestError")
         Mockito.`when`(repo.getPokemonById(0)).thenThrow(error)
 
@@ -80,7 +80,7 @@ class PokemonDetailsViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchOk() = runBlocking {
+    fun testSetup_LaunchOk() = runBlockingTest {
         val pokemon = Mocks.getPokemon()
         Mockito.`when`(repo.getPokemonById(0)).thenReturn(pokemon)
 

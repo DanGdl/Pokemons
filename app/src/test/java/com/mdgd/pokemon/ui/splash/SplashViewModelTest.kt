@@ -7,8 +7,8 @@ import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.runner.RunWith
@@ -41,7 +41,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun testSetup_NotingHappened() {
+    fun testSetup_NotingHappened() = runBlockingTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenState>
         model.getStateObservable().observeForever(observerMock)
 
@@ -58,7 +58,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchError() = runBlocking {
+    fun testSetup_LaunchError() = runBlockingTest {
         val error = Throwable("TestError")
         val progressChanel = Channel<Result<Long>>(Channel.Factory.CONFLATED)
         Mockito.`when`(cache.getProgressChanel()).thenReturn(progressChanel)
@@ -89,7 +89,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchCrash() = runBlocking {
+    fun testSetup_LaunchCrash() = runBlockingTest {
         val error = RuntimeException("TestError")
         Mockito.`when`(cache.getProgressChanel()).thenThrow(error)
 
@@ -118,7 +118,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchOk() = runBlocking {
+    fun testSetup_LaunchOk() = runBlockingTest {
         val progressChanel = Channel<Result<Long>>(Channel.Factory.CONFLATED)
         Mockito.`when`(cache.getProgressChanel()).thenReturn(progressChanel)
 

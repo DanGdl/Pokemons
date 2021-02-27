@@ -2,6 +2,7 @@ package com.mdgd.pokemon.ui.pokemons
 
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +24,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_LoadingState() {
+    fun test_LoadingState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
 
         val state = PokemonsScreenState.Loading(PokemonsScreenState.SetData(list))
@@ -38,7 +39,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_SetDataState() {
+    fun test_SetDataState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
 
         val state = PokemonsScreenState.SetData(list)
@@ -54,7 +55,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_AddDataState() {
+    fun test_AddDataState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val list2 = listOf(PokemonFullDataSchema())
         val listCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<List<PokemonFullDataSchema>>()
@@ -72,7 +73,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_UpdateDataState() {
+    fun test_UpdateDataState() = runBlockingTest {
         val list = listOf(PokemonFullDataSchema())
         val listCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<List<PokemonFullDataSchema>>()
 
@@ -89,7 +90,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_ErrorState() {
+    fun test_ErrorState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val error = Throwable("TestError")
 
@@ -108,7 +109,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_ShowDetailsState() {
+    fun test_ShowDetailsState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val pokemonId = 1L
 
@@ -127,7 +128,7 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_ChangeFilterState() {
+    fun test_ChangeFilterState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val isActive = true
         val filter = FilterData.FILTER_ATTACK
