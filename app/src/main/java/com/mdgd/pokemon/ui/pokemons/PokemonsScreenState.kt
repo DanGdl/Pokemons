@@ -3,17 +3,36 @@ package com.mdgd.pokemon.ui.pokemons
 import com.mdgd.mvi.ScreenState
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 
-sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullDataSchema>) : ScreenState<PokemonsContract.View> {
+sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullDataSchema>,
+                                 protected val availableFilters: List<String>,
+                                 protected val activeFilters: MutableList<String>) : ScreenState<PokemonsContract.View> {
     protected var isHandled = false
 
     fun getItems(): List<PokemonFullDataSchema> {
         return ArrayList(list)
     }
 
-    class Loading(prevState: PokemonsScreenState) : PokemonsScreenState(ArrayList(prevState.list)) {
+    override fun visit(screen: PokemonsContract.View) {
+        screen.setItems(list)
+        for (filter in availableFilters) {
+            screen.updateFilterButtons(activeFilters.contains(filter), filter)
+        }
+    }
+
+    @JvmName("getActiveFilters1")
+    fun getActiveFilters(): List<String> {
+        return ArrayList(activeFilters)
+    }
+
+
+    class Initial(availableFilters: List<String>)
+        : PokemonsScreenState(ArrayList(0), availableFilters, ArrayList(0))
+
+    class Loading(lastState: PokemonsScreenState)
+        : PokemonsScreenState(ArrayList(lastState.list), lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
         override fun visit(screen: PokemonsContract.View) {
-            screen.setItems(list)
+            super.visit(screen)
             if (!isHandled) {
                 screen.showProgress()
                 isHandled = true
@@ -21,15 +40,17 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
         }
     }
 
-    class SetData(list: List<PokemonFullDataSchema>) : PokemonsScreenState(ArrayList(list)) {
+    class SetData(list: List<PokemonFullDataSchema>, lastState: PokemonsScreenState)
+        : PokemonsScreenState(ArrayList(list), lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
-            screen.setItems(list)
+            super.visit(screen)
         }
     }
 
-    class AddData(list: List<PokemonFullDataSchema>, prevState: PokemonsScreenState) : PokemonsScreenState(ArrayList(prevState.list)) {
+    class AddData(list: List<PokemonFullDataSchema>, lastState: PokemonsScreenState)
+        : PokemonsScreenState(ArrayList(lastState.list), lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
         init {
             super.list.addAll(list)
@@ -37,11 +58,12 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
-            screen.setItems(list)
+            super.visit(screen)
         }
     }
 
-    class UpdateData(items: List<PokemonFullDataSchema>) : PokemonsScreenState(ArrayList(items)) {
+    class UpdateData(items: List<PokemonFullDataSchema>, lastState: PokemonsScreenState)
+        : PokemonsScreenState(ArrayList(items), lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
@@ -49,11 +71,12 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
         }
     }
 
-    class Error(val error: Throwable?, prevState: PokemonsScreenState) : PokemonsScreenState(prevState.list) {
+    class Error(val error: Throwable?, lastState: PokemonsScreenState)
+        : PokemonsScreenState(lastState.list, lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
-            screen.setItems(list)
+            super.visit(screen)
 
             if (!isHandled) {
                 screen.showError(error)
@@ -62,11 +85,12 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
         }
     }
 
-    class ShowDetails(val id: Long?, lastState: PokemonsScreenState) : PokemonsScreenState(lastState.list) {
+    class ShowDetails(val id: Long?, lastState: PokemonsScreenState)
+        : PokemonsScreenState(lastState.list, lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
-            screen.setItems(list)
+            super.visit(screen)
 
             if (!isHandled) {
                 screen.proceedToNextScreen(id)
@@ -75,15 +99,20 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
         }
     }
 
-    class ChangeFilterState(val activateFilter: Boolean, val filter: String, lastState: PokemonsScreenState) : PokemonsScreenState(ArrayList(lastState.list)) {
-        override fun visit(screen: PokemonsContract.View) {
-            screen.hideProgress()
-            screen.setItems(list)
+    class ChangeFilterState(filter: String, lastState: PokemonsScreenState)
+        : PokemonsScreenState(ArrayList(lastState.list), lastState.availableFilters, ArrayList(lastState.activeFilters)) {
 
-            if (!isHandled) {
-                screen.updateFilterButtons(activateFilter, filter)
-                isHandled = true
+        init {
+            if (activeFilters.contains(filter)) {
+                activeFilters.remove(filter)
+            } else {
+                activeFilters.add(filter)
             }
+        }
+
+        override fun visit(screen: PokemonsContract.View) {
+            super.visit(screen)
+            screen.hideProgress()
         }
     }
 }

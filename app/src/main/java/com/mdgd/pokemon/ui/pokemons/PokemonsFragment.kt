@@ -14,11 +14,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mdgd.mvi.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
+import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.adapter.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData
-import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
-import com.mdgd.pokemon.ui.pokemons.infra.ui.EndlessScrollListener
+import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -48,9 +48,10 @@ class PokemonsFragment : HostedFragment<
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            adapter.onItemClickSubject.collect { pokemon ->
-                if (pokemon is ClickEvent.ClickData)
-                    model!!.onItemClicked(pokemon.data)
+            adapter.getItemClickFlow().collect {
+                if (it is ClickEvent.ClickData) {
+                    model!!.onItemClicked(it.data)
+                }
             }
         }
     }

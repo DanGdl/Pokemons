@@ -6,8 +6,8 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.adapter.ClickEvent
 import com.mdgd.pokemon.ui.adapter.RecyclerVH
-import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

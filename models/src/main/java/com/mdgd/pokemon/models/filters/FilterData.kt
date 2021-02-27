@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemons.infra
+package com.mdgd.pokemon.models.filters
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemons.infra.ui
+package com.mdgd.pokemon.ui.pokemons.infra
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

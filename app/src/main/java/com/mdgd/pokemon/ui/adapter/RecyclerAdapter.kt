@@ -2,16 +2,16 @@ package com.mdgd.pokemon.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import com.mdgd.pokemon.ui.pokemons.infra.ui.ClickEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-abstract class RecyclerAdapter<T>() : RecyclerView.Adapter<RecyclerVH<T>>() {
+abstract class RecyclerAdapter<T> : RecyclerView.Adapter<RecyclerVH<T>>() {
     protected val items: MutableList<T> = ArrayList()
-    protected val clicksSubject = MutableStateFlow<ClickEvent<PokemonFullDataSchema>>(ClickEvent.EmptyData())
-    val onItemClickSubject: Flow<ClickEvent<PokemonFullDataSchema>>
-        get() = clicksSubject
+    protected val clicksSubject = MutableStateFlow<ClickEvent<T>>(ClickEvent.EmptyData())
+
+    fun getItemClickFlow(): Flow<ClickEvent<T>> {
+        return clicksSubject
+    }
 
     override fun getItemViewType(position: Int): Int {
         if (items.isEmpty()) {

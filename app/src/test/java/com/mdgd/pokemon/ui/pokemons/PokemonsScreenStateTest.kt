@@ -1,7 +1,8 @@
 package com.mdgd.pokemon.ui.pokemons
 
+import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
@@ -27,7 +28,7 @@ class PokemonsScreenStateTest {
     fun test_LoadingState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
 
-        val state = PokemonsScreenState.Loading(PokemonsScreenState.SetData(list))
+        val state = PokemonsScreenState.Loading(PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
         state.visit(view)
 
         Mockito.verify(view, Mockito.times(1)).setItems(list)
@@ -42,7 +43,7 @@ class PokemonsScreenStateTest {
     fun test_SetDataState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
 
-        val state = PokemonsScreenState.SetData(list)
+        val state = PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf()))
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
@@ -58,9 +59,9 @@ class PokemonsScreenStateTest {
     fun test_AddDataState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val list2 = listOf(PokemonFullDataSchema())
-        val listCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<List<PokemonFullDataSchema>>()
+        val listCaptor = argumentCaptor<List<PokemonFullDataSchema>>()
 
-        val state = PokemonsScreenState.AddData(list2, PokemonsScreenState.SetData(list))
+        val state = PokemonsScreenState.AddData(list2, PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(listCaptor.capture())
@@ -75,9 +76,9 @@ class PokemonsScreenStateTest {
     @Test
     fun test_UpdateDataState() = runBlockingTest {
         val list = listOf(PokemonFullDataSchema())
-        val listCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<List<PokemonFullDataSchema>>()
+        val listCaptor = argumentCaptor<List<PokemonFullDataSchema>>()
 
-        val state = PokemonsScreenState.UpdateData(list)
+        val state = PokemonsScreenState.UpdateData(list, PokemonsScreenState.Initial(listOf()))
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).updateItems(listCaptor.capture())
@@ -94,7 +95,7 @@ class PokemonsScreenStateTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val error = Throwable("TestError")
 
-        val state = PokemonsScreenState.Error(error, PokemonsScreenState.SetData(list))
+        val state = PokemonsScreenState.Error(error, PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
@@ -113,7 +114,7 @@ class PokemonsScreenStateTest {
         val list = ArrayList<PokemonFullDataSchema>()
         val pokemonId = 1L
 
-        val state = PokemonsScreenState.ShowDetails(pokemonId, PokemonsScreenState.SetData(list))
+        val state = PokemonsScreenState.ShowDetails(pokemonId, PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
@@ -130,19 +131,21 @@ class PokemonsScreenStateTest {
     @Test
     fun test_ChangeFilterState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
-        val isActive = true
         val filter = FilterData.FILTER_ATTACK
+        val availableFilters = listOf(FilterData.FILTER_ATTACK, FilterData.FILTER_SPEED)
+        val activeStateCaptor = argumentCaptor<Boolean>()
+        val filterTypeCaptor = argumentCaptor<String>()
 
-        val state = PokemonsScreenState.ChangeFilterState(isActive, filter, PokemonsScreenState.SetData(list))
+        val state = PokemonsScreenState.ChangeFilterState(filter, PokemonsScreenState.Initial(availableFilters))
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
         Mockito.verify(view, Mockito.times(1)).hideProgress()
-        Mockito.verify(view, Mockito.times(1)).updateFilterButtons(isActive, filter)
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(2)).setItems(list)
-        Mockito.verify(view, Mockito.times(2)).hideProgress()
+        Mockito.verify(view, Mockito.times(2)).updateFilterButtons(activeStateCaptor.capture(), filterTypeCaptor.capture())
+        for (i in 0..1) {
+            Assert.assertEquals(availableFilters[i], filterTypeCaptor.allValues[i])
+            Assert.assertEquals(availableFilters[i] == filter, activeStateCaptor.allValues[i])
+        }
 
         verifyNoMoreInteractions()
     }

@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemons.infra.ui
+package com.mdgd.pokemon.ui.adapter
 
 sealed class ClickEvent<T> {
 

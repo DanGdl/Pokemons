@@ -4,62 +4,23 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
+import com.mdgd.pokemon.models.filters.FilterData
+import com.mdgd.pokemon.models.filters.StatsFilter
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
-class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
+class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFactory: StatsFilter) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
-    private val filters: MutableList<String> = java.util.ArrayList(3)
-    private val comparators: Map<String, CharacteristicComparator?> = object : HashMap<String, CharacteristicComparator>() {
-        init {
-            put(FilterData.FILTER_ATTACK, object : CharacteristicComparator {
-                override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-                    return compareProperty(FilterData.FILTER_ATTACK, p1, p2)
-                }
-            })
-            put(FilterData.FILTER_DEFENCE, object : CharacteristicComparator {
-                override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-                    return compareProperty(FilterData.FILTER_DEFENCE, p1, p2)
-                }
-            })
-            put(FilterData.FILTER_SPEED, object : CharacteristicComparator {
-                override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-                    return compareProperty(FilterData.FILTER_SPEED, p1, p2)
-                }
-            })
-        }
-    }
     private var launch: Job? = null
 
     override fun getDefaultState(): PokemonsScreenState {
-        return PokemonsScreenState.SetData(ArrayList(0))
-    }
-
-    private fun compareProperty(property: String, p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-        var val1 = -1
-        for (s in p1.stats) {
-            if (property == s.stat!!.name) {
-                val1 = s.baseStat!!
-                break
-            }
-        }
-        var val2 = -1
-        for (s in p2.stats) {
-            if (property == s.stat!!.name) {
-                val2 = s.baseStat!!
-                break
-            }
-        }
-        return val1.compareTo(val2)
+        return PokemonsScreenState.Initial(filtersFactory.getAvailableFilters())
     }
 
     public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
@@ -74,7 +35,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
                         .catch { e: Throwable -> setState(PokemonsScreenState.Error(e, getLastState())) }
                         .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
                             if (pagePair.first == 0) {
-                                setState(PokemonsScreenState.SetData(pagePair.second))
+                                setState(PokemonsScreenState.SetData(pagePair.second, getLastState()))
                             } else {
                                 setState(PokemonsScreenState.AddData(pagePair.second, getLastState()))
                             }
@@ -84,7 +45,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
             viewModelScope.launch {
                 filterFlow
                         .map { sort(it, repo.getPokemons()) }
-                        .collect { sortedList -> setState(PokemonsScreenState.UpdateData(sortedList)) }
+                        .collect { sortedList -> setState(PokemonsScreenState.UpdateData(sortedList, getLastState())) }
             }
         }
     }
@@ -92,14 +53,14 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
     private fun sort(filters: FilterData, pokemons: List<PokemonFullDataSchema>): List<PokemonFullDataSchema> {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
         if (!filters.isEmpty) {
+            val comparators = filtersFactory.getFilters()
             Collections.sort(pokemons) { pokemon1: PokemonFullDataSchema?, pokemon2: PokemonFullDataSchema? ->
                 var compare = 0
                 for (filter in filters.filters) {
-                    if (comparators[filter] != null) {
-                        compare = comparators[filter]!!.compare(pokemon2!!, pokemon1!!) // swap, instead of multiply on -1
-                        if (compare != 0) {
-                            break
-                        }
+                    compare = comparators[filter]?.compare(pokemon2!!, pokemon1!!)
+                            ?: 0 // swap, instead of multiply on -1
+                    if (compare != 0) {
+                        break
                     }
                 }
                 compare
@@ -122,16 +83,9 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
     }
 
     override fun sort(filter: String) {
-        val activateFilter = if (filters.contains(filter)) {
-            filters.remove(filter)
-            false
-        } else {
-            filters.add(filter)
-            true
-        }
-        setState(PokemonsScreenState.ChangeFilterState(activateFilter, filter, getLastState()))
+        setState(PokemonsScreenState.ChangeFilterState(filter, getLastState()))
         viewModelScope.launch {
-            filterFlow.emit(FilterData(ArrayList(filters)))
+            filterFlow.emit(FilterData(getLastState().getActiveFilters()))
         }
     }
 

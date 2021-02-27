@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemons.infra
+package com.mdgd.pokemon.models.filters
 
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 
