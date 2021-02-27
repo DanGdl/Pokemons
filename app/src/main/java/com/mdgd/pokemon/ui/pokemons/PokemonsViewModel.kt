@@ -93,9 +93,8 @@ class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFacto
         setState(PokemonsScreenState.ShowDetails(pokemon.pokemonSchema?.id, getLastState()))
     }
 
-    override fun onCleared() {
-        launch?.cancel()
-        launch = null
+    public override fun onCleared() {
         super.onCleared()
+        launch = null
     }
 }

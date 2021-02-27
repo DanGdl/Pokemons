@@ -37,4 +37,9 @@ class SplashViewModel(private val cache: Cache) : MviViewModel<SplashScreenState
     override fun getDefaultState(): SplashScreenState {
         return SplashScreenState.None
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        progressJob = null
+    }
 }

@@ -98,9 +98,8 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<Pok
     }
 
     override fun onCleared() {
-        pokemonLoadingJob?.cancel()
-        pokemonLoadingJob = null
         super.onCleared()
+        pokemonLoadingJob = null
     }
 
     override fun getDefaultState(): PokemonDetailsScreenState {
