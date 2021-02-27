@@ -6,11 +6,11 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullDataSchema>) : ScreenState<PokemonsContract.View> {
     protected var isHandled = false
 
-    public fun getItems(): List<PokemonFullDataSchema> {
+    fun getItems(): List<PokemonFullDataSchema> {
         return ArrayList(list)
     }
 
-    class Loading(prevState: PokemonsScreenState) : PokemonsScreenState(prevState.list) {
+    class Loading(prevState: PokemonsScreenState) : PokemonsScreenState(ArrayList(prevState.list)) {
 
         override fun visit(screen: PokemonsContract.View) {
             screen.setItems(list)
@@ -29,7 +29,7 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
         }
     }
 
-    class AddData(list: List<PokemonFullDataSchema>, prevState: PokemonsScreenState) : PokemonsScreenState(prevState.list) {
+    class AddData(list: List<PokemonFullDataSchema>, prevState: PokemonsScreenState) : PokemonsScreenState(ArrayList(prevState.list)) {
 
         init {
             super.list.addAll(list)
@@ -75,7 +75,7 @@ sealed class PokemonsScreenState(protected val list: MutableList<PokemonFullData
         }
     }
 
-    class ChangeFilterState(val activateFilter: Boolean, val filter: String, lastState: PokemonsScreenState) : PokemonsScreenState(lastState.list) {
+    class ChangeFilterState(val activateFilter: Boolean, val filter: String, lastState: PokemonsScreenState) : PokemonsScreenState(ArrayList(lastState.list)) {
         override fun visit(screen: PokemonsContract.View) {
             screen.hideProgress()
             screen.setItems(list)

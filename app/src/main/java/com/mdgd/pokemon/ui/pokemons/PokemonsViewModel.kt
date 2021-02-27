@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,17 +23,17 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
         init {
             put(FilterData.FILTER_ATTACK, object : CharacteristicComparator {
                 override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-                    return compareProperty("attack", p1, p2)
+                    return compareProperty(FilterData.FILTER_ATTACK, p1, p2)
                 }
             })
             put(FilterData.FILTER_DEFENCE, object : CharacteristicComparator {
                 override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-                    return compareProperty("defense", p1, p2)
+                    return compareProperty(FilterData.FILTER_DEFENCE, p1, p2)
                 }
             })
             put(FilterData.FILTER_SPEED, object : CharacteristicComparator {
                 override fun compare(p1: PokemonFullDataSchema, p2: PokemonFullDataSchema): Int {
-                    return compareProperty("speed", p1, p2)
+                    return compareProperty(FilterData.FILTER_SPEED, p1, p2)
                 }
             })
         }
@@ -50,12 +49,14 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
         for (s in p1.stats) {
             if (property == s.stat!!.name) {
                 val1 = s.baseStat!!
+                break
             }
         }
         var val2 = -1
         for (s in p2.stats) {
             if (property == s.stat!!.name) {
                 val2 = s.baseStat!!
+                break
             }
         }
         return val1.compareTo(val2)
@@ -65,32 +66,30 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
             launch = viewModelScope.launch {
-                supervisorScope {
-                    pageFlow
-                            .onEach { setState(PokemonsScreenState.Loading(getLastState())) }
-                            .flowOn(Dispatchers.Main)
-                            .map { page -> Pair(page, repo.getPage(page)) }
-                            .flowOn(Dispatchers.IO)
-                            .catch { e: Throwable -> setState(PokemonsScreenState.Error(e, getLastState())) }
-                            .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
-                                if (pagePair.first == 0) {
-                                    setState(PokemonsScreenState.SetData(pagePair.second))
-                                } else {
-                                    setState(PokemonsScreenState.AddData(pagePair.second, getLastState()))
-                                }
+                pageFlow
+                        .onEach { setState(PokemonsScreenState.Loading(getLastState())) }
+                        .flowOn(Dispatchers.Main)
+                        .map { page -> Pair(page, repo.getPage(page)) }
+                        .flowOn(Dispatchers.IO)
+                        .catch { e: Throwable -> setState(PokemonsScreenState.Error(e, getLastState())) }
+                        .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
+                            if (pagePair.first == 0) {
+                                setState(PokemonsScreenState.SetData(pagePair.second))
+                            } else {
+                                setState(PokemonsScreenState.AddData(pagePair.second, getLastState()))
                             }
-                }
+                        }
+            }
 
-                supervisorScope {
-                    filterFlow.collect { data ->
-                        setState(sort(data, repo.getPokemons()))
-                    }
-                }
+            viewModelScope.launch {
+                filterFlow
+                        .map { sort(it, repo.getPokemons()) }
+                        .collect { sortedList -> setState(PokemonsScreenState.UpdateData(sortedList)) }
             }
         }
     }
 
-    private fun sort(filters: FilterData, pokemons: List<PokemonFullDataSchema>): PokemonsScreenState {
+    private fun sort(filters: FilterData, pokemons: List<PokemonFullDataSchema>): List<PokemonFullDataSchema> {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
         if (!filters.isEmpty) {
             Collections.sort(pokemons) { pokemon1: PokemonFullDataSchema?, pokemon2: PokemonFullDataSchema? ->
@@ -106,7 +105,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
                 compare
             }
         }
-        return PokemonsScreenState.UpdateData(pokemons)
+        return pokemons
     }
 
     override fun reload() {
@@ -132,7 +131,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonsS
         }
         setState(PokemonsScreenState.ChangeFilterState(activateFilter, filter, getLastState()))
         viewModelScope.launch {
-            filterFlow.emit(FilterData(filters))
+            filterFlow.emit(FilterData(ArrayList(filters)))
         }
     }
 

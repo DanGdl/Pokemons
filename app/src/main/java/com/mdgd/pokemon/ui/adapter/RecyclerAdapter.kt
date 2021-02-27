@@ -25,7 +25,9 @@ abstract class RecyclerAdapter<T>() : RecyclerView.Adapter<RecyclerVH<T>>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerVH<T>, position: Int) {
-        holder.bindItem(items[position], position)
+        if (items.isNotEmpty()) {
+            holder.bindItem(items[position], position)
+        }
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerVH<T>) {
