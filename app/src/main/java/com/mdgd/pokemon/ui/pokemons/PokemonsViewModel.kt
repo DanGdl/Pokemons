@@ -4,17 +4,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
+import com.mdgd.mvi.util.DispatchersHolder
 import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.filters.StatsFilter
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
-class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFactory: StatsFilter) : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
+class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFactory: StatsFilter, private val dispatchers: DispatchersHolder)
+    : MviViewModel<PokemonsScreenState>(), PokemonsContract.ViewModel {
+
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
     private var launch: Job? = null
@@ -29,9 +31,9 @@ class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFacto
             launch = viewModelScope.launch {
                 pageFlow
                         .onEach { setState(PokemonsScreenState.Loading(getLastState())) }
-                        .flowOn(Dispatchers.Main)
+                        .flowOn(dispatchers.getMain())
                         .map { page -> Pair(page, repo.getPage(page)) }
-                        .flowOn(Dispatchers.IO)
+                        .flowOn(dispatchers.getIO())
                         .catch { e: Throwable -> setState(PokemonsScreenState.Error(e, getLastState())) }
                         .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
                             if (pagePair.first == 0) {

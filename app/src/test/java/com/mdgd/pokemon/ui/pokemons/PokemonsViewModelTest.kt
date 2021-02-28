@@ -3,6 +3,7 @@ package com.mdgd.pokemon.ui.pokemons
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import com.mdgd.mvi.util.DispatchersHolder
 import com.mdgd.pokemon.Mocks
 import com.mdgd.pokemon.TestSuit
 import com.mdgd.pokemon.models.filters.FilterData
@@ -31,14 +32,19 @@ class PokemonsViewModelTest {
     private val PAGE_SIZE = 5
     private lateinit var model: PokemonsViewModel
     private lateinit var repo: PokemonsRepo
+    private lateinit var dispatchers: DispatchersHolder
     private lateinit var filtersFactory: StatsFilter
 
     @Before
     fun setup() {
         Dispatchers.setMain(Dispatchers.Unconfined)
+        dispatchers = Mockito.mock(DispatchersHolder::class.java)
+        Mockito.`when`(dispatchers.getIO()).thenReturn(Dispatchers.Unconfined)
+        Mockito.`when`(dispatchers.getMain()).thenReturn(Dispatchers.Unconfined)
+
         repo = Mockito.mock(PokemonsRepo::class.java)
         filtersFactory = Mockito.mock(StatsFilter::class.java)
-        model = PokemonsViewModel(repo, filtersFactory)
+        model = PokemonsViewModel(repo, filtersFactory, dispatchers)
     }
 
     @After
@@ -166,7 +172,11 @@ class PokemonsViewModelTest {
         for (state in stateCaptor.allValues) {
             when (state) {
                 is PokemonsScreenState.Loading -> {
-                    Assert.assertTrue(state.getItems().isEmpty())
+                    if (loadingCounter == 0) {
+                        Assert.assertTrue(state.getItems().isEmpty())
+                    } else {
+                        Assert.assertEquals(pokemons, state.getItems())
+                    }
                     loadingCounter += 1
                 }
                 is PokemonsScreenState.SetData -> {
@@ -174,11 +184,7 @@ class PokemonsViewModelTest {
                     Assert.assertEquals(pokemons, state.getItems())
                 }
                 is PokemonsScreenState.UpdateData -> {
-                    if (updatesCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
-                    } else {
-                        Assert.assertEquals(pokemons, state.getItems())
-                    }
+                    Assert.assertEquals(pokemons, state.getItems())
                     updatesCounter += 1
                 }
             }
@@ -314,7 +320,11 @@ class PokemonsViewModelTest {
         for (state in stateCaptor.allValues) {
             when (state) {
                 is PokemonsScreenState.Loading -> {
-                    Assert.assertTrue(state.getItems().isEmpty())
+                    if (loadingCounter == 0) {
+                        Assert.assertTrue(state.getItems().isEmpty())
+                    } else {
+                        Assert.assertEquals(page1, state.getItems())
+                    }
                     loadingCounter += 1
                 }
                 is PokemonsScreenState.SetData -> {
@@ -323,7 +333,7 @@ class PokemonsViewModelTest {
                 }
                 is PokemonsScreenState.UpdateData -> {
                     if (updatesCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
+                        Assert.assertEquals(page1, state.getItems())
                     } else {
                         val items = state.getItems()
                         Assert.assertEquals(PAGE_SIZE, items.size)
@@ -411,7 +421,7 @@ class PokemonsViewModelTest {
         for (state in stateCaptor.allValues) {
             when (state) {
                 is PokemonsScreenState.Loading -> {
-                    if (loadingCounter in 0..1) {
+                    if (loadingCounter == 0) {
                         Assert.assertTrue(state.getItems().isEmpty())
                     } else {
                         Assert.assertEquals(page1, state.getItems())
@@ -434,7 +444,7 @@ class PokemonsViewModelTest {
                 }
                 is PokemonsScreenState.UpdateData -> {
                     if (updatesCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
+                        Assert.assertEquals(page1, state.getItems())
                     } else if (updatesCounter == 1) {
                         val items = state.getItems()
                         Assert.assertNotEquals(page1, items)
