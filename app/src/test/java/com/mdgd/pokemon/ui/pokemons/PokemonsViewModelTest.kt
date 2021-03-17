@@ -13,6 +13,7 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.schemas.Stat
 import com.mdgd.pokemon.models_impl.filters.StatsFiltersFactory
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import com.nhaarman.mockitokotlin2.firstValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.mdgd.mvi.HostedFragment
+import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.filters.FilterData
@@ -19,12 +19,15 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.adapter.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
 import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PokemonsFragment : HostedFragment<
         PokemonsContract.View,
         PokemonsScreenState,
+        PokemonsScreenAction,
         PokemonsContract.ViewModel,
         PokemonsContract.Host>(),
         PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {

@@ -10,6 +10,7 @@ import com.mdgd.pokemon.ui.pokemon.infra.ImagePropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.LabelPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TextPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TitlePropertyData
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain

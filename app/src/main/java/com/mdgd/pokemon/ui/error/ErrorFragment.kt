@@ -5,8 +5,16 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.mdgd.pokemon.R
+import com.mdgd.pokemon.ui.error.state.ErrorFragmentAction
+import com.mdgd.pokemon.ui.error.state.ErrorFragmentState
 
-class ErrorFragment : MessageDialog<ErrorFragmentState, ErrorContract.ViewModel, ErrorContract.Host>(), ErrorContract.View, DialogInterface.OnClickListener {
+class ErrorFragment : MessageDialog<
+        ErrorContract.View,
+        ErrorFragmentState,
+        ErrorFragmentAction,
+        ErrorContract.ViewModel,
+        ErrorContract.Host>(),
+        ErrorContract.View, DialogInterface.OnClickListener {
     private var error: Throwable? = null
 
     override fun createModel(): ErrorContract.ViewModel? {

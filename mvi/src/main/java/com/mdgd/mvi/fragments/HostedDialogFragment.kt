@@ -1,12 +1,19 @@
-package com.mdgd.mvi
+package com.mdgd.mvi.fragments
 
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.lifecycle.Observer
+import com.mdgd.mvi.states.AbstractAction
+import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
-abstract class HostedDialogFragment<STATE : ScreenState<*>, VIEW_MODEL : FragmentContract.ViewModel<STATE>, HOST : FragmentContract.Host>
+abstract class HostedDialogFragment<
+        VIEW : FragmentContract.View,
+        STATE : ScreenState<VIEW>,
+        ACTION : AbstractAction<VIEW>,
+        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
+        HOST : FragmentContract.Host>
     : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE> {
 
     protected var model: VIEW_MODEL? = null
@@ -40,14 +47,20 @@ abstract class HostedDialogFragment<STATE : ScreenState<*>, VIEW_MODEL : Fragmen
         if (model != null) {
             lifecycle.addObserver(model!!)
             model!!.getStateObservable().observe(this, this)
+            model!!.getActionObservable().observe(this, { action ->
+                action.visit(this as VIEW)
+            })
         }
     }
 
-    override fun onChanged(state: STATE) {}
+    override fun onChanged(state: STATE) {
+        state.visit(this as VIEW)
+    }
 
     override fun onDestroy() {
         // order matters
         if (model != null) {
+            model!!.getActionObservable().removeObservers(this)
             model!!.getStateObservable().removeObservers(this)
             lifecycle.removeObserver(model!!)
         }

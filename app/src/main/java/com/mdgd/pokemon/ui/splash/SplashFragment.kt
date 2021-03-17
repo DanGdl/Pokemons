@@ -8,12 +8,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import com.mdgd.mvi.HostedFragment
+import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
+import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
+import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 
-class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View {
+class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View {
 
     override fun createModel(): SplashContract.ViewModel {
         return ViewModelProvider(this, SplashViewModelFactory(PokemonsApp.instance?.appComponent!!)).get(SplashViewModel::class.java)

@@ -1,11 +1,17 @@
 package com.mdgd.pokemon.ui.error
 
-import com.mdgd.mvi.FragmentContract
-import com.mdgd.mvi.HostedDialogFragment
-import com.mdgd.mvi.ScreenState
+import com.mdgd.mvi.fragments.FragmentContract
+import com.mdgd.mvi.fragments.HostedDialogFragment
+import com.mdgd.mvi.states.AbstractAction
+import com.mdgd.mvi.states.ScreenState
 
-abstract class MessageDialog<STATE : ScreenState<*>, VIEW_MODEL : FragmentContract.ViewModel<STATE>, HOST : FragmentContract.Host>
-    : HostedDialogFragment<STATE, VIEW_MODEL, HOST>() {
+abstract class MessageDialog<
+        VIEW : FragmentContract.View,
+        STATE : ScreenState<VIEW>,
+        ACTION : AbstractAction<VIEW>,
+        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
+        HOST : FragmentContract.Host>
+    : HostedDialogFragment<VIEW, STATE, ACTION, VIEW_MODEL, HOST>() {
 
     companion object {
         const val KEY_TITLE = "key_title"

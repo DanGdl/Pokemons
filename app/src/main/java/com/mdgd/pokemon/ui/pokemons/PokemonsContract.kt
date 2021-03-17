@@ -1,10 +1,12 @@
 package com.mdgd.pokemon.ui.pokemons
 
-import com.mdgd.mvi.FragmentContract
+import com.mdgd.mvi.fragments.FragmentContract
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 
 class PokemonsContract {
-    interface ViewModel : FragmentContract.ViewModel<PokemonsScreenState> {
+    interface ViewModel : FragmentContract.ViewModel<PokemonsScreenState, PokemonsScreenAction> {
         fun reload()
         fun loadPage(page: Int)
         fun sort(filter: String)

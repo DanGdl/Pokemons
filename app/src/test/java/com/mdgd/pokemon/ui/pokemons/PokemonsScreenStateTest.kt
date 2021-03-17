@@ -2,6 +2,7 @@ package com.mdgd.pokemon.ui.pokemons
 
 import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert

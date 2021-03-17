@@ -7,23 +7,27 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mdgd.mvi.HostedFragment
+import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp.Companion.instance
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 
-class PokemonDetailsFragment : HostedFragment<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
+class PokemonDetailsFragment : HostedFragment<
+        PokemonDetailsContract.View,
+        PokemonDetailsScreenState,
+        PokemonDetailsScreenAction,
+        PokemonDetailsContract.ViewModel,
+        PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
     private val adapter = PokemonPropertiesAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            // The getPrivacyPolicyLink() method will be created automatically.
-            // val pokemonI: String = PokemonDetailsFragmentArgs.fromBundle(arguments).getPokemonId()
             model?.setPokemonId(PokemonDetailsFragmentArgs.fromBundle(requireArguments()).pokemonId)
         }
-
     }
 
     override fun createModel(): PokemonDetailsContract.ViewModel {

@@ -1,5 +1,6 @@
 package com.mdgd.pokemon.ui.splash
 
+import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before

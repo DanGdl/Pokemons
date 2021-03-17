@@ -1,10 +1,12 @@
 package com.mdgd.pokemon.ui.pokemon
 
-import com.mdgd.mvi.FragmentContract
+import com.mdgd.mvi.fragments.FragmentContract
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 
 class PokemonDetailsContract {
-    interface ViewModel : FragmentContract.ViewModel<PokemonDetailsScreenState> {
+    interface ViewModel : FragmentContract.ViewModel<PokemonDetailsScreenState, PokemonDetailsScreenAction> {
         fun setPokemonId(pokemonId: Long)
     }
 

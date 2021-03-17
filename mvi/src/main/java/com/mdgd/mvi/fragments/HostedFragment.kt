@@ -1,15 +1,18 @@
-package com.mdgd.mvi
+package com.mdgd.mvi.fragments
 
 import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
+import com.mdgd.mvi.states.ScreenAction
+import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<STATE>,
+        ACTION : ScreenAction<VIEW>,
+        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>
     : NavHostFragment(), FragmentContract.View, Observer<STATE> {
 
@@ -49,6 +52,9 @@ abstract class HostedFragment<
         if (model != null) {
             lifecycle.addObserver(model!!)
             model!!.getStateObservable().observe(this, this)
+            model!!.getActionObservable().observe(this, { action ->
+                action.visit(this as VIEW)
+            })
         }
     }
 
@@ -57,6 +63,7 @@ abstract class HostedFragment<
     override fun onDestroy() {
         // order matters
         if (model != null) {
+            model!!.getActionObservable().removeObservers(this)
             model!!.getStateObservable().removeObservers(this)
             lifecycle.removeObserver(model!!)
         }

@@ -12,6 +12,8 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -19,7 +21,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PokemonDetailsViewModel(private val repo: PokemonsRepo) : MviViewModel<PokemonDetailsScreenState>(), PokemonDetailsContract.ViewModel {
+class PokemonDetailsViewModel(private val repo: PokemonsRepo)
+    : MviViewModel<PokemonDetailsScreenState, PokemonDetailsScreenAction>(), PokemonDetailsContract.ViewModel {
+
     private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null
 

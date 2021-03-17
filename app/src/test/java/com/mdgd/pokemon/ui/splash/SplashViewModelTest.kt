@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
+import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.test.resetMain
