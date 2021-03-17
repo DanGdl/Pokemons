@@ -13,6 +13,7 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.schemas.Stat
 import com.mdgd.pokemon.models_impl.filters.StatsFiltersFactory
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import com.nhaarman.mockitokotlin2.firstValue
 import kotlinx.coroutines.Dispatchers
@@ -63,6 +64,10 @@ class PokemonsViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenState>
         model.getStateObservable().observeForever(observerMock)
 
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        model.getActionObservable().observeForever(actionObserverMock)
+
+
         model.onAny(null, Lifecycle.Event.ON_START)
         model.onAny(null, Lifecycle.Event.ON_RESUME)
         model.onAny(null, Lifecycle.Event.ON_PAUSE)
@@ -70,9 +75,12 @@ class PokemonsViewModelTest {
         model.onAny(null, Lifecycle.Event.ON_DESTROY)
         model.onAny(null, Lifecycle.Event.ON_ANY)
 
+
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -86,32 +94,41 @@ class PokemonsViewModelTest {
         val stateCaptor = ArgumentCaptor.forClass(PokemonsScreenState::class.java)
         model.getStateObservable().observeForever(observerMock)
 
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        val actionCaptor = ArgumentCaptor.forClass(PokemonsScreenAction::class.java)
+        model.getActionObservable().observeForever(actionObserverMock)
+
 
         model.onAny(null, Lifecycle.Event.ON_CREATE)
         model.loadPage(0)
         Thread.sleep(TestSuit.DELAY)
 
-        Mockito.verify(observerMock, Mockito.times(4)).onChanged(stateCaptor.capture())
+
+        Mockito.verify(observerMock, Mockito.times(1)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(4)).onChanged(actionCaptor.capture())
         var loadingCounter = 0
         var updatesCounter = 0
         var errorCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
-                is PokemonsScreenState.Loading -> {
-                    loadingCounter += 1
-                    Assert.assertTrue(state.getItems().isEmpty())
-                }
                 is PokemonsScreenState.UpdateData -> {
                     updatesCounter += 1
                     Assert.assertTrue(state.getItems().isEmpty())
                 }
-                is PokemonsScreenState.Error -> {
+            }
+        }
+        for (action in actionCaptor.allValues) {
+            when (action) {
+                is PokemonsScreenAction.Loading -> {
+                    loadingCounter += 1
+                }
+                is PokemonsScreenAction.Error -> {
                     errorCounter += 1
-                    Assert.assertTrue(state.getItems().isEmpty())
-                    Assert.assertEquals(error.message, state.error?.message)
+                    Assert.assertEquals(error.message, action.error?.message)
                 }
             }
         }
+
         Assert.assertEquals(2, loadingCounter)
         Assert.assertEquals(1, updatesCounter)
         Assert.assertEquals(1, errorCounter)
@@ -120,8 +137,10 @@ class PokemonsViewModelTest {
         Mockito.verify(repo, Mockito.times(1)).getPokemons()
         Mockito.verify(filtersFactory, Mockito.times(1)).getAvailableFilters()
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -134,18 +153,25 @@ class PokemonsViewModelTest {
         Mockito.`when`(filtersFactory.getAvailableFilters()).thenReturn(listOf())
 
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenState>
-        val stateCaptor = ArgumentCaptor.forClass(PokemonsScreenState::class.java)
         model.getStateObservable().observeForever(observerMock)
+
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        val actionCaptor = ArgumentCaptor.forClass(PokemonsScreenAction::class.java)
+        model.getActionObservable().observeForever(actionObserverMock)
+
 
         model.onItemClicked(pokemon)
 
-        Mockito.verify(observerMock, Mockito.times(1)).onChanged(stateCaptor.capture())
-        val capturedState = stateCaptor.firstValue
-        Assert.assertTrue(capturedState is PokemonsScreenState.ShowDetails)
-        Assert.assertEquals(testId, (capturedState as PokemonsScreenState.ShowDetails).id)
-        Mockito.verify(filtersFactory, Mockito.times(1)).getAvailableFilters()
+
+        Mockito.verify(actionObserverMock, Mockito.times(1)).onChanged(actionCaptor.capture())
+        val capturedAction = actionCaptor.firstValue
+        Assert.assertTrue(capturedAction is PokemonsScreenAction.ShowDetails)
+        Assert.assertEquals(testId, (capturedAction as PokemonsScreenAction.ShowDetails).id)
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
+        model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -154,6 +180,10 @@ class PokemonsViewModelTest {
         val stateCaptor = ArgumentCaptor.forClass(PokemonsScreenState::class.java)
         model.getStateObservable().observeForever(observerMock)
 
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        val actionCaptor = ArgumentCaptor.forClass(PokemonsScreenAction::class.java)
+        model.getActionObservable().observeForever(actionObserverMock)
+
         Mockito.`when`(filtersFactory.getAvailableFilters()).thenReturn(listOf())
         val pokemons = getPage(0)
         Mockito.`when`(repo.getPage(0)).then {
@@ -161,25 +191,19 @@ class PokemonsViewModelTest {
             pokemons
         }
 
+
         model.onAny(null, Lifecycle.Event.ON_CREATE)
         model.loadPage(0)
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(4)).onChanged(stateCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(2)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(4)).onChanged(actionCaptor.capture())
         var loadingCounter = 0
         var setsCounter = 0
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
-                is PokemonsScreenState.Loading -> {
-                    if (loadingCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
-                    } else {
-                        Assert.assertEquals(pokemons, state.getItems())
-                    }
-                    loadingCounter += 1
-                }
                 is PokemonsScreenState.SetData -> {
                     setsCounter += 1
                     Assert.assertEquals(pokemons, state.getItems())
@@ -187,6 +211,13 @@ class PokemonsViewModelTest {
                 is PokemonsScreenState.UpdateData -> {
                     Assert.assertEquals(pokemons, state.getItems())
                     updatesCounter += 1
+                }
+            }
+        }
+        for (action in actionCaptor.allValues) {
+            when (action) {
+                is PokemonsScreenAction.Loading -> {
+                    loadingCounter += 1
                 }
             }
         }
@@ -198,8 +229,10 @@ class PokemonsViewModelTest {
         Mockito.verify(repo, Mockito.times(1)).getPokemons()
         Mockito.verify(filtersFactory, Mockito.times(1)).getAvailableFilters()
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     private fun getPage(page: Int): List<PokemonFullDataSchema> {
@@ -222,6 +255,10 @@ class PokemonsViewModelTest {
         val stateCaptor = ArgumentCaptor.forClass(PokemonsScreenState::class.java)
         model.getStateObservable().observeForever(observerMock)
 
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        val actionCaptor = ArgumentCaptor.forClass(PokemonsScreenAction::class.java)
+        model.getActionObservable().observeForever(actionObserverMock)
+
         Mockito.`when`(filtersFactory.getAvailableFilters()).thenReturn(listOf())
 
         val page1 = getPage(0)
@@ -237,6 +274,7 @@ class PokemonsViewModelTest {
             page2
         }
 
+
         model.onAny(null, Lifecycle.Event.ON_CREATE)
         model.loadPage(0)
         Thread.sleep(TestSuit.DELAY)
@@ -244,7 +282,9 @@ class PokemonsViewModelTest {
         model.loadPage(1)
         Thread.sleep(TestSuit.DELAY)
 
-        Mockito.verify(observerMock, Mockito.times(7)).onChanged(stateCaptor.capture())
+
+        Mockito.verify(observerMock, Mockito.times(3)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(7)).onChanged(actionCaptor.capture())
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -252,14 +292,6 @@ class PokemonsViewModelTest {
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
-                is PokemonsScreenState.Loading -> {
-                    if (loadingCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
-                    } else if (loadingCounter in 1..3) {
-                        Assert.assertEquals(page1, state.getItems())
-                    }
-                    loadingCounter += 1
-                }
                 is PokemonsScreenState.SetData -> {
                     setsCounter += 1
                     Assert.assertEquals(page1, state.getItems())
@@ -274,6 +306,13 @@ class PokemonsViewModelTest {
                 }
             }
         }
+        for (action in actionCaptor.allValues) {
+            when (action) {
+                is PokemonsScreenAction.Loading -> {
+                    loadingCounter += 1
+                }
+            }
+        }
         Assert.assertEquals(4, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(1, addingsCounter)
@@ -284,8 +323,10 @@ class PokemonsViewModelTest {
         Mockito.verify(repo, Mockito.times(1)).getPokemons()
         Mockito.verify(filtersFactory, Mockito.times(1)).getAvailableFilters()
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -297,6 +338,10 @@ class PokemonsViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenState>
         val stateCaptor = ArgumentCaptor.forClass(PokemonsScreenState::class.java)
         model.getStateObservable().observeForever(observerMock)
+
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        val actionCaptor = ArgumentCaptor.forClass(PokemonsScreenAction::class.java)
+        model.getActionObservable().observeForever(actionObserverMock)
 
         val page1 = getPage(0)
         Mockito.`when`(repo.getPage(0)).then {
@@ -312,7 +357,9 @@ class PokemonsViewModelTest {
         model.sort(testFilter)
         Thread.sleep(TestSuit.DELAY)
 
-        Mockito.verify(observerMock, Mockito.times(6)).onChanged(stateCaptor.capture())
+
+        Mockito.verify(observerMock, Mockito.times(4)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(5)).onChanged(actionCaptor.capture())
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -320,14 +367,6 @@ class PokemonsViewModelTest {
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
-                is PokemonsScreenState.Loading -> {
-                    if (loadingCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
-                    } else {
-                        Assert.assertEquals(page1, state.getItems())
-                    }
-                    loadingCounter += 1
-                }
                 is PokemonsScreenState.SetData -> {
                     Assert.assertEquals(page1, state.getItems())
                     setsCounter += 1
@@ -371,6 +410,13 @@ class PokemonsViewModelTest {
                 }
             }
         }
+        for (action in actionCaptor.allValues) {
+            when (action) {
+                is PokemonsScreenAction.Loading -> {
+                    loadingCounter += 1
+                }
+            }
+        }
         Assert.assertEquals(2, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(1, filtersCounter)
@@ -381,8 +427,10 @@ class PokemonsViewModelTest {
         Mockito.verify(filtersFactory, Mockito.times(1)).getAvailableFilters()
         Mockito.verify(filtersFactory, Mockito.times(1)).getFilters()
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -394,6 +442,10 @@ class PokemonsViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenState>
         val stateCaptor = ArgumentCaptor.forClass(PokemonsScreenState::class.java)
         model.getStateObservable().observeForever(observerMock)
+
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonsScreenAction>
+        val actionCaptor = ArgumentCaptor.forClass(PokemonsScreenAction::class.java)
+        model.getActionObservable().observeForever(actionObserverMock)
 
         val page1 = getPage(0)
         Mockito.`when`(repo.getPage(0)).then {
@@ -413,7 +465,8 @@ class PokemonsViewModelTest {
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(8)).onChanged(stateCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(6)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(6)).onChanged(actionCaptor.capture())
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -421,14 +474,6 @@ class PokemonsViewModelTest {
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
-                is PokemonsScreenState.Loading -> {
-                    if (loadingCounter == 0) {
-                        Assert.assertTrue(state.getItems().isEmpty())
-                    } else {
-                        Assert.assertEquals(page1, state.getItems())
-                    }
-                    loadingCounter += 1
-                }
                 is PokemonsScreenState.SetData -> {
                     setsCounter += 1
                     Assert.assertEquals(page1, state.getItems())
@@ -480,6 +525,13 @@ class PokemonsViewModelTest {
                 }
             }
         }
+        for (action in actionCaptor.allValues) {
+            when (action) {
+                is PokemonsScreenAction.Loading -> {
+                    loadingCounter += 1
+                }
+            }
+        }
         Assert.assertEquals(2, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(2, filtersCounter)
@@ -491,7 +543,9 @@ class PokemonsViewModelTest {
         Mockito.verify(filtersFactory, Mockito.times(1)).getFilters()
 
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 }

@@ -26,21 +26,6 @@ class PokemonsScreenStateTest {
     }
 
     @Test
-    fun test_LoadingState() = runBlockingTest {
-        val list = ArrayList<PokemonFullDataSchema>()
-
-        val state = PokemonsScreenState.Loading(PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
-        state.visit(view)
-
-        Mockito.verify(view, Mockito.times(1)).setItems(list)
-        Mockito.verify(view, Mockito.times(1)).showProgress()
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(2)).setItems(list)
-        verifyNoMoreInteractions()
-    }
-
-    @Test
     fun test_SetDataState() = runBlockingTest {
         val list = ArrayList<PokemonFullDataSchema>()
 
@@ -48,11 +33,9 @@ class PokemonsScreenStateTest {
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(2)).setItems(list)
-        Mockito.verify(view, Mockito.times(2)).hideProgress()
         verifyNoMoreInteractions()
     }
 
@@ -66,7 +49,6 @@ class PokemonsScreenStateTest {
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).setItems(listCaptor.capture())
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
         val capturedList = listCaptor.firstValue
         Assert.assertEquals(1, capturedList.size)
         Assert.assertEquals(list2[0], capturedList[0])
@@ -83,48 +65,9 @@ class PokemonsScreenStateTest {
 
         state.visit(view)
         Mockito.verify(view, Mockito.times(1)).updateItems(listCaptor.capture())
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
         val capturedList = listCaptor.firstValue
         Assert.assertEquals(1, capturedList.size)
         Assert.assertEquals(list[0], capturedList[0])
-
-        verifyNoMoreInteractions()
-    }
-
-    @Test
-    fun test_ErrorState() = runBlockingTest {
-        val list = ArrayList<PokemonFullDataSchema>()
-        val error = Throwable("TestError")
-
-        val state = PokemonsScreenState.Error(error, PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).setItems(list)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
-        Mockito.verify(view, Mockito.times(1)).showError(error)
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(2)).setItems(list)
-        Mockito.verify(view, Mockito.times(2)).hideProgress()
-
-        verifyNoMoreInteractions()
-    }
-
-    @Test
-    fun test_ShowDetailsState() = runBlockingTest {
-        val list = ArrayList<PokemonFullDataSchema>()
-        val pokemonId = 1L
-
-        val state = PokemonsScreenState.ShowDetails(pokemonId, PokemonsScreenState.SetData(list, PokemonsScreenState.Initial(listOf())))
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).setItems(list)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
-        Mockito.verify(view, Mockito.times(1)).proceedToNextScreen(pokemonId)
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(2)).setItems(list)
-        Mockito.verify(view, Mockito.times(2)).hideProgress()
 
         verifyNoMoreInteractions()
     }

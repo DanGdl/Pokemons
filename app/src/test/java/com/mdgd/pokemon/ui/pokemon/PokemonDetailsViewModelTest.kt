@@ -10,6 +10,7 @@ import com.mdgd.pokemon.ui.pokemon.infra.ImagePropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.LabelPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TextPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TitlePropertyData
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,9 @@ class PokemonDetailsViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
         model.getStateObservable().observeForever(observerMock)
 
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenAction>
+        model.getActionObservable().observeForever(actionObserverMock)
+
         model.onAny(null, Lifecycle.Event.ON_START)
         model.onAny(null, Lifecycle.Event.ON_RESUME)
         model.onAny(null, Lifecycle.Event.ON_PAUSE)
@@ -57,8 +61,10 @@ class PokemonDetailsViewModelTest {
         model.onAny(null, Lifecycle.Event.ON_ANY)
 
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -69,6 +75,8 @@ class PokemonDetailsViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
         model.getStateObservable().observeForever(observerMock)
 
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenAction>
+        model.getActionObservable().observeForever(actionObserverMock)
 
         model.onAny(null, Lifecycle.Event.ON_CREATE)
         model.setPokemonId(0)
@@ -76,8 +84,10 @@ class PokemonDetailsViewModelTest {
 
         Mockito.verify(repo, Mockito.times(1)).getPokemonById(0)
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -88,6 +98,9 @@ class PokemonDetailsViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
         val stateCaptor = argumentCaptor<PokemonDetailsScreenState>()
         model.getStateObservable().observeForever(observerMock)
+
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenAction>
+        model.getActionObservable().observeForever(actionObserverMock)
 
 
         model.onAny(null, Lifecycle.Event.ON_CREATE)
@@ -185,7 +198,9 @@ class PokemonDetailsViewModelTest {
 
         Mockito.verify(repo, Mockito.times(1)).getPokemonById(0)
         Mockito.verifyNoMoreInteractions(observerMock)
+        Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
+        model.getActionObservable().removeObserver(actionObserverMock)
     }
 }
