@@ -25,7 +25,6 @@ import org.junit.runners.Suite
 
         LoadPokemonsModelTest::class
 )
-// all tests launcher
 class TestSuit {
     companion object {
         const val DELAY = 1000L

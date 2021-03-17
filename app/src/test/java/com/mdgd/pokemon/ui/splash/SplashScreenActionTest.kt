@@ -2,7 +2,6 @@ package com.mdgd.pokemon.ui.splash
 
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +32,7 @@ class SplashScreenActionTest {
     }
 
     @Test
-    fun testLaunchWorkerState() = runBlockingTest {
+    fun testLaunchWorkerState() {
         SplashScreenAction.LaunchWorker.visit(view)
 
         Mockito.verify(view, Mockito.times(1)).launchWorker()
@@ -41,7 +40,7 @@ class SplashScreenActionTest {
     }
 
     @Test
-    fun testErrorState() = runBlockingTest {
+    fun testErrorState() {
         val error = Throwable("TestError")
         val errorCaptor = ArgumentCaptor.forClass(Throwable::class.java)
         SplashScreenAction.ShowError(error).visit(view)
@@ -53,7 +52,7 @@ class SplashScreenActionTest {
     }
 
     @Test
-    fun testProceedToNextState() = runBlockingTest {
+    fun testProceedToNextState() {
         SplashScreenAction.NextScreen.visit(view)
 
         Mockito.verify(view, Mockito.times(1)).proceedToNextScreen()
