@@ -7,7 +7,7 @@ import com.mdgd.mvi.states.ScreenState
 
 abstract class MessageDialog<
         VIEW : FragmentContract.View,
-        STATE : ScreenState<VIEW>,
+        STATE : ScreenState<VIEW, STATE>,
         ACTION : AbstractAction<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>

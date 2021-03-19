@@ -12,7 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SplashViewModel(private val cache: Cache) : MviViewModel<SplashScreenState, SplashScreenAction>(), SplashContract.ViewModel {
+class SplashViewModel(private val cache: Cache) : MviViewModel<SplashContract.View, SplashScreenState, SplashScreenAction>(), SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         setAction(SplashScreenAction.ShowError(e))
@@ -34,10 +34,6 @@ class SplashViewModel(private val cache: Cache) : MviViewModel<SplashScreenState
             }
             setAction(SplashScreenAction.LaunchWorker)
         }
-    }
-
-    override fun getDefaultState(): SplashScreenState {
-        return SplashScreenState.None
     }
 
     override fun onCleared() {

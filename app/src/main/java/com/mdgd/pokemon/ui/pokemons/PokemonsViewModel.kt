@@ -17,32 +17,27 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFactory: StatsFilter, private val dispatchers: DispatchersHolder)
-    : MviViewModel<PokemonsScreenState, PokemonsScreenAction>(), PokemonsContract.ViewModel {
+    : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenAction>(), PokemonsContract.ViewModel {
 
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
     private var launch: Job? = null
-
-    override fun getDefaultState(): PokemonsScreenState {
-        return PokemonsScreenState.Initial(filtersFactory.getAvailableFilters())
-    }
 
     public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
             launch = viewModelScope.launch {
                 pageFlow
-                        .onEach { setAction(PokemonsScreenAction.Loading()) }
+                        .onEach { setState(PokemonsScreenState.Loading()) }
                         .flowOn(dispatchers.getMain())
                         .map { page -> Pair(page, repo.getPage(page)) }
                         .flowOn(dispatchers.getIO())
                         .catch { e: Throwable -> setAction(PokemonsScreenAction.Error(e)) }
                         .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
-                            setAction(PokemonsScreenAction.HideProgress())
                             if (pagePair.first == 0) {
-                                setState(PokemonsScreenState.SetData(pagePair.second, getLastState()))
+                                setState(PokemonsScreenState.SetData(pagePair.second, filtersFactory.getAvailableFilters()))
                             } else {
-                                setState(PokemonsScreenState.AddData(pagePair.second, getLastState()))
+                                setState(PokemonsScreenState.AddData(pagePair.second))
                             }
                         }
             }
@@ -51,8 +46,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFacto
                 filterFlow
                         .map { sort(it, repo.getPokemons()) }
                         .collect { sortedList ->
-                            setAction(PokemonsScreenAction.HideProgress())
-                            setState(PokemonsScreenState.UpdateData(sortedList, getLastState()))
+                            setState(PokemonsScreenState.UpdateData(sortedList))
                         }
             }
         }
@@ -84,16 +78,15 @@ class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFacto
     }
 
     override fun loadPage(page: Int) {
-        setAction(PokemonsScreenAction.Loading())
         viewModelScope.launch {
             pageFlow.emit(page)
         }
     }
 
     override fun sort(filter: String) {
-        setState(PokemonsScreenState.ChangeFilterState(filter, getLastState()))
+        setState(PokemonsScreenState.ChangeFilterState(filter))
         viewModelScope.launch {
-            filterFlow.emit(FilterData(getLastState().getActiveFilters()))
+            filterFlow.emit(FilterData(getState()?.getActiveFilters() ?: listOf()))
         }
     }
 
@@ -102,7 +95,7 @@ class PokemonsViewModel(private val repo: PokemonsRepo, private val filtersFacto
     }
 
     public override fun onCleared() {
-        super.onCleared()
         launch = null
+        super.onCleared()
     }
 }

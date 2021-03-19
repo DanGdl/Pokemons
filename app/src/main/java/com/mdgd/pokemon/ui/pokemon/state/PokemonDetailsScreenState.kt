@@ -4,7 +4,10 @@ import com.mdgd.mvi.states.ScreenState
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
 
-sealed class PokemonDetailsScreenState : ScreenState<PokemonDetailsContract.View> {
+sealed class PokemonDetailsScreenState : ScreenState<PokemonDetailsContract.View, PokemonDetailsScreenState> {
+
+    override fun merge(prevState: PokemonDetailsScreenState) {}
+
 
     class SetData(val items: List<PokemonProperty>) : PokemonDetailsScreenState() {
 

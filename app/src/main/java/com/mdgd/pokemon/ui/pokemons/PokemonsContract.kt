@@ -17,10 +17,10 @@ class PokemonsContract {
         fun showProgress()
         fun hideProgress()
         fun setItems(list: List<PokemonFullDataSchema>)
-        fun updateItems(list: List<PokemonFullDataSchema>)
         fun showError(error: Throwable?)
         fun proceedToNextScreen(pokemonId: Long?)
         fun updateFilterButtons(activateFilter: Boolean, filter: String)
+        fun scrollToStart()
     }
 
     interface Host : FragmentContract.Host {

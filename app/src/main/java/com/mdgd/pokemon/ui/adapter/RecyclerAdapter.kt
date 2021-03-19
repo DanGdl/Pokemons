@@ -41,9 +41,15 @@ abstract class RecyclerAdapter<T> : RecyclerView.Adapter<RecyclerVH<T>>() {
     }
 
     fun setItems(items: List<T>) {
-        this.items.clear()
-        this.items.addAll(items)
-        notifyDataSetChanged()
+        if (this.items.isEmpty()) {
+            this.items.addAll(items)
+            notifyDataSetChanged()
+        } else {
+            val oldList: List<T> = ArrayList(this.items)
+            this.items.clear()
+            this.items.addAll(items)
+            dispatchChanges(oldList, items)
+        }
     }
 
     protected fun dispatchChanges(oldList: List<T>, items: List<T>) {

@@ -10,7 +10,7 @@ import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
-        STATE : ScreenState<VIEW>,
+        STATE : ScreenState<VIEW, STATE>,
         ACTION : ScreenAction<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>

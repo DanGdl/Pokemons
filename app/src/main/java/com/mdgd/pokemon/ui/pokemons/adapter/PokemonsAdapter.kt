@@ -16,11 +16,4 @@ class PokemonsAdapter(private val lifecycleScope: LifecycleCoroutineScope) : Rec
         }
         return PokemonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_pokemon, parent, false), clicksSubject, lifecycleScope)
     }
-
-    fun updateItems(list: List<PokemonFullDataSchema>) {
-        val oldList: List<PokemonFullDataSchema> = ArrayList(items)
-        items.clear()
-        items.addAll(list)
-        dispatchChanges(oldList, items)
-    }
 }

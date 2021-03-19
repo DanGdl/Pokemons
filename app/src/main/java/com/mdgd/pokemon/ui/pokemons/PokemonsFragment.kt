@@ -155,8 +155,7 @@ class PokemonsFragment : HostedFragment<
         adapter.setItems(list)
     }
 
-    override fun updateItems(list: List<PokemonFullDataSchema>) {
-        adapter.updateItems(list)
+    override fun scrollToStart() {
         recyclerView!!.scrollToPosition(0)
     }
 

@@ -22,7 +22,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class PokemonDetailsViewModel(private val repo: PokemonsRepo)
-    : MviViewModel<PokemonDetailsScreenState, PokemonDetailsScreenAction>(), PokemonDetailsContract.ViewModel {
+    : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenAction>(), PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null
@@ -104,9 +104,5 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo)
     override fun onCleared() {
         super.onCleared()
         pokemonLoadingJob = null
-    }
-
-    override fun getDefaultState(): PokemonDetailsScreenState {
-        return PokemonDetailsScreenState.SetData(ArrayList(0))
     }
 }
