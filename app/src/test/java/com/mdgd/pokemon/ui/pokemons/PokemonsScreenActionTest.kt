@@ -22,18 +22,6 @@ class PokemonsScreenActionTest {
     }
 
     @Test
-    fun test_LoadingState() = runBlockingTest {
-        val state = PokemonsScreenAction.Loading()
-        state.visit(view)
-
-        Mockito.verify(view, Mockito.times(1)).showProgress()
-
-        state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).showProgress()
-        verifyNoMoreInteractions()
-    }
-
-    @Test
     fun test_ErrorState() = runBlockingTest {
         val error = Throwable("TestError")
 

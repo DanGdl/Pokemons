@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.splash
 
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
-import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -22,13 +21,6 @@ class SplashScreenActionTest {
 
     private fun verifyNoMoreInteractions() {
         Mockito.verifyNoMoreInteractions(view)
-    }
-
-    @Test
-    fun testNoneState() {
-        SplashScreenState.None.visit(view)
-
-        verifyNoMoreInteractions()
     }
 
     @Test

@@ -104,13 +104,16 @@ class PokemonsViewModelTest {
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(1)).onChanged(stateCaptor.capture())
-        Mockito.verify(actionObserverMock, Mockito.times(4)).onChanged(actionCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(2)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(1)).onChanged(actionCaptor.capture())
         var loadingCounter = 0
         var updatesCounter = 0
         var errorCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
+                is PokemonsScreenState.Loading -> {
+                    loadingCounter += 1
+                }
                 is PokemonsScreenState.UpdateData -> {
                     updatesCounter += 1
                     Assert.assertTrue(state.getItems().isEmpty())
@@ -119,9 +122,6 @@ class PokemonsViewModelTest {
         }
         for (action in actionCaptor.allValues) {
             when (action) {
-                is PokemonsScreenAction.Loading -> {
-                    loadingCounter += 1
-                }
                 is PokemonsScreenAction.Error -> {
                     errorCounter += 1
                     Assert.assertEquals(error.message, action.error?.message)
@@ -129,13 +129,12 @@ class PokemonsViewModelTest {
             }
         }
 
-        Assert.assertEquals(2, loadingCounter)
+        Assert.assertEquals(1, loadingCounter)
         Assert.assertEquals(1, updatesCounter)
         Assert.assertEquals(1, errorCounter)
 
         Mockito.verify(repo, Mockito.times(1)).getPage(0)
         Mockito.verify(repo, Mockito.times(1)).getPokemons()
-        Mockito.verify(filtersFactory, Mockito.times(1)).getAvailableFilters()
         Mockito.verifyNoMoreInteractions(observerMock)
         Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
@@ -197,13 +196,15 @@ class PokemonsViewModelTest {
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(2)).onChanged(stateCaptor.capture())
-        Mockito.verify(actionObserverMock, Mockito.times(4)).onChanged(actionCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(3)).onChanged(stateCaptor.capture())
         var loadingCounter = 0
         var setsCounter = 0
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
+                is PokemonsScreenState.Loading -> {
+                    loadingCounter += 1
+                }
                 is PokemonsScreenState.SetData -> {
                     setsCounter += 1
                     Assert.assertEquals(pokemons, state.getItems())
@@ -214,14 +215,7 @@ class PokemonsViewModelTest {
                 }
             }
         }
-        for (action in actionCaptor.allValues) {
-            when (action) {
-                is PokemonsScreenAction.Loading -> {
-                    loadingCounter += 1
-                }
-            }
-        }
-        Assert.assertEquals(2, loadingCounter)
+        Assert.assertEquals(1, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(1, updatesCounter)
 
@@ -283,8 +277,7 @@ class PokemonsViewModelTest {
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(3)).onChanged(stateCaptor.capture())
-        Mockito.verify(actionObserverMock, Mockito.times(7)).onChanged(actionCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(5)).onChanged(stateCaptor.capture())
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -292,6 +285,9 @@ class PokemonsViewModelTest {
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
+                is PokemonsScreenState.Loading -> {
+                    loadingCounter += 1
+                }
                 is PokemonsScreenState.SetData -> {
                     setsCounter += 1
                     Assert.assertEquals(page1, state.getItems())
@@ -306,14 +302,7 @@ class PokemonsViewModelTest {
                 }
             }
         }
-        for (action in actionCaptor.allValues) {
-            when (action) {
-                is PokemonsScreenAction.Loading -> {
-                    loadingCounter += 1
-                }
-            }
-        }
-        Assert.assertEquals(4, loadingCounter)
+        Assert.assertEquals(2, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(1, addingsCounter)
         Assert.assertEquals(1, updatesCounter)
@@ -358,8 +347,7 @@ class PokemonsViewModelTest {
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(4)).onChanged(stateCaptor.capture())
-        Mockito.verify(actionObserverMock, Mockito.times(5)).onChanged(actionCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(5)).onChanged(stateCaptor.capture())
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -408,16 +396,12 @@ class PokemonsViewModelTest {
                     Assert.assertEquals(PAGE_SIZE, items.size)
                     Assert.assertTrue(state.getActiveFilters().contains(testFilter))
                 }
-            }
-        }
-        for (action in actionCaptor.allValues) {
-            when (action) {
-                is PokemonsScreenAction.Loading -> {
+                is PokemonsScreenState.Loading -> {
                     loadingCounter += 1
                 }
             }
         }
-        Assert.assertEquals(2, loadingCounter)
+        Assert.assertEquals(1, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(1, filtersCounter)
         Assert.assertEquals(2, updatesCounter)
@@ -465,8 +449,7 @@ class PokemonsViewModelTest {
         Thread.sleep(TestSuit.DELAY)
 
 
-        Mockito.verify(observerMock, Mockito.times(6)).onChanged(stateCaptor.capture())
-        Mockito.verify(actionObserverMock, Mockito.times(6)).onChanged(actionCaptor.capture())
+        Mockito.verify(observerMock, Mockito.times(7)).onChanged(stateCaptor.capture())
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -474,6 +457,9 @@ class PokemonsViewModelTest {
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
             when (state) {
+                is PokemonsScreenState.Loading -> {
+                    loadingCounter += 1
+                }
                 is PokemonsScreenState.SetData -> {
                     setsCounter += 1
                     Assert.assertEquals(page1, state.getItems())
@@ -525,14 +511,7 @@ class PokemonsViewModelTest {
                 }
             }
         }
-        for (action in actionCaptor.allValues) {
-            when (action) {
-                is PokemonsScreenAction.Loading -> {
-                    loadingCounter += 1
-                }
-            }
-        }
-        Assert.assertEquals(2, loadingCounter)
+        Assert.assertEquals(1, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(2, filtersCounter)
         Assert.assertEquals(3, updatesCounter)
