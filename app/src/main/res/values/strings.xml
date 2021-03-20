@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Pokemons</string>
+    <string name="screen_splash_advertisement">Here can be your advertisement</string>
+    <string name="item_pokemon_attack">Attack:\n%1$s</string>
+    <string name="item_pokemon_defence">Defence:\n%1$s</string>
+    <string name="item_pokemon_speed">Speed:\n%1$s</string>
+    <string name="pokemon_detail_name">Name</string>
+    <string name="pokemon_detail_height">Height</string>
+    <string name="pokemon_detail_weight">Weight</string>
+    <string name="pokemon_detail_stats">Stats</string>
+    <string name="pokemon_detail_abilities">Abilities</string>
+    <string name="pokemon_detail_forms">Forms</string>
+    <string name="pokemon_detail_types">Types</string>
+    <string name="pokemon_detail_game_indicies">Game indexes</string>
+    <string name="pokemon_detail_game_moves">Game moves</string>
+    <string name="pokemon_detail_version_group_details">Version details</string>
+    <string name="downloading">Downloading</string>
+    <string name="empty" />
+    <string name="dialog_error_title">Some error happened</string>
+    <string name="dialog_error_message">Details:</string>
+    <string name="no_pokemons">Oooops!\nThere is no pokemons for some reason</string>
+</resources>

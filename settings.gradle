@@ -1,0 +1,5 @@
+include ':models_impl'
+include ':mvi'
+include ':models'
+include ':app'
+rootProject.name = "Pokemons"
