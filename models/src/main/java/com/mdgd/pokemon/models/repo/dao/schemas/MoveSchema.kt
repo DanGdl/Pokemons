@@ -5,9 +5,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mdgd.pokemon.models.repo.schemas.Move_
 
-@Entity(tableName = "moves", indices = [Index("id")])
+@Entity(
+    tableName = "moves", indices = [Index("id")],
+    foreignKeys = [ForeignKey(
+        entity = PokemonSchema::class, parentColumns = ["id"],
+        childColumns = ["pokemonId"], onDelete = ForeignKey.CASCADE
+    )]
+)
 class MoveSchema {
-    @ForeignKey(entity = PokemonSchema::class, parentColumns = ["id"], childColumns = ["pokemonId"], onDelete = ForeignKey.CASCADE)
+
     var pokemonId: Long = 0
 
     @PrimaryKey(autoGenerate = true)

@@ -5,9 +5,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema
 
-@Entity(tableName = "VersionGroupDetails", indices = [Index("id")])
+@Entity(
+    tableName = "VersionGroupDetails", indices = [Index("id")],
+    foreignKeys = [ForeignKey(
+        entity = MoveSchema::class, parentColumns = ["id"],
+        childColumns = ["moveId"], onDelete = ForeignKey.CASCADE
+    )]
+)
 class VersionGroupDetail {
-    @ForeignKey(entity = MoveSchema::class, parentColumns = ["id"], childColumns = ["moveId"], onDelete = ForeignKey.CASCADE)
+
     var moveId: Long = 0
 
     @PrimaryKey(autoGenerate = true)
