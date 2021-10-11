@@ -8,10 +8,8 @@ import kotlinx.coroutines.*
 class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache) : ServiceModel {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        coroutineScope.launch {
-            cache.putLoadingProgress(Result(e))
-            cancelScope()
-        }
+        cache.putLoadingProgress(Result(e))
+        coroutineScope.cancel()
     }
 
     override fun load() {
@@ -20,13 +18,9 @@ class LoadPokemonsModel(private val repo: PokemonsRepo, private val cache: Cache
             repo.loadInitialPages(initialAmount)
             cache.putLoadingProgress(Result(initialAmount))
 
-            cache.putLoadingProgress(Result(repo.loadPokemons(initialAmount)))
-            cancelScope()
+            val newAmount = repo.loadPokemons(initialAmount)
+            cache.putLoadingProgress(Result(newAmount))
+            coroutineScope.cancel()
         }
-    }
-
-    private suspend fun cancelScope() {
-        delay(50)
-        coroutineScope.cancel()
     }
 }

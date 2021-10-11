@@ -6,17 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -24,12 +29,17 @@ import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
+import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 
 class SplashFragment :
     HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
+
+    private val errorDialogTrigger = mutableStateOf(false)
+    private val errorTitle = mutableStateOf("")
+    private val errorMessage = mutableStateOf("")
 
     override fun createModel(): SplashContract.ViewModel {
         return ViewModelProvider(
@@ -45,9 +55,8 @@ class SplashFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         view.findViewById<ComposeView>(R.id.splash_compose_root)?.setContent {
-            SplashScreen()
+            SplashScreen(errorDialogTrigger, errorTitle, errorMessage)
         }
     }
 
@@ -65,14 +74,26 @@ class SplashFragment :
     }
 
     override fun showError(error: Throwable?) {
-        if (hasHost()) {
-            fragmentHost!!.showError(error)
+        errorTitle.value = getString(R.string.dialog_error_title)
+        errorMessage.value = error?.let {
+            getString(R.string.dialog_error_message) + " " + error.message
+        } ?: kotlin.run {
+            getString(R.string.dialog_error_message)
         }
+        errorDialogTrigger.value = true
     }
 }
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    errorTrigger: MutableState<Boolean>,
+    errorTitle: MutableState<String>,
+    errorMessage: MutableState<String>
+) {
+    val errorDialogTrigger = remember { errorTrigger }
+    val errorDialogTitle = remember { errorTitle }
+    val errorDialogMessage = remember { errorMessage }
+
     MaterialTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,11 +105,14 @@ fun SplashScreen() {
             Image(
                 painter = painterResource(R.drawable.logo_splash),
                 contentDescription = stringResource(R.string.screen_splash_logo),
+                modifier = Modifier.weight(3f)
             )
             Text(
+                style = MaterialTheme.typography.h5,
                 text = stringResource(R.string.screen_splash_advertisement),
-                modifier = Modifier.padding(60.dp)
+                modifier = Modifier.weight(1f)
             )
+            ErrorScreen(errorDialogTrigger, errorDialogTitle, errorDialogMessage)
         }
     }
 }
@@ -102,7 +126,7 @@ fun SplashScreen() {
 @Composable
 fun PreviewThemeLight() {
     MaterialTheme {
-        SplashScreen()
+        SplashScreen(mutableStateOf(true), mutableStateOf("Title"), mutableStateOf("Message"))
     }
 }
 
@@ -114,6 +138,6 @@ fun PreviewThemeLight() {
 @Composable
 fun PreviewThemeDark() {
     MaterialTheme {
-        SplashScreen()
+        SplashScreen(mutableStateOf(true), mutableStateOf("Title"), mutableStateOf("Message"))
     }
 }

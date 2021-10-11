@@ -15,19 +15,12 @@ class Result<T> {
         this.error = error
     }
 
-    fun isError(): Boolean {
-        return error != null
-    }
+    fun isError() = error != null
+    fun hasValue() = error == null
 
-    fun getValue(): T {
-        return value!!
-    }
+    fun getValue() = value!!
 
-    fun getError(): Throwable {
-        return error!!
-    }
+    fun getError() = error!!
 
-    fun hasValue(): Boolean {
-        return error == null
-    }
+
 }

@@ -1,9 +1,9 @@
 package com.mdgd.pokemon.models.cache
 
 import com.mdgd.pokemon.models.infra.Result
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 
 interface Cache {
-    suspend fun putLoadingProgress(value: Result<Long>)
-    fun getProgressChanel(): Channel<Result<Long>>
+    fun putLoadingProgress(value: Result<Long>)
+    fun getProgressChanel(): Flow<Result<Long>>
 }

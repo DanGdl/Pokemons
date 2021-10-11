@@ -15,6 +15,30 @@ class ErrorFragment : MessageDialog<
         ErrorContract.ViewModel,
         ErrorContract.Host>(),
         ErrorContract.View, DialogInterface.OnClickListener {
+
+    companion object {
+        fun newInstance(title: String?, message: String?): ErrorFragment {
+            val b = Bundle()
+            b.putString(KEY_TITLE_STR, title)
+            b.putString(KEY_MSG_STR, message)
+            b.putInt(KEY_TYPE, TYPE_STR)
+            val errorFragment = ErrorFragment()
+            errorFragment.arguments = b
+            return errorFragment
+        }
+
+        fun newInstance(title: Int, message: Int): ErrorFragment {
+            val b = Bundle()
+            b.putInt(KEY_TITLE, title)
+            b.putInt(KEY_MSG, message)
+            b.putInt(KEY_TYPE, TYPE_INT)
+            val errorFragment = ErrorFragment()
+            errorFragment.arguments = b
+            return errorFragment
+        }
+    }
+
+
     private var error: Throwable? = null
 
     override fun createModel(): ErrorContract.ViewModel? {
@@ -38,8 +62,12 @@ class ErrorFragment : MessageDialog<
                     builder.setMessage(message)
                 }
             } else if (TYPE_STR == type) {
+                val message = args.getString(
+                    KEY_MSG_STR,
+                    ""
+                ) + if (error == null) "" else " " + error!!.message
+
                 builder.setTitle(args.getString(KEY_TITLE_STR, ""))
-                val message = args.getString(KEY_MSG_STR, "") + if (error == null) "" else " " + error!!.message
                 builder.setMessage(message)
             }
         }
@@ -57,27 +85,5 @@ class ErrorFragment : MessageDialog<
 
     fun setError(error: Throwable?) {
         this.error = error
-    }
-
-    companion object {
-        fun newInstance(title: String?, message: String?): ErrorFragment {
-            val b = Bundle()
-            b.putString(KEY_TITLE_STR, title)
-            b.putString(KEY_MSG_STR, message)
-            b.putInt(KEY_TYPE, TYPE_STR)
-            val errorFragment = ErrorFragment()
-            errorFragment.arguments = b
-            return errorFragment
-        }
-
-        fun newInstance(title: Int, message: Int): ErrorFragment {
-            val b = Bundle()
-            b.putInt(KEY_TITLE, title)
-            b.putInt(KEY_MSG, message)
-            b.putInt(KEY_TYPE, TYPE_INT)
-            val errorFragment = ErrorFragment()
-            errorFragment.arguments = b
-            return errorFragment
-        }
     }
 }
