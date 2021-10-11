@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -140,18 +139,17 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun updateFilterButtons(activateFilter: Boolean, filter: String) {
-        val view = when (filter) {
-            FilterData.FILTER_ATTACK -> filterAttack
-            FilterData.FILTER_DEFENCE -> filterDefence
-            FilterData.FILTER_SPEED -> filterSpeed
-            else -> null
-        }
-
-        if (activateFilter) {
-            view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active))
-        } else {
-            view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive))
-        }
+        // val view = when (filter) {
+        //     FilterData.FILTER_ATTACK -> filterAttack
+        //     FilterData.FILTER_DEFENCE -> filterDefence
+        //     FilterData.FILTER_SPEED -> filterSpeed
+        //     else -> null
+        // }
+        // if (activateFilter) {
+        //     view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active))
+        // } else {
+        //     view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive))
+        // }
     }
 
     override fun onClick(view: View) {
@@ -180,15 +178,11 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun showProgress() {
-        if (refreshSwipe != null && !refreshSwipe!!.isRefreshing) {
-            refreshSwipe!!.isRefreshing = true
-        }
+        refreshSwipe?.isRefreshing = true
     }
 
     override fun hideProgress() {
-        if (refreshSwipe != null && refreshSwipe!!.isRefreshing) {
-            refreshSwipe!!.isRefreshing = false
-        }
+        refreshSwipe?.isRefreshing = false
     }
 
     override fun setItems(list: List<PokemonFullDataSchema>) {
@@ -199,7 +193,7 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun scrollToStart() {
-        recyclerView!!.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 
     override fun showError(error: Throwable?) {
