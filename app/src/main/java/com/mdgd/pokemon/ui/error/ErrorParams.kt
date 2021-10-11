@@ -1,5 +1,9 @@
 package com.mdgd.pokemon.ui.error
 
-data class ErrorParams(
-    val toShow: Boolean = false, val title: String = "", val message: String = ""
-)
+interface ErrorParams {
+    val title: String
+    val message: String
+    val isVisible: Boolean
+
+    fun hide(): ErrorParams
+}

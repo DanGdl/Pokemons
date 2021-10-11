@@ -6,7 +6,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.mdgd.mvi.HostActivity
 import com.mdgd.pokemon.R
-import com.mdgd.pokemon.ui.error.ErrorFragment.Companion.newInstance
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsFragmentArgs
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
@@ -36,14 +35,5 @@ class MainActivity : HostActivity(), SplashContract.Host, PokemonsContract.Host,
     override fun proceedToPokemonScreen(pokemonId: Long?) {
         navController!!.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment, PokemonDetailsFragmentArgs(pokemonId
                 ?: -1).toBundle())
-    }
-
-    override fun showError(error: Throwable?) {
-        error?.printStackTrace()
-        if (supportFragmentManager.findFragmentByTag("error") == null) {
-            val errorFragment = newInstance(R.string.dialog_error_title, R.string.dialog_error_message)
-            errorFragment.setError(error)
-            errorFragment.show(supportFragmentManager, "error")
-        }
     }
 }

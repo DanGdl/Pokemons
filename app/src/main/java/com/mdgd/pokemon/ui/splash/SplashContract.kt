@@ -20,6 +20,5 @@ class SplashContract {
 
     interface Host : FragmentContract.Host {
         fun proceedToPokemonsScreen()
-        fun showError(error: Throwable?)
     }
 }

@@ -30,12 +30,12 @@ class SplashViewModel(private val cache: Cache) :
         super.onAny(owner, event)
         if (event == Lifecycle.Event.ON_START && progressJob == null) {
             progressJob = viewModelScope.launch(exceptionHandler) {
-
                 flow {
                     delay(SplashContract.SPLASH_DELAY)
                     emit(System.currentTimeMillis())
                 }.combine(cache.getProgressChanel()) { _: Long, result: Result<Long> ->
-                    result // Result<Long>(Throwable("Dummy"))
+                    result
+                    // Result<Long>(Throwable("Dummy"))
                 }.collect {
                     if (it.isError()) {
                         setAction(SplashScreenAction.ShowError(it.getError()))

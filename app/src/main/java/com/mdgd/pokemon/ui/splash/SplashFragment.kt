@@ -30,6 +30,7 @@ import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
+import com.mdgd.pokemon.ui.error.DefaultErrorParams
 import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
@@ -39,7 +40,7 @@ class SplashFragment :
     HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
 
-    private val errorDialogTrigger = mutableStateOf(ErrorParams())
+    private val errorDialogTrigger = mutableStateOf(DefaultErrorParams())
 
     override fun createModel(): SplashContract.ViewModel {
         return ViewModelProvider(
@@ -74,8 +75,9 @@ class SplashFragment :
     }
 
     override fun showError(error: Throwable?) {
-        errorDialogTrigger.value =
-            ErrorParams(true, getString(R.string.dialog_error_title), error?.let {
+        errorDialogTrigger.value = DefaultErrorParams(
+            true, getString(R.string.dialog_error_title),
+            error?.let {
                 getString(R.string.dialog_error_message) + " " + error.message
             } ?: kotlin.run {
                 getString(R.string.dialog_error_message)
@@ -84,8 +86,8 @@ class SplashFragment :
 }
 
 @Composable
-fun SplashScreen(errorParams: MutableState<ErrorParams>) {
-    val errorDialogTrigger = remember { errorParams }
+fun SplashScreen(errorParams: MutableState<DefaultErrorParams>) {
+    val errorDialogTrigger = remember { errorParams as MutableState<ErrorParams> }
     MdcTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -119,9 +121,9 @@ fun SplashScreen(errorParams: MutableState<ErrorParams>) {
     name = "Light Mode"
 )
 @Composable
-fun PreviewThemeLight() {
+fun SplashPreviewThemeLight() {
     MdcTheme {
-        SplashScreen(mutableStateOf(ErrorParams(false)))
+        SplashScreen(mutableStateOf(DefaultErrorParams(false)))
     }
 }
 
@@ -131,8 +133,8 @@ fun PreviewThemeLight() {
     name = "Dark Mode"
 )
 @Composable
-fun PreviewThemeDark() {
+fun SplashPreviewThemeDark() {
     MdcTheme {
-        SplashScreen(mutableStateOf(ErrorParams(true)))
+        SplashScreen(mutableStateOf(DefaultErrorParams(true)))
     }
 }

@@ -25,6 +25,5 @@ class PokemonsContract {
 
     interface Host : FragmentContract.Host {
         fun proceedToPokemonScreen(pokemonId: Long?)
-        fun showError(error: Throwable?)
     }
 }

@@ -13,7 +13,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
 
 @Composable
 fun ErrorScreen(params: MutableState<ErrorParams>) {
-    if (params.value.toShow) {
+    if (params.value.isVisible) {
         AlertDialog(
             title = {
                 Text(text = params.value.title)
@@ -24,7 +24,7 @@ fun ErrorScreen(params: MutableState<ErrorParams>) {
             confirmButton = {
                 Button(
                     onClick = {
-                        params.value = params.value.copy(toShow = false)
+                        params.value = params.value.hide()
                     },
                 ) {
                     Text(text = stringResource(id = android.R.string.ok))
@@ -34,7 +34,7 @@ fun ErrorScreen(params: MutableState<ErrorParams>) {
                 // Dismiss the dialog when the user clicks outside the dialog or on the back
                 // button. If you want to disable that functionality, simply use an empty
                 // onCloseRequest.
-                params.value = params.value.copy(toShow = false)
+                params.value = params.value.hide()
             },
         )
     }
@@ -49,7 +49,7 @@ fun ErrorScreen(params: MutableState<ErrorParams>) {
 @Composable
 fun ErrorPreviewThemeLight() {
     MdcTheme {
-        ErrorScreen(mutableStateOf(ErrorParams(true)))
+        ErrorScreen(mutableStateOf(DefaultErrorParams()))
     }
 }
 
@@ -61,6 +61,6 @@ fun ErrorPreviewThemeLight() {
 @Composable
 fun ErrorPreviewThemeDark() {
     MdcTheme {
-        ErrorScreen(mutableStateOf(ErrorParams(true)))
+        ErrorScreen(mutableStateOf(DefaultErrorParams(true)))
     }
 }
