@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
@@ -85,14 +86,16 @@ class SplashFragment :
 @Composable
 fun SplashScreen(errorParams: MutableState<ErrorParams>) {
     val errorDialogTrigger = remember { errorParams }
-
-    MaterialTheme {
+    MdcTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
+            // .scrollable(
+            //     enabled = true, orientation = Orientation.Vertical,
+            //     state = ScrollableState { 0F })
         ) {
             Image(
                 painter = painterResource(R.drawable.logo_splash),
@@ -117,8 +120,8 @@ fun SplashScreen(errorParams: MutableState<ErrorParams>) {
 )
 @Composable
 fun PreviewThemeLight() {
-    MaterialTheme {
-        SplashScreen(mutableStateOf(ErrorParams(true)))
+    MdcTheme {
+        SplashScreen(mutableStateOf(ErrorParams(false)))
     }
 }
 
@@ -129,7 +132,7 @@ fun PreviewThemeLight() {
 )
 @Composable
 fun PreviewThemeDark() {
-    MaterialTheme {
+    MdcTheme {
         SplashScreen(mutableStateOf(ErrorParams(true)))
     }
 }

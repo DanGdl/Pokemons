@@ -3,13 +3,13 @@ package com.mdgd.pokemon.ui.error
 import android.content.res.Configuration
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.material.composethemeadapter.MdcTheme
 
 @Composable
 fun ErrorScreen(params: MutableState<ErrorParams>) {
@@ -48,7 +48,7 @@ fun ErrorScreen(params: MutableState<ErrorParams>) {
 )
 @Composable
 fun ErrorPreviewThemeLight() {
-    MaterialTheme {
+    MdcTheme {
         ErrorScreen(mutableStateOf(ErrorParams(true)))
     }
 }
@@ -60,7 +60,7 @@ fun ErrorPreviewThemeLight() {
 )
 @Composable
 fun ErrorPreviewThemeDark() {
-    MaterialTheme {
+    MdcTheme {
         ErrorScreen(mutableStateOf(ErrorParams(true)))
     }
 }
