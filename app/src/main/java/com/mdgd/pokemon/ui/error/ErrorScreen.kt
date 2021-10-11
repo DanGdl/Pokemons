@@ -12,35 +12,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ErrorScreen(
-    trigger: MutableState<Boolean>, title: MutableState<String>, message: MutableState<String>
-) {
-    if (trigger.value) {
-        MaterialTheme {
-            AlertDialog(
-                title = {
-                    Text(text = title.value)
-                },
-                text = {
-                    Text(text = message.value)
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            trigger.value = false
-                        },
-                    ) {
-                        Text(text = stringResource(id = android.R.string.ok))
-                    }
-                },
-                onDismissRequest = {
-                    // Dismiss the dialog when the user clicks outside the dialog or on the back
-                    // button. If you want to disable that functionality, simply use an empty
-                    // onCloseRequest.
-                    trigger.value = false
-                },
-            )
-        }
+fun ErrorScreen(params: MutableState<ErrorParams>) {
+    if (params.value.toShow) {
+        AlertDialog(
+            title = {
+                Text(text = params.value.title)
+            },
+            text = {
+                Text(text = params.value.message)
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        params.value = params.value.copy(toShow = false)
+                    },
+                ) {
+                    Text(text = stringResource(id = android.R.string.ok))
+                }
+            },
+            onDismissRequest = {
+                // Dismiss the dialog when the user clicks outside the dialog or on the back
+                // button. If you want to disable that functionality, simply use an empty
+                // onCloseRequest.
+                params.value = params.value.copy(toShow = false)
+            },
+        )
     }
 }
 
@@ -53,7 +49,7 @@ fun ErrorScreen(
 @Composable
 fun ErrorPreviewThemeLight() {
     MaterialTheme {
-        ErrorScreen(mutableStateOf(true), mutableStateOf("Title"), mutableStateOf("Message"))
+        ErrorScreen(mutableStateOf(ErrorParams(true)))
     }
 }
 
@@ -65,8 +61,6 @@ fun ErrorPreviewThemeLight() {
 @Composable
 fun ErrorPreviewThemeDark() {
     MaterialTheme {
-        ErrorScreen(
-            mutableStateOf(true), mutableStateOf("Title"), mutableStateOf("Message")
-        )
+        ErrorScreen(mutableStateOf(ErrorParams(true)))
     }
 }

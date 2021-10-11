@@ -29,6 +29,7 @@ import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
+import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
@@ -37,9 +38,7 @@ class SplashFragment :
     HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
 
-    private val errorDialogTrigger = mutableStateOf(false)
-    private val errorTitle = mutableStateOf("")
-    private val errorMessage = mutableStateOf("")
+    private val errorDialogTrigger = mutableStateOf(ErrorParams())
 
     override fun createModel(): SplashContract.ViewModel {
         return ViewModelProvider(
@@ -56,7 +55,7 @@ class SplashFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<ComposeView>(R.id.splash_compose_root)?.setContent {
-            SplashScreen(errorDialogTrigger, errorTitle, errorMessage)
+            SplashScreen(errorDialogTrigger)
         }
     }
 
@@ -74,25 +73,18 @@ class SplashFragment :
     }
 
     override fun showError(error: Throwable?) {
-        errorTitle.value = getString(R.string.dialog_error_title)
-        errorMessage.value = error?.let {
-            getString(R.string.dialog_error_message) + " " + error.message
-        } ?: kotlin.run {
-            getString(R.string.dialog_error_message)
-        }
-        errorDialogTrigger.value = true
+        errorDialogTrigger.value =
+            ErrorParams(true, getString(R.string.dialog_error_title), error?.let {
+                getString(R.string.dialog_error_message) + " " + error.message
+            } ?: kotlin.run {
+                getString(R.string.dialog_error_message)
+            })
     }
 }
 
 @Composable
-fun SplashScreen(
-    errorTrigger: MutableState<Boolean>,
-    errorTitle: MutableState<String>,
-    errorMessage: MutableState<String>
-) {
-    val errorDialogTrigger = remember { errorTrigger }
-    val errorDialogTitle = remember { errorTitle }
-    val errorDialogMessage = remember { errorMessage }
+fun SplashScreen(errorParams: MutableState<ErrorParams>) {
+    val errorDialogTrigger = remember { errorParams }
 
     MaterialTheme {
         Column(
@@ -105,14 +97,14 @@ fun SplashScreen(
             Image(
                 painter = painterResource(R.drawable.logo_splash),
                 contentDescription = stringResource(R.string.screen_splash_logo),
-                modifier = Modifier.weight(3f)
+                modifier = Modifier.weight(3F)
             )
             Text(
                 style = MaterialTheme.typography.h5,
                 text = stringResource(R.string.screen_splash_advertisement),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1F)
             )
-            ErrorScreen(errorDialogTrigger, errorDialogTitle, errorDialogMessage)
+            ErrorScreen(errorDialogTrigger)
         }
     }
 }
@@ -126,7 +118,7 @@ fun SplashScreen(
 @Composable
 fun PreviewThemeLight() {
     MaterialTheme {
-        SplashScreen(mutableStateOf(true), mutableStateOf("Title"), mutableStateOf("Message"))
+        SplashScreen(mutableStateOf(ErrorParams(true)))
     }
 }
 
@@ -138,6 +130,6 @@ fun PreviewThemeLight() {
 @Composable
 fun PreviewThemeDark() {
     MaterialTheme {
-        SplashScreen(mutableStateOf(true), mutableStateOf("Title"), mutableStateOf("Message"))
+        SplashScreen(mutableStateOf(ErrorParams(true)))
     }
 }
