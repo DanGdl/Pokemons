@@ -141,9 +141,11 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                 }
             }
         ) {
-            Column(modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+            ) {
                 SwipeRefresh(
                     modifier = Modifier
                         .fillMaxHeight(0.94F)
@@ -154,7 +156,8 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(), state = scrollState,
+                            .fillMaxHeight(),
+                        state = scrollState,
                     ) {
                         if (model?.firstVisible() == 0 && scrollState.firstVisibleItemIndex != 0) {
                             scope.launch {
@@ -208,13 +211,13 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
         s.stat?.name?.let {
             when (it) {
                 FilterData.FILTER_DEFENCE -> defenceVal = s.baseStat.toString()
-                FilterData.FILTER_SPEED -> speedVal = s.baseStat.toString()
                 FilterData.FILTER_ATTACK -> attackVal = s.baseStat.toString()
+                FilterData.FILTER_SPEED -> speedVal = s.baseStat.toString()
             }
         }
     }
-    attackVal = LocalContext.current.getString(R.string.item_pokemon_attack, attackVal)
     defenceVal = LocalContext.current.getString(R.string.item_pokemon_defence, defenceVal)
+    attackVal = LocalContext.current.getString(R.string.item_pokemon_attack, attackVal)
     speedVal = LocalContext.current.getString(R.string.item_pokemon_speed, speedVal)
     Card(
         shape = RoundedCornerShape(3.dp),
@@ -225,9 +228,11 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        ) {
             Image(
                 painter = item.pokemonSchema?.sprites?.other?.officialArtwork?.frontDefault?.let {
                     rememberImagePainter(
@@ -255,21 +260,21 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
+                        style = TextStyle(textAlign = TextAlign.Center),
+                        modifier = Modifier.weight(1F),
                         text = attackVal,
-                        style = TextStyle(textAlign = TextAlign.Center),
-                        modifier = Modifier.weight(1F),
                         maxLines = 2
                     )
                     Text(
+                        style = TextStyle(textAlign = TextAlign.Center),
+                        modifier = Modifier.weight(1F),
                         text = defenceVal,
-                        style = TextStyle(textAlign = TextAlign.Center),
-                        modifier = Modifier.weight(1F),
                         maxLines = 2
                     )
                     Text(
-                        text = speedVal,
                         style = TextStyle(textAlign = TextAlign.Center),
                         modifier = Modifier.weight(1F),
+                        text = speedVal,
                         maxLines = 2
                     )
                 }
