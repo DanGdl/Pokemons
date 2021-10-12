@@ -163,6 +163,7 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                                 scrollState.layoutInfo.visibleItemsInfo.last().index
                             )
                         }
+                        // TODO: add empty view
                         items(
                             items = screenState.value.pokemons,
                             key = { item ->
