@@ -108,7 +108,7 @@ class PokemonsViewModel(
     override fun onScroll(firstVisibleIndex: Int, lastVisibleIndex: Int) {
         this.firstVisibleIndex = firstVisibleIndex
         val page = pageFlow.value + 1
-        if (lastVisibleIndex >= page * PokemonsRepo.PAGE_SIZE - 5) {
+        if (lastVisibleIndex >= page * PokemonsRepo.PAGE_SIZE - 8) {
             pageFlow.tryEmit(page)
         }
     }
