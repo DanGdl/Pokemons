@@ -141,17 +141,21 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                 }
             }
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-            ) {
+            Column(modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()) {
                 SwipeRefresh(
+                    modifier = Modifier
+                        .fillMaxHeight(0.94F)
+                        .fillMaxWidth(),
                     state = rememberSwipeRefreshState(screenState.value.isLoading),
                     onRefresh = { model?.reload() },
-                    modifier = Modifier.fillMaxHeight(0.94F)
                 ) {
-                    LazyColumn(state = scrollState) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(), state = scrollState,
+                    ) {
                         if (model?.firstVisible() == 0 && scrollState.firstVisibleItemIndex != 0) {
                             scope.launch {
                                 scrollState.scrollToItem(0)
@@ -163,14 +167,27 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                                 scrollState.layoutInfo.visibleItemsInfo.last().index
                             )
                         }
-                        // TODO: add empty view
-                        items(
-                            items = screenState.value.pokemons,
-                            key = { item ->
-                                item.pokemonSchema?.id ?: 0L
+
+                        if (screenState.value.pokemons.isNullOrEmpty()) {
+                            items(items = listOf(System.currentTimeMillis()), key = { it }) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillParentMaxHeight()
+                                        .fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    Text(
+                                        textAlign = TextAlign.Center,
+                                        text = stringResource(id = R.string.no_pokemons),
+                                    )
+                                }
                             }
-                        ) { item ->
-                            PokemonItem(item, model)
+                        } else {
+                            items(
+                                items = screenState.value.pokemons,
+                                key = { it.pokemonSchema?.id ?: 0L }
+                            ) { PokemonItem(it, model) }
                         }
                     }
                 }
@@ -200,19 +217,17 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
     defenceVal = LocalContext.current.getString(R.string.item_pokemon_defence, defenceVal)
     speedVal = LocalContext.current.getString(R.string.item_pokemon_speed, speedVal)
     Card(
-        elevation = 5.dp,
         shape = RoundedCornerShape(3.dp),
+        elevation = 5.dp,
         modifier = Modifier
             // .clickable { Log.d("LOGG", "Logg") /*model.onItemClicked(item)*/ }
             .background(color = Color.Cyan)
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)
-        ) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)) {
             Image(
                 painter = item.pokemonSchema?.sprites?.other?.officialArtwork?.frontDefault?.let {
                     rememberImagePainter(
@@ -232,15 +247,13 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = item.pokemonSchema?.name ?: "",
                     style = TextStyle(fontWeight = FontWeight.Bold, textAlign = TextAlign.Center),
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxHeight(0.4F),
+                    text = item.pokemonSchema?.name ?: "",
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = attackVal,
                         style = TextStyle(textAlign = TextAlign.Center),
