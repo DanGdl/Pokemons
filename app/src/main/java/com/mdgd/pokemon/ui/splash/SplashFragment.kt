@@ -50,15 +50,12 @@ class SplashFragment :
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_splash, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        view.findViewById<ComposeView>(R.id.splash_compose_root)?.setContent {
+    ): View {
+        val view = ComposeView(requireContext())
+        view.setContent {
             SplashScreen(errorDialogTrigger)
         }
+        return view
     }
 
     override fun proceedToNextScreen() {

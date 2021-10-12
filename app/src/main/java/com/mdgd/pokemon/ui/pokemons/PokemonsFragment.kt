@@ -2,21 +2,19 @@ package com.mdgd.pokemon.ui.pokemons
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,10 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.compose.rememberImagePainter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -48,14 +42,10 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.schemas.Stat
 import com.mdgd.pokemon.models.repo.schemas.Stat_
-import com.mdgd.pokemon.ui.adapter.ClickEvent
 import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
-import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
-import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PokemonsFragment : HostedFragment<
@@ -64,41 +54,13 @@ class PokemonsFragment : HostedFragment<
         PokemonsScreenAction,
         PokemonsContract.ViewModel,
         PokemonsContract.Host>(),
-    PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+    PokemonsContract.View {
 
     private val screenState = mutableStateOf(PokemonsUiState(isLoading = true))
 
-    private val adapter = PokemonsAdapter(lifecycleScope)
-    private var refreshSwipe: SwipeRefreshLayout? = null
-
-    // maybe paging library?
-    private val scrollListener: EndlessScrollListener = object : EndlessScrollListener() {
-        override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-            model!!.loadPage(page)
-        }
-    }
-    private var recyclerView: RecyclerView? = null
-    private var filterAttack: ImageButton? = null
-    private var filterDefence: ImageButton? = null
-    private var filterSpeed: ImageButton? = null
-    private var refresh: View? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            adapter.getItemClickFlow().collect {
-                if (it is ClickEvent.ClickData) {
-                    model!!.onItemClicked(it.data)
-                }
-            }
-        }
-    }
-
     override fun createModel(): PokemonsContract.ViewModel {
         return ViewModelProvider(
-            this,
-            PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!)
+            this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!)
         ).get(PokemonsViewModel::class.java)
     }
 
@@ -109,27 +71,7 @@ class PokemonsFragment : HostedFragment<
         view.setContent {
             PokemonsScreen(screenState, model)
         }
-        return view // inflater.inflate(R.layout.fragment_pokemons, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.pokemons_recycler)
-        recyclerView?.layoutManager = LinearLayoutManager(activity)
-        recyclerView?.addOnScrollListener(scrollListener)
-        recyclerView?.adapter = adapter
-
-        refresh = view.findViewById(R.id.pokemons_refresh)
-        refreshSwipe = view.findViewById(R.id.pokemons_swipe_refresh)
-        filterAttack = view.findViewById(R.id.pokemons_filter_attack)
-        filterDefence = view.findViewById(R.id.pokemons_filter_defence)
-        filterSpeed = view.findViewById(R.id.pokemons_filter_movement)
-
-        refresh?.setOnClickListener(this)
-        refreshSwipe?.setOnRefreshListener(this)
-        filterAttack?.setOnClickListener(this)
-        filterDefence?.setOnClickListener(this)
-        filterSpeed?.setOnClickListener(this)
+        return view
     }
 
     override fun proceedToNextScreen(pokemonId: Long?) {
@@ -148,39 +90,19 @@ class PokemonsFragment : HostedFragment<
         screenState.value = value
     }
 
-    override fun onClick(view: View) {
-        if (view === refresh) {
-            if (refreshSwipe?.isRefreshing == false) {
-                refreshSwipe?.isRefreshing = true
-            }
-        } else {
-            when {
-                filterAttack === view -> model?.sort(FilterData.FILTER_ATTACK)
-                filterDefence === view -> model?.sort(FilterData.FILTER_DEFENCE)
-                filterSpeed === view -> model?.sort(FilterData.FILTER_SPEED)
-            }
-        }
-    }
-
-    override fun onRefresh() {
-        scrollListener.resetState()
-        model!!.reload()
-    }
-
     override fun setProgressVisibility(isProgressVisible: Boolean) {
+        Log.d("LOGG", "setProgressVisibility $isProgressVisible")
         screenState.value = screenState.value.copy(isLoading = isProgressVisible)
-        refreshSwipe?.isRefreshing = isProgressVisible
     }
 
     override fun setItems(list: List<PokemonFullDataSchema>) {
-        adapter.setItems(list)
         screenState.value = screenState.value.copy(
             isLoading = false, pokemons = list, isVisible = false
         )
     }
 
     override fun scrollToStart() {
-        recyclerView?.scrollToPosition(0)
+        screenState.value = screenState.value.copy()
     }
 
     override fun showError(error: Throwable?) {
@@ -198,6 +120,8 @@ class PokemonsFragment : HostedFragment<
 @Composable
 fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsContract.ViewModel?) {
     val errorDialogTrigger = remember { screenState as MutableState<ErrorParams> }
+    val scope = rememberCoroutineScope()
+    val scrollState = rememberLazyListState()
     MdcTheme {
         Scaffold(
             topBar = {
@@ -225,10 +149,20 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(screenState.value.isLoading),
                     onRefresh = { model?.reload() },
-                    modifier = Modifier
-                        .fillMaxHeight(0.94F)
+                    modifier = Modifier.fillMaxHeight(0.94F)
                 ) {
-                    LazyColumn {
+                    LazyColumn(state = scrollState) {
+                        if (model?.firstVisible() == 0 && scrollState.firstVisibleItemIndex != 0) {
+                            scope.launch {
+                                scrollState.scrollToItem(0)
+                            }
+                        }
+                        if (scrollState.isScrollInProgress) {
+                            model?.onScroll(
+                                scrollState.firstVisibleItemIndex,
+                                scrollState.layoutInfo.visibleItemsInfo.last().index
+                            )
+                        }
                         items(
                             items = screenState.value.pokemons,
                             key = { item ->
@@ -268,7 +202,7 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
         elevation = 5.dp,
         shape = RoundedCornerShape(3.dp),
         modifier = Modifier
-//            .clickable(onClick = { Log.d("LOGG", "Logg") /*model.onItemClicked(item)*/ },)
+            // .clickable { Log.d("LOGG", "Logg") /*model.onItemClicked(item)*/ }
             .background(color = Color.Cyan)
             .fillMaxWidth()
             .wrapContentHeight(),

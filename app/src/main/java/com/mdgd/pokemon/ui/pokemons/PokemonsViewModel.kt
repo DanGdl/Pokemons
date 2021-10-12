@@ -23,6 +23,7 @@ class PokemonsViewModel(
 ) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenAction>(),
     PokemonsContract.ViewModel {
 
+    private var firstVisibleIndex: Int = 0
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         setAction(PokemonsScreenAction.Error(e))
     }
@@ -57,6 +58,7 @@ class PokemonsViewModel(
                 filterFlow
                     .map { sort(it, repo.getPokemons()) }
                     .collect { sortedList ->
+                        firstVisibleIndex = 0
                         setState(PokemonsScreenState.UpdateData(sortedList))
                     }
             }
@@ -88,10 +90,6 @@ class PokemonsViewModel(
         pageFlow.tryEmit(0)
     }
 
-    override fun loadPage(page: Int) {
-        pageFlow.tryEmit(page)
-    }
-
     override fun sort(filter: String) {
         val filters = ArrayList(getState()?.getActiveFilters() ?: listOf())
         if (filters.contains(filter)) {
@@ -106,6 +104,16 @@ class PokemonsViewModel(
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {
         setAction(PokemonsScreenAction.ShowDetails(pokemon.pokemonSchema?.id))
     }
+
+    override fun onScroll(firstVisibleIndex: Int, lastVisibleIndex: Int) {
+        this.firstVisibleIndex = firstVisibleIndex
+        val page = pageFlow.value + 1
+        if (lastVisibleIndex >= page * PokemonsRepo.PAGE_SIZE - 5) {
+            pageFlow.tryEmit(page)
+        }
+    }
+
+    override fun firstVisible() = firstVisibleIndex
 
     public override fun onCleared() {
         launch = null

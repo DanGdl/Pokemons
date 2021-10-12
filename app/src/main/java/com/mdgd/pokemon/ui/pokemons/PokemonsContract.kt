@@ -8,9 +8,10 @@ import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 class PokemonsContract {
     interface ViewModel : FragmentContract.ViewModel<PokemonsScreenState, PokemonsScreenAction> {
         fun reload()
-        fun loadPage(page: Int)
         fun sort(filter: String)
         fun onItemClicked(pokemon: PokemonFullDataSchema)
+        fun onScroll(firstVisibleIndex: Int, lastVisibleIndex: Int)
+        fun firstVisible(): Int
     }
 
     interface View : FragmentContract.View {

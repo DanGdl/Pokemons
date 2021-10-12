@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.mdgd.pokemon.ui.splash.SplashFragment"
-        android:label="SplashFragment"
-        tools:layout="@layout/fragment_splash">
+        android:label="SplashFragment">
         <action
             android:id="@+id/action_splashFragment_to_pokemonsFragment"
             app:destination="@id/pokemonsFragment"
@@ -20,8 +18,7 @@
     <fragment
         android:id="@+id/pokemonsFragment"
         android:name="com.mdgd.pokemon.ui.pokemons.PokemonsFragment"
-        android:label="PokemonsFragment"
-        tools:layout="@layout/fragment_pokemons">
+        android:label="PokemonsFragment">
         <action
             android:id="@+id/action_pokemonsFragment_to_pokemonDetailsFragment"
             app:destination="@id/pokemonDetailsFragment" />
@@ -30,8 +27,7 @@
     <fragment
         android:id="@+id/pokemonDetailsFragment"
         android:name="com.mdgd.pokemon.ui.pokemon.PokemonDetailsFragment"
-        android:label="PokemonDetailsFragment"
-        tools:layout="@layout/fragment_pokemon_properties">
+        android:label="PokemonDetailsFragment">
 
         <argument
             android:name="pokemonId"
@@ -39,6 +35,5 @@
             android:defaultValue="-1L" />
 
     </fragment>
-
 
 </navigation>
