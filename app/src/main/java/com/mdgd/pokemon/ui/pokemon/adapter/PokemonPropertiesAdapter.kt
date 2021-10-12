@@ -37,7 +37,11 @@ class PokemonPropertiesAdapter : RecyclerAdapter<PokemonProperty>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return items[position].type
+        return if (items.isEmpty()) {
+            EMPTY_VIEW
+        } else {
+            items[position].type
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

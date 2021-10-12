@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -223,7 +224,7 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
         shape = RoundedCornerShape(3.dp),
         elevation = 5.dp,
         modifier = Modifier
-            // .clickable { Log.d("LOGG", "Logg") /*model.onItemClicked(item)*/ }
+            .clickable { model?.onItemClicked(item) }
             .background(color = Color.Cyan)
             .fillMaxWidth()
             .wrapContentHeight(),
