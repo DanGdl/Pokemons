@@ -115,7 +115,7 @@ fun SplashScreen(errorParams: MutableState<DefaultErrorParams>) {
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true,
-    name = "Light Mode"
+    name = "Splash Light Mode"
 )
 @Composable
 fun SplashPreviewThemeLight() {
@@ -127,7 +127,7 @@ fun SplashPreviewThemeLight() {
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Splash Dark Mode"
 )
 @Composable
 fun SplashPreviewThemeDark() {

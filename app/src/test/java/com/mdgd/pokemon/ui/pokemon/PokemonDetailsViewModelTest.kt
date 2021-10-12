@@ -6,10 +6,10 @@ import androidx.lifecycle.Observer
 import com.mdgd.pokemon.Mocks
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.PokemonsRepo
-import com.mdgd.pokemon.ui.pokemon.infra.ImagePropertyData
-import com.mdgd.pokemon.ui.pokemon.infra.LabelPropertyData
-import com.mdgd.pokemon.ui.pokemon.infra.TextPropertyData
-import com.mdgd.pokemon.ui.pokemon.infra.TitlePropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.ImagePropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.LabelPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.TextPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.TitlePropertyData
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor

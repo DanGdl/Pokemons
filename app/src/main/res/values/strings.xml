@@ -25,4 +25,5 @@
     <string name="screen_filter_speed">Filter by speed</string>
     <string name="screen_pokemons_refresh">Refresh pokemons list</string>
     <string name="screen_pokemons_icon">Pokemon\'s icon</string>
+    <string name="fragment_pokemon_picture">Pokemon\'s image</string>
 </resources>

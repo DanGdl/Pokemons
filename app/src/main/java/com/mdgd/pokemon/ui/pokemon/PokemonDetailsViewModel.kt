@@ -11,7 +11,7 @@ import com.mdgd.pokemon.models.repo.schemas.Ability
 import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
-import com.mdgd.pokemon.ui.pokemon.infra.*
+import com.mdgd.pokemon.ui.pokemon.dto.*
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +28,7 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo)
     private var pokemonLoadingJob: Job? = null
 
     override fun setPokemonId(pokemonId: Long) {
-        viewModelScope.launch {
-            pokemonIdFlow.emit(pokemonId)
-        }
+        pokemonIdFlow.tryEmit(pokemonId)
     }
 
     public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
@@ -38,9 +36,9 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {
                 pokemonIdFlow
-                        .filter { it != -1L }
-                        .map { id: Long -> repo.getPokemonById(id) }
-                        .map { details: PokemonFullDataSchema? -> if (details == null) LinkedList() else mapToListPokemon(details) }
+                    .filter { it != -1L }
+                    .map { repo.getPokemonById(it) }
+                    .map { it?.let { mapToListPokemon(it) } ?: LinkedList() }
                         .flowOn(Dispatchers.IO)
                         .collect { setState(PokemonDetailsScreenState.SetData(it)) }
             }

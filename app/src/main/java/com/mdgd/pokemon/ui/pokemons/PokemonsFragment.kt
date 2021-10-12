@@ -350,7 +350,7 @@ fun BottomBar(screenState: MutableState<PokemonsUiState>, model: PokemonsContrac
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Pokemons Item Dark Mode"
 )
 @Composable
 fun PokemonItemPreviewThemeDark() {
@@ -385,7 +385,7 @@ fun PokemonItemPreviewThemeDark() {
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true,
-    name = "Light Mode"
+    name = "Pokemons Light Mode"
 )
 @Composable
 fun PokemonsPreviewThemeLight() {
@@ -420,7 +420,7 @@ fun PokemonsPreviewThemeLight() {
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Pokemons Dark Mode"
 )
 @Composable
 fun PokemonsPreviewThemeDark() {
