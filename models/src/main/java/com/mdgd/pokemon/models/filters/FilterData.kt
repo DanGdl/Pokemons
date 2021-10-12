@@ -18,7 +18,7 @@ class FilterData {
 
     companion object {
         const val FILTER_ATTACK = "attack"
-        const val FILTER_DEFENCE = "defence"
+        const val FILTER_DEFENCE = "defense"
         const val FILTER_SPEED = "speed"
     }
 }

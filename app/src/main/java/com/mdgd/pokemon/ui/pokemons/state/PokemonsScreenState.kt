@@ -11,21 +11,13 @@ sealed class PokemonsScreenState(
         protected val activeFilters: MutableList<String> = mutableListOf())
     : ScreenState<PokemonsContract.View, PokemonsScreenState> {
 
-    fun getItems(): List<PokemonFullDataSchema> {
-        return ArrayList(list)
-    }
+    fun getItems() = list.toList()
 
     @JvmName("getActiveFilters1")
-    fun getActiveFilters(): List<String> {
-        return ArrayList(activeFilters)
-    }
+    fun getActiveFilters() = activeFilters.toList()
 
     override fun visit(screen: PokemonsContract.View) {
-        if (isProgressVisible) {
-            screen.showProgress()
-        } else {
-            screen.hideProgress()
-        }
+        screen.setProgressVisibility(isProgressVisible)
         screen.setItems(list)
         for (filter in availableFilters) {
             screen.updateFilterButtons(activeFilters.contains(filter), filter)
@@ -33,7 +25,7 @@ sealed class PokemonsScreenState(
     }
 
 
-    class Loading() : PokemonsScreenState(true) {
+    class Loading : PokemonsScreenState(true) {
 
         override fun merge(prevState: PokemonsScreenState) {
             list.addAll(prevState.list)
@@ -73,18 +65,12 @@ sealed class PokemonsScreenState(
         }
     }
 
-    class ChangeFilterState(private val filter: String) : PokemonsScreenState() {
+    class ChangeFilterState(filters: MutableList<String>) :
+        PokemonsScreenState(activeFilters = filters) {
 
         override fun merge(prevState: PokemonsScreenState) {
-            list.addAll(prevState.list)
             availableFilters.addAll(prevState.availableFilters)
-            activeFilters.addAll(prevState.activeFilters)
-
-            if (activeFilters.contains(filter)) {
-                activeFilters.remove(filter)
-            } else {
-                activeFilters.add(filter)
-            }
+            list.addAll(prevState.list)
         }
     }
 }

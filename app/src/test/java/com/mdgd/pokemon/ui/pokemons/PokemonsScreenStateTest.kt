@@ -36,7 +36,7 @@ class PokemonsScreenStateTest {
         state.visit(view)
 
 
-        Mockito.verify(view, Mockito.times(1)).showProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(isProgressVisible)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
         verifyNoMoreInteractions()
     }

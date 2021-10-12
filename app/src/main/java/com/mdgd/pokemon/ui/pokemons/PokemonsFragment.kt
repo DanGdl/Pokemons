@@ -37,6 +37,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.compose.rememberImagePainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
@@ -64,7 +66,7 @@ class PokemonsFragment : HostedFragment<
         PokemonsContract.Host>(),
     PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private val screenState = mutableStateOf(PokemonsUiState())
+    private val screenState = mutableStateOf(PokemonsUiState(isLoading = true))
 
     private val adapter = PokemonsAdapter(lifecycleScope)
     private var refreshSwipe: SwipeRefreshLayout? = null
@@ -101,9 +103,7 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val view = ComposeView(requireContext())
         view.setContent {
@@ -139,35 +139,25 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun updateFilterButtons(activateFilter: Boolean, filter: String) {
-        // val view = when (filter) {
-        //     FilterData.FILTER_ATTACK -> filterAttack
-        //     FilterData.FILTER_DEFENCE -> filterDefence
-        //     FilterData.FILTER_SPEED -> filterSpeed
-        //     else -> null
-        // }
-        // if (activateFilter) {
-        //     view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active))
-        // } else {
-        //     view?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive))
-        // }
+        val value = when (filter) {
+            FilterData.FILTER_ATTACK -> screenState.value.copy(isAttackActive = activateFilter)
+            FilterData.FILTER_DEFENCE -> screenState.value.copy(isDefenceActive = activateFilter)
+            FilterData.FILTER_SPEED -> screenState.value.copy(isSpeedActive = activateFilter)
+            else -> return
+        }
+        screenState.value = value
     }
 
     override fun onClick(view: View) {
         if (view === refresh) {
-            if (!refreshSwipe!!.isRefreshing) {
-                refreshSwipe!!.isRefreshing = true
+            if (refreshSwipe?.isRefreshing == false) {
+                refreshSwipe?.isRefreshing = true
             }
         } else {
             when {
-                filterAttack === view -> {
-                    model!!.sort(FilterData.FILTER_ATTACK)
-                }
-                filterDefence === view -> {
-                    model!!.sort(FilterData.FILTER_DEFENCE)
-                }
-                filterSpeed === view -> {
-                    model!!.sort(FilterData.FILTER_SPEED)
-                }
+                filterAttack === view -> model?.sort(FilterData.FILTER_ATTACK)
+                filterDefence === view -> model?.sort(FilterData.FILTER_DEFENCE)
+                filterSpeed === view -> model?.sort(FilterData.FILTER_SPEED)
             }
         }
     }
@@ -177,12 +167,9 @@ class PokemonsFragment : HostedFragment<
         model!!.reload()
     }
 
-    override fun showProgress() {
-        refreshSwipe?.isRefreshing = true
-    }
-
-    override fun hideProgress() {
-        refreshSwipe?.isRefreshing = false
+    override fun setProgressVisibility(isProgressVisible: Boolean) {
+        screenState.value = screenState.value.copy(isLoading = isProgressVisible)
+        refreshSwipe?.isRefreshing = isProgressVisible
     }
 
     override fun setItems(list: List<PokemonFullDataSchema>) {
@@ -235,17 +222,21 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
                     .fillMaxHeight()
                     .fillMaxWidth()
             ) {
-                LazyColumn(
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(screenState.value.isLoading),
+                    onRefresh = { model?.reload() },
                     modifier = Modifier
                         .fillMaxHeight(0.94F)
                 ) {
-                    items(
-                        items = screenState.value.pokemons,
-                        key = { item ->
-                            item.pokemonSchema?.id ?: 0L
+                    LazyColumn {
+                        items(
+                            items = screenState.value.pokemons,
+                            key = { item ->
+                                item.pokemonSchema?.id ?: 0L
+                            }
+                        ) { item ->
+                            PokemonItem(item, model)
                         }
-                    ) { item ->
-                        PokemonItem(item, model)
                     }
                 }
                 BottomBar(screenState, model)
@@ -263,15 +254,15 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
     var speedVal = "--"
     for (s in item.stats) {
         s.stat?.name?.let {
-            when (s.stat!!.name) {
-                "defense" -> defenceVal = s.baseStat.toString()
-                "speed" -> speedVal = s.baseStat.toString()
-                "attack" -> attackVal = s.baseStat.toString()
+            when (it) {
+                FilterData.FILTER_DEFENCE -> defenceVal = s.baseStat.toString()
+                FilterData.FILTER_SPEED -> speedVal = s.baseStat.toString()
+                FilterData.FILTER_ATTACK -> attackVal = s.baseStat.toString()
             }
         }
     }
-    attackVal = LocalContext.current.getString(R.string.item_pokemon_defence, defenceVal)
-    defenceVal = LocalContext.current.getString(R.string.item_pokemon_attack, attackVal)
+    attackVal = LocalContext.current.getString(R.string.item_pokemon_attack, attackVal)
+    defenceVal = LocalContext.current.getString(R.string.item_pokemon_defence, defenceVal)
     speedVal = LocalContext.current.getString(R.string.item_pokemon_speed, speedVal)
     Card(
         elevation = 5.dp,
@@ -313,8 +304,7 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
                         .fillMaxHeight(0.4F),
                 )
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
                         text = attackVal,
