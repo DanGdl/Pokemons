@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
@@ -232,10 +233,15 @@ fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?)
             Image(
                 painter = item.pokemonSchema?.sprites?.other?.officialArtwork?.frontDefault?.let {
                     rememberImagePainter(
-                        data = it // TODO: catch fail
-                    )
+                        data = it,
+                        builder = {
+                            ImageRequest.Builder(LocalContext.current)
+                                .placeholder(R.drawable.ic_pokemon)
+                                .error(R.drawable.ic_pokemon)
+                                .build()
+                        })
                 } ?: kotlin.run {
-                    painterResource(R.drawable.logo_splash)
+                    painterResource(R.drawable.ic_pokemon)
                 },
                 contentDescription = stringResource(id = R.string.screen_pokemons_icon),
                 modifier = Modifier

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.R
@@ -157,8 +159,15 @@ fun PokemonDetailItem(property: PokemonProperty) {
                     contentDescription = stringResource(id = R.string.fragment_pokemon_picture),
                     contentScale = ContentScale.Inside,
                     modifier = Modifier.size(200.dp),
-                    painter = rememberImagePainter(p.imageUrl), // TODO: catch error
-                )
+                    painter = rememberImagePainter(
+                        data = p.imageUrl,
+                        builder = {
+                            ImageRequest.Builder(LocalContext.current)
+                                .placeholder(R.drawable.ic_pokemon)
+                                .error(R.drawable.ic_pokemon)
+                                .build()
+                        }
+                    ))
             }
         }
         PokemonProperty.PROPERTY_LABEL -> {
