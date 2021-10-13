@@ -21,6 +21,4 @@ class Result<T> {
     fun getValue() = value!!
 
     fun getError() = error!!
-
-
 }
