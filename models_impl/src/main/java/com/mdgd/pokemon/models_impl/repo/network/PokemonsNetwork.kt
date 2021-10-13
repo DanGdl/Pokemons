@@ -36,13 +36,11 @@ class PokemonsNetwork : Network {
     }
 
     override suspend fun loadPokemons(pokemonsCount: Long, offset: Long): List<PokemonDetails> {
-        val nextPage = service.loadPage(pokemonsCount.toInt(), offset.toInt())
-        return mapToDetails(nextPage)
+        return mapToDetails(service.loadPage(pokemonsCount.toInt(), offset.toInt()))
     }
 
     override suspend fun loadPokemons(page: Int, pageSize: Int): List<PokemonDetails> {
-        val i = max(page - 1, 0)
-        val dataPage = service.loadPage(pageSize, i * pageSize)
+        val dataPage = service.loadPage(pageSize, max(page - 1, 0) * pageSize)
         return mapToDetails(dataPage)
     }
 
@@ -51,10 +49,10 @@ class PokemonsNetwork : Network {
     }
 
     private suspend fun mapToDetails(result: PokemonsList): List<PokemonDetails> {
-        val list = if (result.results == null) {
+        val list = result.results?.let {
+            it
+        } ?: kotlin.run {
             ArrayList()
-        } else {
-            result.results!!
         }
         val details = Vector<PokemonDetails>(list.size)
         val channel = Channel<PokemonDetails>()

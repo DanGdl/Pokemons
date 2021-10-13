@@ -9,9 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -63,15 +63,16 @@ class PokemonDetailsFragment : HostedFragment<
 
     override fun createModel(): PokemonDetailsContract.ViewModel {
         return ViewModelProvider(
-            this,
-            PokemonDetailsViewModelFactory(instance!!.appComponent!!)
+            this, PokemonDetailsViewModelFactory(instance!!.appComponent!!)
         ).get(PokemonDetailsViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         val view = ComposeView(requireContext())
         view.setContent {
-            PokemonScreen(screenState)
+            PokemonScreen(screenState, model)
         }
         return view
     }
@@ -79,15 +80,32 @@ class PokemonDetailsFragment : HostedFragment<
     override fun setItems(items: List<PokemonProperty>) {
         screenState.value = screenState.value.copy(properties = items)
     }
+
+    override fun goBack() {
+        fragmentHost?.onBackPressed()
+    }
 }
 
 @Composable
-fun PokemonScreen(screenState: MutableState<PokemonUiState>) {
+fun PokemonScreen(
+    screenState: MutableState<PokemonUiState>,
+    model: PokemonDetailsContract.ViewModel?
+) {
     val errorDialogTrigger = remember { screenState as MutableState<ErrorParams> }
     MdcTheme {
         Scaffold(
             topBar = {
-                TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) })
+                TopAppBar(
+                    title = { Text(text = stringResource(id = R.string.app_name)) },
+                    navigationIcon = {
+                        IconButton(onClick = { model?.onBackPressed() }) {
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.button_back)
+                            )
+                        }
+                    }
+                )
             }
         ) {
             Column(
@@ -130,12 +148,18 @@ fun PokemonDetailItem(property: PokemonProperty) {
     when (property.type) {
         PokemonProperty.PROPERTY_IMAGE -> {
             val p = property as ImageProperty
-            Image(
-                contentDescription = stringResource(id = R.string.fragment_pokemon_picture),
-                contentScale = ContentScale.Inside,
-                modifier = Modifier.size(200.dp),
-                painter = rememberImagePainter(p.imageUrl), // TODO: catch error
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Image(
+                    contentDescription = stringResource(id = R.string.fragment_pokemon_picture),
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier.size(200.dp),
+                    painter = rememberImagePainter(p.imageUrl), // TODO: catch error
+                )
+            }
         }
         PokemonProperty.PROPERTY_LABEL -> {
             val startPadding = dimensionResource(id = R.dimen.pokemon_details_nesting_level_padding)
@@ -256,7 +280,7 @@ fun PokemonPreviewThemeLight() {
     speed.baseStat = 100502
     pokemon.stats.add(speed)
     MdcTheme {
-        PokemonScreen(mutableStateOf(PokemonUiState(properties = listOf())))
+        PokemonScreen(mutableStateOf(PokemonUiState(properties = listOf())), null)
     }
 }
 
@@ -267,57 +291,22 @@ fun PokemonPreviewThemeLight() {
 )
 @Composable
 fun PokemonPreviewThemeDark() {
-//    val properties: MutableList<PokemonProperty> = ArrayList()
-//    val pokemonSchema = pokemonDetails.pokemonSchema
-//    properties.add(ImagePropertyData(pokemonSchema!!.sprites!!.other!!.officialArtwork!!.frontDefault!!))
-//    properties.add(LabelPropertyData(R.string.pokemon_detail_name, pokemonSchema.name!!))
-//    properties.add(LabelPropertyData(R.string.pokemon_detail_height, pokemonSchema.height.toString()))
-//    properties.add(LabelPropertyData(R.string.pokemon_detail_weight, pokemonSchema.weight.toString()))
-//    properties.add(TitlePropertyData(R.string.pokemon_detail_stats))
-//    for (s in pokemonDetails.stats) {
-//        properties.add(LabelPropertyData(s.stat!!.name!!, s.baseStat.toString(), 1))
-//    }
-//    properties.add(TitlePropertyData(R.string.pokemon_detail_abilities))
-//    val abilities: List<Ability> = pokemonDetails.abilities
-//    val abilitiesText = StringBuilder()
-//    for (i in abilities.indices) {
-//        abilitiesText.append(abilities[i].ability!!.name)
-//        if (i < abilities.size - 1) {
-//            abilitiesText.append(", ")
-//        }
-//    }
-//    properties.add(TextPropertyData(abilitiesText.toString(), 1))
-//    properties.add(TitlePropertyData(R.string.pokemon_detail_forms))
-//    val forms: List<Form> = pokemonDetails.forms
-//    val formsText = StringBuilder()
-//    for (i in forms.indices) {
-//        formsText.append(forms[i].name)
-//        if (i < forms.size - 1) {
-//            formsText.append(", ")
-//        }
-//    }
-//    properties.add(TextPropertyData(formsText.toString(), 1))
-//    properties.add(TitlePropertyData(R.string.pokemon_detail_types))
-//    val types: List<Type> = pokemonDetails.types
-//    val typesText = StringBuilder()
-//    for (i in types.indices) {
-//        typesText.append(types[i].type!!.name)
-//        if (i < types.size - 1) {
-//            typesText.append(", ")
-//        }
-//    }
-//    properties.add(TextPropertyData(typesText.toString(), 1))
-//    properties.add(TitlePropertyData(R.string.pokemon_detail_game_indicies))
-//    val gameIndices: List<GameIndex> = pokemonDetails.gameIndices
-//    val gameIndicesText = StringBuilder()
-//    for (i in gameIndices.indices) {
-//        gameIndicesText.append(gameIndices[i].version!!.name)
-//        if (i < gameIndices.size - 1) {
-//            gameIndicesText.append(", ")
-//        }
-//    }
-//    properties.add(TextPropertyData(gameIndicesText.toString(), 1))
+    val properties: MutableList<PokemonProperty> = ArrayList()
+    properties.add(ImagePropertyData("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"))
+    properties.add(LabelPropertyData(R.string.pokemon_detail_name, "SlowPock"))
+    properties.add(LabelPropertyData(R.string.pokemon_detail_height, "100"))
+    properties.add(LabelPropertyData(R.string.pokemon_detail_weight, "90"))
+    properties.add(TitlePropertyData(R.string.pokemon_detail_stats))
+    properties.add(LabelPropertyData("Speed", "50", 1))
+    properties.add(TitlePropertyData(R.string.pokemon_detail_abilities))
+    properties.add(TextPropertyData("wololo, wololo", 1))
+    properties.add(TitlePropertyData(R.string.pokemon_detail_forms))
+    properties.add(TextPropertyData("wololo, wololo", 1))
+    properties.add(TitlePropertyData(R.string.pokemon_detail_types))
+    properties.add(TextPropertyData("bro, king", 1))
+    properties.add(TitlePropertyData(R.string.pokemon_detail_game_indicies))
+    properties.add(TextPropertyData("some indicies here", 1))
     MdcTheme {
-        PokemonScreen(mutableStateOf(PokemonUiState(properties = listOf())))
+        PokemonScreen(mutableStateOf(PokemonUiState(properties = properties)), null)
     }
 }

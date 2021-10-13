@@ -41,10 +41,6 @@ abstract class HostedFragment<
         fragmentHost = null
     }
 
-    protected fun hasHost(): Boolean {
-        return fragmentHost != null
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

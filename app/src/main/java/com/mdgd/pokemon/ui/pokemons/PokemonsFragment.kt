@@ -2,7 +2,6 @@ package com.mdgd.pokemon.ui.pokemons
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,9 +75,7 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun proceedToNextScreen(pokemonId: Long?) {
-        if (hasHost()) {
-            fragmentHost!!.proceedToPokemonScreen(pokemonId)
-        }
+        fragmentHost?.proceedToPokemonScreen(pokemonId)
     }
 
     override fun updateFilterButtons(activateFilter: Boolean, filter: String) {
@@ -92,7 +89,6 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun setProgressVisibility(isProgressVisible: Boolean) {
-        Log.d("LOGG", "setProgressVisibility $isProgressVisible")
         screenState.value = screenState.value.copy(isLoading = isProgressVisible)
     }
 
@@ -201,7 +197,6 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
         }
     }
 }
-
 
 @Composable
 fun PokemonItem(item: PokemonFullDataSchema, model: PokemonsContract.ViewModel?) {

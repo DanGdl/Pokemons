@@ -6,13 +6,18 @@ import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 
 class PokemonDetailsContract {
-    interface ViewModel : FragmentContract.ViewModel<PokemonDetailsScreenState, PokemonDetailsScreenAction> {
+    interface ViewModel :
+        FragmentContract.ViewModel<PokemonDetailsScreenState, PokemonDetailsScreenAction> {
         fun setPokemonId(pokemonId: Long)
+        fun onBackPressed()
     }
 
     interface View : FragmentContract.View {
         fun setItems(items: List<PokemonProperty>)
+        fun goBack()
     }
 
-    interface Host : FragmentContract.Host
+    interface Host : FragmentContract.Host {
+        fun onBackPressed()
+    }
 }

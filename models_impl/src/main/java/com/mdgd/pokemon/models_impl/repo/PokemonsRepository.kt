@@ -12,12 +12,15 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
 
     override suspend fun getPage(page: Int): List<PokemonFullDataSchema> {
         val list = getPageFromDao(page)
-        return if (list.isEmpty()) loadPage(page) else list
+        return if (list.isEmpty()) {
+            loadPage(page)
+        } else {
+            list
+        }
     }
 
     private suspend fun loadPage(page: Int): List<PokemonFullDataSchema> {
-        val list = network.loadPokemons(page, PokemonsRepo.PAGE_SIZE)
-        dao.save(list)
+        dao.save(network.loadPokemons(page, PokemonsRepo.PAGE_SIZE))
         return getPageFromDao(page)
     }
 
@@ -37,16 +40,12 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
         val count = dao.getCount()
         val pokemonsCount = network.getPokemonsCount()
         return when (count) {
-            pokemonsCount -> {
-                count
-            }
-            else -> {
-                loadPokemonsInner(pokemonsCount, initialAmount)
-            }
+            pokemonsCount -> count
+            else -> loadPokemonsInner(pokemonsCount, initialAmount)
         }
     }
 
-    private suspend fun loadPokemonsInner(pokemonsCount: Long, offset: Long): Long { //  = withContext(Dispatchers.IO)
+    private suspend fun loadPokemonsInner(pokemonsCount: Long, offset: Long): Long {
         val page = network.loadPokemons(pokemonsCount, offset)
         dao.save(page)
         return page.size.toLong()
@@ -63,8 +62,7 @@ class PokemonsRepository(private val dao: PokemonsDao, private val network: Netw
     }
 
     override suspend fun loadInitialPages(amount: Long) {
-        val count = dao.getCount()
-        if (count < amount) {
+        if (dao.getCount() < amount) {
             loadPokemonsInner(amount, 0)
         }
     }

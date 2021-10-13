@@ -99,6 +99,10 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo)
         return properties
     }
 
+    override fun onBackPressed() {
+        setAction(PokemonDetailsScreenAction.ActionBack())
+    }
+
     override fun onCleared() {
         super.onCleared()
         pokemonLoadingJob = null

@@ -59,14 +59,12 @@ class SplashFragment :
     }
 
     override fun proceedToNextScreen() {
-        if (hasHost()) {
-            fragmentHost!!.proceedToPokemonsScreen()
-        }
+        fragmentHost?.proceedToPokemonsScreen()
     }
 
     override fun launchWorker() {
-        if (hasHost()) {
-            WorkManager.getInstance(requireContext())
+        context?.let {
+            WorkManager.getInstance(it)
                 .enqueue(OneTimeWorkRequest.Builder(UploadWorker::class.java).build())
         }
     }

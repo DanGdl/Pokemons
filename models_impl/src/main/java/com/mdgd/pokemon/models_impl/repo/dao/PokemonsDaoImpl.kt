@@ -11,22 +11,16 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
     private val pokemonsRoomDao: PokemonsRoomDao? = Room.databaseBuilder(ctx, AppDatabase::class.java, "PokemonsAppDB").build().pokemonsDao()
 
     override suspend fun save(list: List<PokemonDetails>) {
-        pokemonsRoomDao!!.save(list)
+        pokemonsRoomDao?.save(list)
     }
 
     override suspend fun getPage(page: Int, pageSize: Int): List<PokemonFullDataSchema> {
         val offset = page * pageSize
         val rows = pokemonsRoomDao!!.countRows()
         return when {
-            rows == 0 -> {
-                ArrayList(0)
-            }
-            pokemonsRoomDao.countRows() <= offset -> {
-                throw Exception(PokemonsDao.NO_MORE_POKEMONS_MSG)
-            }
-            else -> {
-                pokemonsRoomDao.getPage(offset, pageSize)
-            }
+            rows == 0 -> ArrayList(0)
+            (pokemonsRoomDao.countRows() <= offset) -> throw Exception(PokemonsDao.NO_MORE_POKEMONS_MSG)
+            else -> pokemonsRoomDao.getPage(offset, pageSize)
         }
     }
 
@@ -35,6 +29,6 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
     }
 
     override suspend fun getPokemonById(pokemonId: Long): PokemonFullDataSchema? {
-        return pokemonsRoomDao!!.getPokemonById(pokemonId)
+        return pokemonsRoomDao?.getPokemonById(pokemonId)
     }
 }
