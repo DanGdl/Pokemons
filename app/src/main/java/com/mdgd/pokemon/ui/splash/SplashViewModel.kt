@@ -8,6 +8,7 @@ import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,8 +16,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SplashViewModel(private val cache: Cache) :
+@HiltViewModel
+class SplashViewModel @Inject constructor(private val cache: Cache) :
     MviViewModel<SplashContract.View, SplashScreenState, SplashScreenAction>(),
     SplashContract.ViewModel {
 

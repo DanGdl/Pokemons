@@ -3,7 +3,6 @@ package com.mdgd.pokemon.ui.pokemons
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import com.mdgd.mvi.util.DispatchersHolder
 import com.mdgd.pokemon.Mocks
 import com.mdgd.pokemon.TestSuit
 import com.mdgd.pokemon.models.filters.FilterData
@@ -12,6 +11,7 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.schemas.Stat
+import com.mdgd.pokemon.models.util.DispatchersHolder
 import com.mdgd.pokemon.models_impl.filters.StatsFiltersFactory
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState

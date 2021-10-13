@@ -18,6 +18,12 @@ buildscript {
     ext.ktx = "1.6.0"
     ext.coroutins = "1.5.0"
     ext.composeVersion = "1.0.3"
+    ext.hilt = "2.38.1"
+    ext.hilt_jetpack = "1.0.0"
+    ext.mockito_core = "3.7.0"
+    ext.mockito_kotlin = "2.2.0"
+    ext.testing_core = "1.1.1"
+    ext.testing_coroutine = "1.5.0"
 
     project.ext {
         min = 21
@@ -35,7 +41,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.0.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
-
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.38.1")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

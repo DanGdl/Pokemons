@@ -29,11 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import coil.compose.rememberImagePainter
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
-import com.mdgd.pokemon.PokemonsApp.Companion.instance
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
@@ -44,7 +43,9 @@ import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.pokemon.dto.*
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PokemonDetailsFragment : HostedFragment<
         PokemonDetailsContract.View,
         PokemonDetailsScreenState,
@@ -62,9 +63,8 @@ class PokemonDetailsFragment : HostedFragment<
     }
 
     override fun createModel(): PokemonDetailsContract.ViewModel {
-        return ViewModelProvider(
-            this, PokemonDetailsViewModelFactory(instance!!.appComponent!!)
-        ).get(PokemonDetailsViewModel::class.java)
+        val model: PokemonDetailsViewModel by viewModels()
+        return model
     }
 
     override fun onCreateView(

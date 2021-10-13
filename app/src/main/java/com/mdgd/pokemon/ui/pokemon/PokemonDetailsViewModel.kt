@@ -14,15 +14,19 @@ import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.dto.*
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class PokemonDetailsViewModel(private val repo: PokemonsRepo)
-    : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenAction>(), PokemonDetailsContract.ViewModel {
+@HiltViewModel
+class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo) :
+    MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenAction>(),
+    PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null

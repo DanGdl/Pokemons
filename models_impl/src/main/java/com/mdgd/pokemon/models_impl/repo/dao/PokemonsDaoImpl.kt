@@ -5,10 +5,13 @@ import androidx.room.Room
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
+import javax.inject.Inject
 
-class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
-    private val pokemonsRoomDao: PokemonsRoomDao? = Room.databaseBuilder(ctx, AppDatabase::class.java, "PokemonsAppDB").build().pokemonsDao()
+class PokemonsDaoImpl @Inject constructor(@ApplicationContext ctx: Context) : PokemonsDao {
+    private val pokemonsRoomDao: PokemonsRoomDao? =
+        Room.databaseBuilder(ctx, AppDatabase::class.java, "PokemonsAppDB").build().pokemonsDao()
 
     override suspend fun save(list: List<PokemonDetails>) {
         pokemonsRoomDao?.save(list)

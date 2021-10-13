@@ -22,12 +22,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
-import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
 import com.mdgd.pokemon.ui.error.DefaultErrorParams
@@ -35,7 +34,9 @@ import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashFragment :
     HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
@@ -43,9 +44,8 @@ class SplashFragment :
     private val errorDialogTrigger = mutableStateOf(DefaultErrorParams())
 
     override fun createModel(): SplashContract.ViewModel {
-        return ViewModelProvider(
-            this, SplashViewModelFactory(PokemonsApp.instance?.appComponent!!)
-        ).get(SplashViewModel::class.java)
+        val model: SplashViewModel by viewModels()
+        return model
     }
 
     override fun onCreateView(

@@ -4,19 +4,22 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
-import com.mdgd.mvi.util.DispatchersHolder
 import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.filters.StatsFilter
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.models.util.DispatchersHolder
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PokemonsViewModel(
+@HiltViewModel
+class PokemonsViewModel @Inject constructor(
     private val repo: PokemonsRepo,
     private val filtersFactory: StatsFilter,
     private val dispatchers: DispatchersHolder

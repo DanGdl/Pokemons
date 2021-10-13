@@ -29,13 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import coil.compose.rememberImagePainter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
-import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
@@ -46,8 +45,10 @@ import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class PokemonsFragment : HostedFragment<
         PokemonsContract.View,
         PokemonsScreenState,
@@ -59,9 +60,8 @@ class PokemonsFragment : HostedFragment<
     private val screenState = mutableStateOf(PokemonsUiState(isLoading = true))
 
     override fun createModel(): PokemonsContract.ViewModel {
-        return ViewModelProvider(
-            this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!)
-        ).get(PokemonsViewModel::class.java)
+        val model: PokemonsViewModel by viewModels()
+        return model
     }
 
     override fun onCreateView(

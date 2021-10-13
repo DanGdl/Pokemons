@@ -5,8 +5,11 @@ import com.mdgd.pokemon.models.repo.cache.PokemonsCache
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.Network
+import javax.inject.Inject
 
-class PokemonsRepository(private val dao: PokemonsDao, private val network: Network, private val cache: PokemonsCache) : PokemonsRepo {
+class PokemonsRepository @Inject constructor(
+    private val dao: PokemonsDao, private val network: Network, private val cache: PokemonsCache
+) : PokemonsRepo {
 
     override fun getPokemons() = cache.getPokemons()
 

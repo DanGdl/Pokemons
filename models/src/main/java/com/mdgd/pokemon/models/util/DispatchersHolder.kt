@@ -1,4 +1,4 @@
-package com.mdgd.mvi.util
+package com.mdgd.pokemon.models.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 
