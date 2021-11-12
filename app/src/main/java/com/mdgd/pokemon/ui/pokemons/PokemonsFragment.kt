@@ -38,7 +38,7 @@ class PokemonsFragment : HostedFragment<
     // maybe paging library?
     private val scrollListener: EndlessScrollListener = object : EndlessScrollListener() {
         override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-            model!!.loadPage(page)
+            model?.loadPage(page)
         }
     }
     private var recyclerView: RecyclerView? = null
@@ -53,7 +53,7 @@ class PokemonsFragment : HostedFragment<
         lifecycleScope.launch {
             adapter.getItemClickFlow().collect {
                 if (it is ClickEvent.ClickData) {
-                    model!!.onItemClicked(it.data)
+                    model?.onItemClicked(it.data)
                 }
             }
         }
@@ -88,22 +88,14 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun proceedToNextScreen(pokemonId: Long?) {
-        if (hasHost()) {
-            fragmentHost!!.proceedToPokemonScreen(pokemonId)
-        }
+        fragmentHost?.proceedToPokemonScreen(pokemonId)
     }
 
     override fun updateFilterButtons(activateFilter: Boolean, filter: String) {
         val view = when (filter) {
-            FilterData.FILTER_ATTACK -> {
-                filterAttack
-            }
-            FilterData.FILTER_DEFENCE -> {
-                filterDefence
-            }
-            FilterData.FILTER_SPEED -> {
-                filterSpeed
-            }
+            FilterData.FILTER_ATTACK -> filterAttack
+            FilterData.FILTER_DEFENCE -> filterDefence
+            FilterData.FILTER_SPEED -> filterSpeed
             else -> null
         }
 
@@ -116,38 +108,30 @@ class PokemonsFragment : HostedFragment<
 
     override fun onClick(view: View) {
         if (view === refresh) {
-            if (!refreshSwipe!!.isRefreshing) {
-                refreshSwipe!!.isRefreshing = true
-            }
+            showProgress()
         } else {
             when {
-                filterAttack === view -> {
-                    model!!.sort(FilterData.FILTER_ATTACK)
-                }
-                filterDefence === view -> {
-                    model!!.sort(FilterData.FILTER_DEFENCE)
-                }
-                filterSpeed === view -> {
-                    model!!.sort(FilterData.FILTER_SPEED)
-                }
+                filterAttack === view -> model?.sort(FilterData.FILTER_ATTACK)
+                filterDefence === view -> model?.sort(FilterData.FILTER_DEFENCE)
+                filterSpeed === view -> model?.sort(FilterData.FILTER_SPEED)
             }
         }
     }
 
     override fun onRefresh() {
         scrollListener.resetState()
-        model!!.reload()
+        model?.reload()
     }
 
     override fun showProgress() {
-        if (refreshSwipe != null && !refreshSwipe!!.isRefreshing) {
-            refreshSwipe!!.isRefreshing = true
+        if (refreshSwipe?.isRefreshing == false) {
+            refreshSwipe?.isRefreshing = true
         }
     }
 
     override fun hideProgress() {
-        if (refreshSwipe != null && refreshSwipe!!.isRefreshing) {
-            refreshSwipe!!.isRefreshing = false
+        if (refreshSwipe?.isRefreshing == true) {
+            refreshSwipe?.isRefreshing = false
         }
     }
 
@@ -156,12 +140,10 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun scrollToStart() {
-        recyclerView!!.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 
     override fun showError(error: Throwable?) {
-        if (hasHost()) {
-            fragmentHost!!.showError(error)
-        }
+        fragmentHost?.showError(error)
     }
 }

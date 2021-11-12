@@ -26,21 +26,17 @@ class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, Sp
     }
 
     override fun proceedToNextScreen() {
-        if (hasHost()) {
-            fragmentHost!!.proceedToPokemonsScreen()
-        }
+        fragmentHost?.proceedToPokemonsScreen()
     }
 
     override fun launchWorker() {
-        if (hasHost()) {
+        fragmentHost?.let {
             val uploadWorkRequest: WorkRequest = OneTimeWorkRequest.Builder(UploadWorker::class.java).build()
             WorkManager.getInstance(requireContext()).enqueue(uploadWorkRequest)
         }
     }
 
     override fun showError(error: Throwable?) {
-        if (hasHost()) {
-            fragmentHost!!.showError(error)
-        }
+        fragmentHost?.showError(error)
     }
 }
