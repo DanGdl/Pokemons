@@ -5,12 +5,19 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 
-@Entity(tableName = "abilities", indices = [Index("id")])
+@Entity(
+    tableName = "abilities", indices = [Index("id")],
+    foreignKeys = [ForeignKey(
+        entity = PokemonSchema::class,
+        parentColumns = ["id"],
+        childColumns = ["pokemonId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 class Ability {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    @ForeignKey(entity = PokemonSchema::class, parentColumns = ["id"], childColumns = ["pokemonId"], onDelete = ForeignKey.CASCADE)
     var pokemonId: Long = 0
 
     @Embedded

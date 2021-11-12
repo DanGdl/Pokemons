@@ -5,9 +5,17 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 
-@Entity(tableName = "game_indexes", indices = [Index("id")])
+@Entity(
+    tableName = "game_indexes", indices = [Index("id")],
+    foreignKeys = [ForeignKey(
+        entity = PokemonSchema::class,
+        parentColumns = ["id"],
+        childColumns = ["pokemonId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 class GameIndex {
-    @ForeignKey(entity = PokemonSchema::class, parentColumns = ["id"], childColumns = ["pokemonId"], onDelete = ForeignKey.CASCADE)
+
     var pokemonId: Long = 0
 
     @PrimaryKey(autoGenerate = true)
