@@ -3,7 +3,7 @@ package com.mdgd.mvi.fragments
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import com.mdgd.mvi.states.AbstractAction
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
@@ -14,7 +14,7 @@ abstract class HostedDialogFragment<
         ACTION : AbstractAction<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>
-    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE> {
+    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -44,12 +44,22 @@ abstract class HostedDialogFragment<
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setModel(createModel())
-        if (model != null) {
-            lifecycle.addObserver(model!!)
-            model!!.getStateObservable().observe(this, this)
-            model!!.getActionObservable().observe(this, { action ->
-                action.visit(this as VIEW)
-            })
+        lifecycle.addObserver(this)
+        model?.getStateObservable()?.observe(this, this)
+        model?.getActionObservable()?.observe(this, { action ->
+            action.visit(this as VIEW)
+        })
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+        model?.onAny(owner, event)
+
+        if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
+            lifecycle.removeObserver(this)
+            // order matters
+            model?.getActionObservable()?.removeObservers(this)
+            model?.getStateObservable()?.removeObservers(this)
         }
     }
 
@@ -57,21 +67,7 @@ abstract class HostedDialogFragment<
         state.visit(this as VIEW)
     }
 
-    override fun onDestroy() {
-        // order matters
-        if (model != null) {
-            model!!.getActionObservable().removeObservers(this)
-            model!!.getStateObservable().removeObservers(this)
-            lifecycle.removeObserver(model!!)
-        }
-        super.onDestroy()
-    }
-
     protected abstract fun createModel(): VIEW_MODEL?
-
-    protected fun hasHost(): Boolean {
-        return fragmentHost != null
-    }
 
     protected fun setModel(model: VIEW_MODEL?) {
         this.model = model

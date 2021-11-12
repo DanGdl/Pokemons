@@ -32,6 +32,6 @@ abstract class MviViewModel<V, S : ScreenState<V, S>, A> : ViewModel(), Fragment
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
     }
 }
