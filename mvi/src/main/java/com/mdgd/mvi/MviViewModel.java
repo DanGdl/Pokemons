@@ -3,6 +3,7 @@ package com.mdgd.mvi;
 import androidx.annotation.CallSuper;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModel;
@@ -15,13 +16,14 @@ public abstract class MviViewModel<T> extends ViewModel implements FragmentContr
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final MutableLiveData<T> stateHolder = new MutableLiveData<>();
 
-    public MutableLiveData<T> getStateObservable() {
+    @Override
+    public LiveData<T> getStateObservable() {
         return stateHolder;
     }
 
     @CallSuper
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    public void onAny(LifecycleOwner owner, Lifecycle.Event event) {
         if (event == Lifecycle.Event.ON_STOP) {
             onStopDisposables.clear();
         }

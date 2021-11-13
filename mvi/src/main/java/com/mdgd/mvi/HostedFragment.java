@@ -5,14 +5,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.lang.reflect.ParameterizedType;
 
 public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
         extends NavHostFragment
-        implements FragmentContract.View, Observer<STATE> {
+        implements FragmentContract.View, Observer<STATE>, LifecycleObserver {
 
     private VIEW_MODEL model;
     private HOST fragmentHost;
@@ -36,13 +40,26 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setModel(createModel());
+        getLifecycle().addObserver(this);
         if (getModel() != null) {
-            getLifecycle().addObserver(getModel());
             getModel().getStateObservable().observe(this, this);
         }
     }
 
     protected abstract VIEW_MODEL createModel();
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+        if (getModel() != null) {
+            getModel().onAny(owner, event);
+        }
+        if (getLifecycle().getCurrentState().ordinal() <= Lifecycle.State.DESTROYED.ordinal()) {
+            getLifecycle().removeObserver(this);
+            if (getModel() != null) {
+                getModel().getStateObservable().removeObservers(this);
+            }
+        }
+    }
 
     @Override
     public void onDetach() {
@@ -50,17 +67,6 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
         // release the call back
         fragmentHost = null;
     }
-
-    @Override
-    public void onDestroy() {
-        // order matters
-        if (getModel() != null) {
-            getModel().getStateObservable().removeObservers(this);
-            getLifecycle().removeObserver(getModel());
-        }
-        super.onDestroy();
-    }
-
 
     @Override
     public void onChanged(STATE screenState) {

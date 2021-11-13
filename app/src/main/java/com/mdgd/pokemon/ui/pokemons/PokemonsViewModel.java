@@ -55,7 +55,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsScreenState> impleme
     }
 
     @Override
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    public void onAny(LifecycleOwner owner, Lifecycle.Event event) {
         super.onAny(owner, event);
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(
