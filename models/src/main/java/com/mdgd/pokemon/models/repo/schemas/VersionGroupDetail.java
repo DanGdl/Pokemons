@@ -10,12 +10,17 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema;
 
-import static androidx.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "VersionGroupDetails", indices = {@Index("id")})
+@Entity(
+        tableName = "VersionGroupDetails", indices = {@Index("id")},
+        foreignKeys = {@ForeignKey(
+                entity = MoveSchema.class,
+                parentColumns = "id",
+                childColumns = "moveId",
+                onDelete = ForeignKey.CASCADE
+        )}
+)
 public class VersionGroupDetail {
 
-    @ForeignKey(entity = MoveSchema.class, parentColumns = "id", childColumns = "moveId", onDelete = CASCADE)
     public long moveId;
 
     @PrimaryKey(autoGenerate = true)

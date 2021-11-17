@@ -10,15 +10,19 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 
-import static androidx.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "abilities", indices = {@Index("id")})
+@Entity(
+        tableName = "abilities", indices = {@Index("id")},
+        foreignKeys = {@ForeignKey(
+                entity = PokemonSchema.class,
+                parentColumns = "id",
+                childColumns = "pokemonId",
+                onDelete = ForeignKey.CASCADE
+        )}
+)
 public class Ability {
 
     @PrimaryKey(autoGenerate = true)
     public long id;
-
-    @ForeignKey(entity = PokemonSchema.class, parentColumns = "id", childColumns = "pokemonId", onDelete = CASCADE)
     public long pokemonId;
 
     @Embedded
