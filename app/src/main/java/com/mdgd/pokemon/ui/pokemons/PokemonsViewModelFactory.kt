@@ -7,9 +7,13 @@ import com.mdgd.pokemon.models.AppModule
 
 class PokemonsViewModelFactory(private val appComponent: AppModule) : ViewModelProvider.NewInstanceFactory() {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass == PokemonsViewModel::class.java) {
-            PokemonsViewModel(appComponent.getPokemonsRepo(), appComponent.getFiltersFactory(), DispatchersHolderImpl()) as T
+            PokemonsViewModel(
+                appComponent.getPokemonsRepo(),
+                appComponent.getFiltersFactory(),
+                DispatchersHolderImpl()
+            ) as T
         } else super.create(modelClass)
     }
 }
