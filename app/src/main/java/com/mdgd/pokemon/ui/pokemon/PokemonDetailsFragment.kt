@@ -43,7 +43,7 @@ import com.mdgd.pokemon.models.repo.schemas.Stat_
 import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
 import com.mdgd.pokemon.ui.pokemon.dto.*
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,7 +51,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PokemonDetailsFragment : HostedFragment<
         PokemonDetailsContract.View,
         PokemonDetailsScreenState,
-        PokemonDetailsScreenAction,
+        PokemonDetailsScreenEffect,
         PokemonDetailsContract.ViewModel,
         PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
 

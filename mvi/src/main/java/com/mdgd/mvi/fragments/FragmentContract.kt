@@ -1,15 +1,13 @@
 package com.mdgd.mvi.fragments
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 
 class FragmentContract {
-    interface ViewModel<S, A> : LifecycleObserver {
-        fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event)
-        fun getStateObservable(): MutableLiveData<S>
-        fun getActionObservable(): MutableLiveData<A>
+    interface ViewModel<S, E> {
+        fun onStateChanged(event: Lifecycle.Event)
+        fun getStateObservable(): LiveData<S>
+        fun getEffectObservable(): LiveData<E>
     }
 
     interface View

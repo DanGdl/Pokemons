@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
 import com.mdgd.pokemon.models.filters.FilterData
@@ -9,7 +8,7 @@ import com.mdgd.pokemon.models.filters.StatsFilter
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.util.DispatchersHolder
-import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,19 +22,19 @@ class PokemonsViewModel @Inject constructor(
     private val repo: PokemonsRepo,
     private val filtersFactory: StatsFilter,
     private val dispatchers: DispatchersHolder
-) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenAction>(),
+) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenEffect>(),
     PokemonsContract.ViewModel {
 
     private var firstVisibleIndex: Int = 0
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        setAction(PokemonsScreenAction.Error(e))
+        setAction(PokemonsScreenEffect.Error(e))
     }
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
     private var launch: Job? = null
 
-    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        super.onAny(owner, event)
+    override fun onStateChanged(event: Lifecycle.Event) {
+        super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
             launch = viewModelScope.launch(exceptionHandler) {
                 pageFlow
@@ -43,7 +42,7 @@ class PokemonsViewModel @Inject constructor(
                     .flowOn(dispatchers.getMain())
                     .map { page -> Pair(page, repo.getPage(page)) }
                     .flowOn(dispatchers.getIO())
-                    .catch { e: Throwable -> setAction(PokemonsScreenAction.Error(e)) }
+                    .catch { e: Throwable -> setAction(PokemonsScreenEffect.Error(e)) }
                     .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
                         if (pagePair.first == 0) {
                             setState(
@@ -105,7 +104,7 @@ class PokemonsViewModel @Inject constructor(
     }
 
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {
-        setAction(PokemonsScreenAction.ShowDetails(pokemon.pokemonSchema?.id))
+        setAction(PokemonsScreenEffect.ShowDetails(pokemon.pokemonSchema?.id))
     }
 
     override fun onScroll(firstVisibleIndex: Int, lastVisibleIndex: Int) {

@@ -4,17 +4,17 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.navigation.fragment.NavHostFragment
-import com.mdgd.mvi.states.ScreenAction
+import com.mdgd.mvi.states.ScreenEffect
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        ACTION : ScreenAction<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
+        EFFECT : ScreenEffect<VIEW>,
+        VIEW_MODEL : FragmentContract.ViewModel<STATE, EFFECT>,
         HOST : FragmentContract.Host>
-    : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleObserver {
+    : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -46,21 +46,20 @@ abstract class HostedFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getActionObservable()?.observe(this, { action ->
+        model?.getEffectObservable()?.observe(this, { action ->
             action.visit(this as VIEW)
         })
     }
 
     protected abstract fun createModel(): VIEW_MODEL
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        model?.onAny(owner, event)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        model?.onStateChanged(event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)
             // order matters
-            model?.getActionObservable()?.removeObservers(this)
+            model?.getEffectObservable()?.removeObservers(this)
             model?.getStateObservable()?.removeObservers(this)
         }
     }
