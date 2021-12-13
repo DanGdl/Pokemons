@@ -36,9 +36,7 @@ class PokemonPropertiesAdapter : RecyclerAdapter<PokemonProperty>() {
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return items[position].type
-    }
+    override fun getItemViewType(position: Int) = items[position].type
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerVH<PokemonProperty> {

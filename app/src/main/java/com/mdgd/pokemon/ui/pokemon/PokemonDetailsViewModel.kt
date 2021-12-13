@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
 import com.mdgd.pokemon.R
@@ -12,7 +11,7 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.infra.*
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,8 +20,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PokemonDetailsViewModel(private val repo: PokemonsRepo)
-    : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenAction>(), PokemonDetailsContract.ViewModel {
+class PokemonDetailsViewModel(private val repo: PokemonsRepo) :
+    MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenEffect>(),
+    PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null
@@ -33,16 +33,20 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo)
         }
     }
 
-    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        super.onAny(owner, event)
+    public override fun onStateChanged(event: Lifecycle.Event) {
+        super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {
                 pokemonIdFlow
-                        .filter { it != -1L }
-                        .map { id: Long -> repo.getPokemonById(id) }
-                        .map { details: PokemonFullDataSchema? -> if (details == null) LinkedList() else mapToListPokemon(details) }
-                        .flowOn(Dispatchers.IO)
-                        .collect { setState(PokemonDetailsScreenState.SetData(it)) }
+                    .filter { it != -1L }
+                    .map { id: Long -> repo.getPokemonById(id) }
+                    .map { details: PokemonFullDataSchema? ->
+                        if (details == null) LinkedList() else mapToListPokemon(
+                            details
+                        )
+                    }
+                    .flowOn(Dispatchers.IO)
+                    .collect { setState(PokemonDetailsScreenState.SetData(it)) }
             }
         }
     }

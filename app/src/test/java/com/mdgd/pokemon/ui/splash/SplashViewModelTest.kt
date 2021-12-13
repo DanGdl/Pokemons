@@ -5,7 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
-import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
+import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -47,21 +47,21 @@ class SplashViewModelTest {
         val stateObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenState>
         model.getStateObservable().observeForever(stateObserverMock)
 
-        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenAction>
-        model.getActionObservable().observeForever(actionObserverMock)
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenEffect>
+        model.getEffectObservable().observeForever(actionObserverMock)
 
-        model.onAny(null, Lifecycle.Event.ON_CREATE)
-        model.onAny(null, Lifecycle.Event.ON_RESUME)
-        model.onAny(null, Lifecycle.Event.ON_PAUSE)
-        model.onAny(null, Lifecycle.Event.ON_STOP)
-        model.onAny(null, Lifecycle.Event.ON_DESTROY)
-        model.onAny(null, Lifecycle.Event.ON_ANY)
+        model.onStateChanged(Lifecycle.Event.ON_CREATE)
+        model.onStateChanged(Lifecycle.Event.ON_RESUME)
+        model.onStateChanged(Lifecycle.Event.ON_PAUSE)
+        model.onStateChanged(Lifecycle.Event.ON_STOP)
+        model.onStateChanged(Lifecycle.Event.ON_DESTROY)
+        model.onStateChanged(Lifecycle.Event.ON_ANY)
 
         Mockito.verifyNoMoreInteractions(stateObserverMock)
         Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(stateObserverMock)
-        model.getActionObservable().removeObserver(actionObserverMock)
+        model.getEffectObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -73,30 +73,30 @@ class SplashViewModelTest {
         val stateObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenState>
         model.getStateObservable().observeForever(stateObserverMock)
 
-        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenAction>
-        val actionCaptor = ArgumentCaptor.forClass(SplashScreenAction::class.java)
-        model.getActionObservable().observeForever(actionObserverMock)
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenEffect>
+        val actionCaptor = ArgumentCaptor.forClass(SplashScreenEffect::class.java)
+        model.getEffectObservable().observeForever(actionObserverMock)
 
 
-        model.onAny(null, Lifecycle.Event.ON_START)
+        model.onStateChanged(Lifecycle.Event.ON_START)
 
 
         Mockito.verify(actionObserverMock, Mockito.times(1)).onChanged(actionCaptor.capture())
-        Assert.assertTrue(actionCaptor.value is SplashScreenAction.LaunchWorker)
+        Assert.assertTrue(actionCaptor.value is SplashScreenEffect.LaunchWorker)
 
         progressChanel.send(Result(error))
         Thread.sleep(SplashContract.SPLASH_DELAY * 2)
         Mockito.verify(cache, Mockito.times(1)).getProgressChanel()
         Mockito.verify(actionObserverMock, Mockito.times(2)).onChanged(actionCaptor.capture())
         val errorState = actionCaptor.value
-        Assert.assertTrue(errorState is SplashScreenAction.ShowError)
-        Assert.assertEquals((errorState as SplashScreenAction.ShowError).e, error)
+        Assert.assertTrue(errorState is SplashScreenEffect.ShowError)
+        Assert.assertEquals((errorState as SplashScreenEffect.ShowError).e, error)
 
         Mockito.verifyNoInteractions(stateObserverMock)
         Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(stateObserverMock)
-        model.getActionObservable().removeObserver(actionObserverMock)
+        model.getEffectObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -107,29 +107,29 @@ class SplashViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenState>
         model.getStateObservable().observeForever(observerMock)
 
-        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenAction>
-        val actionCaptor = ArgumentCaptor.forClass(SplashScreenAction::class.java)
-        model.getActionObservable().observeForever(actionObserverMock)
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenEffect>
+        val actionCaptor = ArgumentCaptor.forClass(SplashScreenEffect::class.java)
+        model.getEffectObservable().observeForever(actionObserverMock)
 
 
-        model.onAny(null, Lifecycle.Event.ON_START)
+        model.onStateChanged(Lifecycle.Event.ON_START)
 
 
         Mockito.verify(actionObserverMock, Mockito.times(1)).onChanged(actionCaptor.capture())
-        Assert.assertTrue(actionCaptor.value is SplashScreenAction.LaunchWorker)
+        Assert.assertTrue(actionCaptor.value is SplashScreenEffect.LaunchWorker)
 
         Thread.sleep(SplashContract.SPLASH_DELAY * 2)
         Mockito.verify(cache, Mockito.times(1)).getProgressChanel()
         Mockito.verify(actionObserverMock, Mockito.times(2)).onChanged(actionCaptor.capture())
         val errorState = actionCaptor.value
-        Assert.assertTrue(errorState is SplashScreenAction.ShowError)
-        Assert.assertEquals((errorState as SplashScreenAction.ShowError).e, error)
+        Assert.assertTrue(errorState is SplashScreenEffect.ShowError)
+        Assert.assertEquals((errorState as SplashScreenEffect.ShowError).e, error)
 
         Mockito.verifyNoInteractions(observerMock)
         Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
-        model.getActionObservable().removeObserver(actionObserverMock)
+        model.getEffectObservable().removeObserver(actionObserverMock)
     }
 
     @Test
@@ -140,29 +140,29 @@ class SplashViewModelTest {
         val observerMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenState>
         model.getStateObservable().observeForever(observerMock)
 
-        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenAction>
-        val actionCaptor = ArgumentCaptor.forClass(SplashScreenAction::class.java)
-        model.getActionObservable().observeForever(actionObserverMock)
+        val actionObserverMock = Mockito.mock(Observer::class.java) as Observer<SplashScreenEffect>
+        val actionCaptor = ArgumentCaptor.forClass(SplashScreenEffect::class.java)
+        model.getEffectObservable().observeForever(actionObserverMock)
 
 
-        model.onAny(null, Lifecycle.Event.ON_START)
+        model.onStateChanged(Lifecycle.Event.ON_START)
 
 
         Mockito.verify(actionObserverMock, Mockito.times(1)).onChanged(actionCaptor.capture())
-        Assert.assertTrue(actionCaptor.value is SplashScreenAction.LaunchWorker)
+        Assert.assertTrue(actionCaptor.value is SplashScreenEffect.LaunchWorker)
 
         progressChanel.send(Result(90L))
         Thread.sleep(SplashContract.SPLASH_DELAY * 2)
         Mockito.verify(cache, Mockito.times(1)).getProgressChanel()
         Mockito.verify(actionObserverMock, Mockito.times(2)).onChanged(actionCaptor.capture())
         val errorState = actionCaptor.value
-        Assert.assertTrue(errorState is SplashScreenAction.NextScreen)
+        Assert.assertTrue(errorState is SplashScreenEffect.NextScreen)
 
 
         Mockito.verifyNoInteractions(observerMock)
         Mockito.verifyNoMoreInteractions(actionObserverMock)
         verifyNoMoreInteractions()
         model.getStateObservable().removeObserver(observerMock)
-        model.getActionObservable().removeObserver(actionObserverMock)
+        model.getEffectObservable().removeObserver(actionObserverMock)
     }
 }

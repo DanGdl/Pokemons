@@ -4,14 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.lifecycle.*
-import com.mdgd.mvi.states.AbstractAction
+import com.mdgd.mvi.states.AbstractEffect
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedDialogFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        ACTION : AbstractAction<VIEW>,
+        ACTION : AbstractEffect<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>
     : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleObserver {
@@ -46,19 +46,19 @@ abstract class HostedDialogFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getActionObservable()?.observe(this, { action ->
+        model?.getEffectObservable()?.observe(this, { action ->
             action.visit(this as VIEW)
         })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
     protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        model?.onAny(owner, event)
+        model?.onStateChanged(event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)
             // order matters
-            model?.getActionObservable()?.removeObservers(this)
+            model?.getEffectObservable()?.removeObservers(this)
             model?.getStateObservable()?.removeObservers(this)
         }
     }

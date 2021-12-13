@@ -3,7 +3,7 @@ package com.mdgd.pokemon.ui.pokemons.infra
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
+abstract class EndlessScrollListener internal constructor() : RecyclerView.OnScrollListener() {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private val visibleThreshold = 5
@@ -21,15 +21,10 @@ abstract class EndlessScrollListener : RecyclerView.OnScrollListener {
     private val startingPageIndex = 0
     private var reverseDirection = false
 
-    internal constructor() {}
-    constructor(reverseDirection: Boolean) {
-        this.reverseDirection = reverseDirection
-    }
-
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
 
-        //only trigger action if scrolling down
+        // only trigger action if scrolling down
         if (if (!reverseDirection) dy > 0 else dy < 0) {
             val lm = recyclerView.layoutManager
             val totalItemCount = lm!!.itemCount

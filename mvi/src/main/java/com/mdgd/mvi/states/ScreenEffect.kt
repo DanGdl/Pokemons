@@ -1,5 +1,5 @@
 package com.mdgd.mvi.states
 
-interface ScreenAction<T> {
+interface ScreenEffect<T> {
     fun visit(screen: T)
 }

@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.splash
 
-import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
+import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -10,7 +10,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
-class SplashScreenActionTest {
+class SplashScreenEffectTest {
 
     private lateinit var view: SplashContract.View
 
@@ -25,7 +25,7 @@ class SplashScreenActionTest {
 
     @Test
     fun testLaunchWorkerState() {
-        SplashScreenAction.LaunchWorker.visit(view)
+        SplashScreenEffect.LaunchWorker.visit(view)
 
         Mockito.verify(view, Mockito.times(1)).launchWorker()
         verifyNoMoreInteractions()
@@ -35,7 +35,7 @@ class SplashScreenActionTest {
     fun testErrorState() {
         val error = Throwable("TestError")
         val errorCaptor = ArgumentCaptor.forClass(Throwable::class.java)
-        SplashScreenAction.ShowError(error).visit(view)
+        SplashScreenEffect.ShowError(error).visit(view)
 
         Mockito.verify(view, Mockito.times(1)).showError(errorCaptor.capture())
         Assert.assertEquals(error, errorCaptor.value)
@@ -45,7 +45,7 @@ class SplashScreenActionTest {
 
     @Test
     fun testProceedToNextState() {
-        SplashScreenAction.NextScreen.visit(view)
+        SplashScreenEffect.NextScreen.visit(view)
 
         Mockito.verify(view, Mockito.times(1)).proceedToNextScreen()
         verifyNoMoreInteractions()

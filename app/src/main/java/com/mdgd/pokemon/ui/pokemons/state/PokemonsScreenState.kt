@@ -5,11 +5,11 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
 
 sealed class PokemonsScreenState(
-        private val isProgressVisible: Boolean = false,
-        protected val list: MutableList<PokemonFullDataSchema> = mutableListOf(),
-        protected val availableFilters: MutableList<String> = mutableListOf(),
-        protected val activeFilters: MutableList<String> = mutableListOf())
-    : ScreenState<PokemonsContract.View, PokemonsScreenState> {
+    private val isProgressVisible: Boolean = false,
+    protected val list: MutableList<PokemonFullDataSchema> = mutableListOf(),
+    protected val availableFilters: MutableList<String> = mutableListOf(),
+    protected val activeFilters: MutableList<String> = mutableListOf()
+) : ScreenState<PokemonsContract.View, PokemonsScreenState> {
 
     fun getItems(): List<PokemonFullDataSchema> {
         return ArrayList(list)
@@ -33,7 +33,7 @@ sealed class PokemonsScreenState(
     }
 
 
-    class Loading() : PokemonsScreenState(true) {
+    class Loading : PokemonsScreenState(true) {
 
         override fun merge(prevState: PokemonsScreenState) {
             list.addAll(prevState.list)
@@ -42,8 +42,8 @@ sealed class PokemonsScreenState(
         }
     }
 
-    class SetData(list: List<PokemonFullDataSchema>, availableFilters: List<String>)
-        : PokemonsScreenState(false, ArrayList(list), ArrayList(availableFilters)) {
+    class SetData(list: List<PokemonFullDataSchema>, availableFilters: List<String>) :
+        PokemonsScreenState(false, ArrayList(list), ArrayList(availableFilters)) {
 
         override fun merge(prevState: PokemonsScreenState) {
             activeFilters.addAll(prevState.activeFilters)
@@ -59,8 +59,8 @@ sealed class PokemonsScreenState(
         }
     }
 
-    class UpdateData(items: List<PokemonFullDataSchema>)
-        : PokemonsScreenState(false, ArrayList(items)) {
+    class UpdateData(items: List<PokemonFullDataSchema>) :
+        PokemonsScreenState(false, ArrayList(items)) {
 
         override fun merge(prevState: PokemonsScreenState) {
             availableFilters.addAll(prevState.availableFilters)

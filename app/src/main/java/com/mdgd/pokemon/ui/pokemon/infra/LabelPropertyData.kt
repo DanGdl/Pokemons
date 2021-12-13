@@ -15,5 +15,5 @@ class LabelPropertyData : TitlePropertyData, LabelProperty {
     }
 
     override val type: Int
-        get() = PokemonProperty.Companion.PROPERTY_LABEL
+        get() = PokemonProperty.PROPERTY_LABEL
 }

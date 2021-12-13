@@ -7,21 +7,26 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
-import com.mdgd.pokemon.ui.splash.state.SplashScreenAction
+import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 
-class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(), SplashContract.View {
+class SplashFragment :
+    HostedFragment<SplashContract.View, SplashScreenState, SplashScreenEffect, SplashContract.ViewModel, SplashContract.Host>(),
+    SplashContract.View {
 
     override fun createModel(): SplashContract.ViewModel {
-        return ViewModelProvider(this, SplashViewModelFactory(PokemonsApp.instance?.appComponent!!)).get(SplashViewModel::class.java)
+        return ViewModelProvider(
+            this, SplashViewModelFactory(PokemonsApp.instance?.appComponent!!)
+        )[SplashViewModel::class.java]
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
@@ -31,8 +36,9 @@ class SplashFragment : HostedFragment<SplashContract.View, SplashScreenState, Sp
 
     override fun launchWorker() {
         fragmentHost?.let {
-            val uploadWorkRequest: WorkRequest = OneTimeWorkRequest.Builder(UploadWorker::class.java).build()
-            WorkManager.getInstance(requireContext()).enqueue(uploadWorkRequest)
+            WorkManager.getInstance(requireContext()).enqueue(
+                OneTimeWorkRequest.Builder(UploadWorker::class.java).build()
+            )
         }
     }
 

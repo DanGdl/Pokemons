@@ -5,16 +5,17 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.mdgd.pokemon.R
-import com.mdgd.pokemon.ui.error.state.ErrorFragmentAction
+import com.mdgd.pokemon.ui.error.state.ErrorFragmentEffect
 import com.mdgd.pokemon.ui.error.state.ErrorFragmentState
 
 class ErrorFragment : MessageDialog<
         ErrorContract.View,
         ErrorFragmentState,
-        ErrorFragmentAction,
+        ErrorFragmentEffect,
         ErrorContract.ViewModel,
         ErrorContract.Host>(),
-        ErrorContract.View, DialogInterface.OnClickListener {
+    ErrorContract.View, DialogInterface.OnClickListener {
+
     private var error: Throwable? = null
 
     override fun createModel(): ErrorContract.ViewModel? {
@@ -34,12 +35,16 @@ class ErrorFragment : MessageDialog<
                 }
                 val messageResId = args.getInt(KEY_MSG, R.string.empty)
                 if (messageResId != 0) {
-                    val message = getString(messageResId) + if (error == null) "" else " " + error!!.message
+                    val message =
+                        getString(messageResId) + if (error == null) "" else " " + error!!.message
                     builder.setMessage(message)
                 }
             } else if (TYPE_STR == type) {
                 builder.setTitle(args.getString(KEY_TITLE_STR, ""))
-                val message = args.getString(KEY_MSG_STR, "") + if (error == null) "" else " " + error!!.message
+                val message = args.getString(
+                    KEY_MSG_STR,
+                    ""
+                ) + if (error == null) "" else " " + error!!.message
                 builder.setMessage(message)
             }
         }
@@ -60,6 +65,7 @@ class ErrorFragment : MessageDialog<
     }
 
     companion object {
+
         fun newInstance(title: String?, message: String?): ErrorFragment {
             val b = Bundle()
             b.putString(KEY_TITLE_STR, title)

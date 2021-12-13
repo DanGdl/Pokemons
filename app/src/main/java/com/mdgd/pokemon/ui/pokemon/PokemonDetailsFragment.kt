@@ -12,15 +12,16 @@ import com.mdgd.pokemon.PokemonsApp.Companion.instance
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter
 import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 
 class PokemonDetailsFragment : HostedFragment<
         PokemonDetailsContract.View,
         PokemonDetailsScreenState,
-        PokemonDetailsScreenAction,
+        PokemonDetailsScreenEffect,
         PokemonDetailsContract.ViewModel,
         PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
+
     private val adapter = PokemonPropertiesAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,10 +32,14 @@ class PokemonDetailsFragment : HostedFragment<
     }
 
     override fun createModel(): PokemonDetailsContract.ViewModel {
-        return ViewModelProvider(this, PokemonDetailsViewModelFactory(instance!!.appComponent!!)).get(PokemonDetailsViewModel::class.java)
+        return ViewModelProvider(
+            this, PokemonDetailsViewModelFactory(instance!!.appComponent!!)
+        )[PokemonDetailsViewModel::class.java]
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_pokemon_properties, container, false)
     }
 

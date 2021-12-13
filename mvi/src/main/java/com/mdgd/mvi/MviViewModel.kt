@@ -1,37 +1,30 @@
 package com.mdgd.mvi
 
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.mdgd.mvi.fragments.FragmentContract
 import com.mdgd.mvi.states.ScreenState
 
 abstract class MviViewModel<V, S : ScreenState<V, S>, A> : ViewModel(), FragmentContract.ViewModel<S, A> {
-    private val stateHolder = MutableLiveData<S>() // TODO: use StateFlow: val uiState: StateFlow<LatestNewsUiState> = _uiState ?
+    private val stateHolder = MutableLiveData<S>()
     private val actionHolder = MutableLiveData<A>()
 
-    override fun getStateObservable(): MutableLiveData<S> {
-        return stateHolder
-    }
+    override fun getStateObservable() = stateHolder
+
+    override fun getEffectObservable() = actionHolder
 
     protected fun setState(state: S) {
-        if (stateHolder.value != null) {
-            state.merge(stateHolder.value as S)
-        }
+        stateHolder.value?.let { state.merge(it) }
         stateHolder.value = state
     }
 
-    protected fun getState(): S? {
-        return stateHolder.value
-    }
-
-    override fun getActionObservable(): MutableLiveData<A> {
-        return actionHolder
-    }
+    protected fun getState() = stateHolder.value
 
     protected fun setAction(action: A) {
         actionHolder.value = action
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+    override fun onStateChanged(event: Lifecycle.Event) {
     }
 }

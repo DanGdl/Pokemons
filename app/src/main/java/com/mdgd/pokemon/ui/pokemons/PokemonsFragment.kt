@@ -19,7 +19,7 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.adapter.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
 import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
-import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -27,10 +27,10 @@ import kotlinx.coroutines.launch
 class PokemonsFragment : HostedFragment<
         PokemonsContract.View,
         PokemonsScreenState,
-        PokemonsScreenAction,
+        PokemonsScreenEffect,
         PokemonsContract.ViewModel,
         PokemonsContract.Host>(),
-        PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+    PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private val adapter = PokemonsAdapter(lifecycleScope)
     private var refreshSwipe: SwipeRefreshLayout? = null
@@ -60,10 +60,14 @@ class PokemonsFragment : HostedFragment<
     }
 
     override fun createModel(): PokemonsContract.ViewModel {
-        return ViewModelProvider(this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!)).get(PokemonsViewModel::class.java)
+        return ViewModelProvider(
+            this, PokemonsViewModelFactory(PokemonsApp.instance?.appComponent!!)
+        )[PokemonsViewModel::class.java]
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_pokemons, container, false)
     }
 
