@@ -2,7 +2,10 @@ package com.mdgd.mvi.fragments
 
 import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import com.mdgd.mvi.states.ScreenEffect
 import com.mdgd.mvi.states.ScreenState
@@ -30,8 +33,10 @@ abstract class HostedFragment<
         } catch (e: Throwable) {
             val hostClassName = ((javaClass.genericSuperclass as ParameterizedType)
                     .actualTypeArguments[1] as Class<*>).canonicalName
-            throw RuntimeException("Activity must implement " + hostClassName
-                    + " to attach " + this.javaClass.simpleName, e)
+            throw RuntimeException(
+                "Activity must implement $hostClassName to attach ${this.javaClass.simpleName}",
+                e
+            )
         }
     }
 
@@ -46,8 +51,10 @@ abstract class HostedFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getEffectObservable()?.observe(this, { action ->
-            action.visit(this as VIEW)
+        model?.getEffectObservable()?.observe(this, object : Observer<EFFECT> {
+            override fun onChanged(effect: EFFECT) {
+                effect.visit(this as VIEW)
+            }
         })
     }
 
