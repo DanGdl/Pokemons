@@ -2,7 +2,10 @@ package com.mdgd.mvi.fragments
 
 import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import com.mdgd.mvi.states.ScreenAction
 import com.mdgd.mvi.states.ScreenState
@@ -14,7 +17,7 @@ abstract class HostedFragment<
         ACTION : ScreenAction<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>
-    : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleObserver {
+    : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -30,8 +33,10 @@ abstract class HostedFragment<
         } catch (e: Throwable) {
             val hostClassName = ((javaClass.genericSuperclass as ParameterizedType)
                     .actualTypeArguments[1] as Class<*>).canonicalName
-            throw RuntimeException("Activity must implement " + hostClassName
-                    + " to attach " + this.javaClass.simpleName, e)
+            throw RuntimeException(
+                "Activity must implement $hostClassName to attach ${this.javaClass.simpleName}",
+                e
+            )
         }
     }
 
@@ -46,16 +51,17 @@ abstract class HostedFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getActionObservable()?.observe(this, { action ->
-            action.visit(this as VIEW)
+        model?.getActionObservable()?.observe(this, object : Observer<ACTION> {
+            override fun onChanged(action: ACTION) {
+                action.visit(this as VIEW)
+            }
         })
     }
 
     protected abstract fun createModel(): VIEW_MODEL
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        model?.onAny(owner, event)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        model?.onStateChanged(source, event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)

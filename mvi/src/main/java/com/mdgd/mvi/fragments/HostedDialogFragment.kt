@@ -3,7 +3,10 @@ package com.mdgd.mvi.fragments
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.mdgd.mvi.states.AbstractAction
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
@@ -14,7 +17,7 @@ abstract class HostedDialogFragment<
         ACTION : AbstractAction<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>
-    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleObserver {
+    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -46,14 +49,15 @@ abstract class HostedDialogFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getActionObservable()?.observe(this, { action ->
-            action.visit(this as VIEW)
+        model?.getActionObservable()?.observe(this, object : Observer<ACTION> {
+            override fun onChanged(action: ACTION) {
+                action.visit(this as VIEW)
+            }
         })
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        model?.onAny(owner, event)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        model?.onStateChanged(source, event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)
