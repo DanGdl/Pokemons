@@ -16,15 +16,11 @@ abstract class MviViewModel<V, S : ScreenState<V, S>, A> : ViewModel(), Fragment
     }
 
     protected fun setState(state: S) {
-        if (stateHolder.value != null) {
-            state.merge(stateHolder.value as S)
-        }
+        stateHolder.value?.let { state.merge(it) }
         stateHolder.value = state
     }
 
-    protected fun getState(): S? {
-        return stateHolder.value
-    }
+    protected fun getState() = stateHolder.value
 
     override fun getActionObservable(): MutableLiveData<A> {
         return actionHolder

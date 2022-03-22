@@ -44,7 +44,7 @@ import com.mdgd.pokemon.models.repo.schemas.Stat
 import com.mdgd.pokemon.models.repo.schemas.Stat_
 import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
-import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 class PokemonsFragment : HostedFragment<
         PokemonsContract.View,
         PokemonsScreenState,
-        PokemonsScreenAction,
+        PokemonsScreenEffect,
         PokemonsContract.ViewModel,
         PokemonsContract.Host>(),
     PokemonsContract.View {

@@ -1,11 +1,11 @@
 package com.mdgd.pokemon.ui.pokemon.state
 
-import com.mdgd.mvi.states.AbstractAction
+import com.mdgd.mvi.states.AbstractEffect
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract
 
-sealed class PokemonDetailsScreenAction : AbstractAction<PokemonDetailsContract.View>() {
+sealed class PokemonDetailsScreenEffect : AbstractEffect<PokemonDetailsContract.View>() {
 
-    class ActionBack : PokemonDetailsScreenAction() {
+    class EffectBack : PokemonDetailsScreenEffect() {
         override fun handle(screen: PokemonDetailsContract.View) {
             screen.goBack()
         }

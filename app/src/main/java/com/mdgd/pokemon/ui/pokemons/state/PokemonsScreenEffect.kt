@@ -1,11 +1,11 @@
 package com.mdgd.pokemon.ui.pokemons.state
 
-import com.mdgd.mvi.states.AbstractAction
+import com.mdgd.mvi.states.AbstractEffect
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
 
-sealed class PokemonsScreenAction() : AbstractAction<PokemonsContract.View>() {
+sealed class PokemonsScreenEffect : AbstractEffect<PokemonsContract.View>() {
 
-    class Error(val error: Throwable?) : PokemonsScreenAction() {
+    class Error(val error: Throwable?) : PokemonsScreenEffect() {
 
         override fun handle(screen: PokemonsContract.View) {
             screen.setProgressVisibility(false)
@@ -13,7 +13,7 @@ sealed class PokemonsScreenAction() : AbstractAction<PokemonsContract.View>() {
         }
     }
 
-    class ShowDetails(val id: Long?) : PokemonsScreenAction() {
+    class ShowDetails(val id: Long?) : PokemonsScreenEffect() {
 
         override fun handle(screen: PokemonsContract.View) {
             screen.setProgressVisibility(false)

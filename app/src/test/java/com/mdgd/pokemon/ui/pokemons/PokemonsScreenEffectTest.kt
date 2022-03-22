@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons
 
-import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenAction
+import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
-class PokemonsScreenActionTest {
+class PokemonsScreenEffectTest {
     private lateinit var view: PokemonsContract.View
 
     @Before
@@ -25,14 +25,12 @@ class PokemonsScreenActionTest {
     fun test_ErrorState() = runBlockingTest {
         val error = Throwable("TestError")
 
-        val state = PokemonsScreenAction.Error(error)
+        val state = PokemonsScreenEffect.Error(error)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
         Mockito.verify(view, Mockito.times(1)).showError(error)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
 
         verifyNoMoreInteractions()
     }
@@ -41,14 +39,12 @@ class PokemonsScreenActionTest {
     fun test_ShowDetailsState() = runBlockingTest {
         val pokemonId = 1L
 
-        val state = PokemonsScreenAction.ShowDetails(pokemonId)
+        val state = PokemonsScreenEffect.ShowDetails(pokemonId)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
         Mockito.verify(view, Mockito.times(1)).proceedToNextScreen(pokemonId)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
 
         verifyNoMoreInteractions()
     }
