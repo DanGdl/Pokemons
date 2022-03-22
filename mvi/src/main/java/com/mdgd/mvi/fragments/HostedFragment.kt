@@ -7,14 +7,14 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
-import com.mdgd.mvi.states.ScreenAction
+import com.mdgd.mvi.states.ScreenEffect
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        ACTION : ScreenAction<VIEW>,
+        ACTION : ScreenEffect<VIEW>,
         VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
         HOST : FragmentContract.Host>
     : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
@@ -52,8 +52,8 @@ abstract class HostedFragment<
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
         model?.getActionObservable()?.observe(this, object : Observer<ACTION> {
-            override fun onChanged(action: ACTION) {
-                action.visit(this as VIEW)
+            override fun onChanged(effect: ACTION) {
+                effect.visit(this as VIEW)
             }
         })
     }
@@ -61,7 +61,7 @@ abstract class HostedFragment<
     protected abstract fun createModel(): VIEW_MODEL
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        model?.onStateChanged(source, event)
+        model?.onStateChanged(event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)

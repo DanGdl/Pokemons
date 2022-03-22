@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
 import com.mdgd.pokemon.R
@@ -12,7 +11,7 @@ import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
 import com.mdgd.pokemon.ui.pokemon.dto.*
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenAction
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo) :
-    MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenAction>(),
+    MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenEffect>(),
     PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
@@ -34,8 +33,8 @@ class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo
         pokemonIdFlow.tryEmit(pokemonId)
     }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        super.onStateChanged(source, event)
+    override fun onStateChanged(event: Lifecycle.Event) {
+        super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {
                 pokemonIdFlow
@@ -103,7 +102,7 @@ class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo
     }
 
     override fun onBackPressed() {
-        setAction(PokemonDetailsScreenAction.ActionBack())
+        setAction(PokemonDetailsScreenEffect.EffectBack())
     }
 
     override fun onCleared() {
