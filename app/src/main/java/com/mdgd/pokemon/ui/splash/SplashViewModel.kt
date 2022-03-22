@@ -29,8 +29,8 @@ class SplashViewModel @Inject constructor(private val cache: Cache) :
 
     private var progressJob: Job? = null
 
-    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        super.onAny(owner, event)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        super.onStateChanged(source, event)
         if (event == Lifecycle.Event.ON_START && progressJob == null) {
             progressJob = viewModelScope.launch(exceptionHandler) {
                 flow {

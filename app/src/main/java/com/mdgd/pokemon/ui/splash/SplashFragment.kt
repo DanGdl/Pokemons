@@ -41,7 +41,7 @@ class SplashFragment :
     HostedFragment<SplashContract.View, SplashScreenState, SplashScreenAction, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
 
-    private val errorDialogTrigger = mutableStateOf(DefaultErrorParams())
+    private val errorDialogTrigger = mutableStateOf<ErrorParams>(DefaultErrorParams())
 
     override fun createModel(): SplashContract.ViewModel {
         val model: SplashViewModel by viewModels()
@@ -81,8 +81,8 @@ class SplashFragment :
 }
 
 @Composable
-fun SplashScreen(errorParams: MutableState<DefaultErrorParams>) {
-    val errorDialogTrigger = remember { errorParams as MutableState<ErrorParams> }
+fun SplashScreen(errorParams: MutableState<ErrorParams>) {
+    val errorDialogTrigger = remember { errorParams }
     MdcTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

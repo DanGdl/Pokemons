@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo) :
@@ -35,16 +34,16 @@ class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo
         pokemonIdFlow.tryEmit(pokemonId)
     }
 
-    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        super.onAny(owner, event)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        super.onStateChanged(source, event)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {
                 pokemonIdFlow
                     .filter { it != -1L }
                     .map { repo.getPokemonById(it) }
                     .map { it?.let { mapToListPokemon(it) } ?: LinkedList() }
-                        .flowOn(Dispatchers.IO)
-                        .collect { setState(PokemonDetailsScreenState.SetData(it)) }
+                    .flowOn(Dispatchers.IO)
+                    .collect { setState(PokemonDetailsScreenState.SetData(it)) }
             }
         }
     }

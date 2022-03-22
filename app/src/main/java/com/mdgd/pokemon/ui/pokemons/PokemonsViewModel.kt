@@ -34,8 +34,8 @@ class PokemonsViewModel @Inject constructor(
     private val filterFlow = MutableStateFlow(FilterData())
     private var launch: Job? = null
 
-    public override fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
-        super.onAny(owner, event)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        super.onStateChanged(source, event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
             launch = viewModelScope.launch(exceptionHandler) {
                 pageFlow
