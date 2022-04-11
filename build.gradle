@@ -1,13 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.6.20'
     ext.lifecycle_ktx = "2.4.1"
-    ext.nav_version = '2.4.1'
+    ext.nav_version = '2.4.2'
     ext.work_version = "2.7.1"
     ext.room = "2.4.2"
     ext.room_compiler = "2.2.5"
     ext.compat = "1.4.1"
-    ext.gson = "2.8.6"
+    ext.gson = "2.8.9"
     ext.retrofit = "2.9.0"
     ext.retrofit_gson = "2.9.0"
     ext.okhttp_log = "4.9.2"
@@ -16,7 +16,7 @@ buildscript {
     ext.junit_android = "1.1.3"
     ext.espresso = "3.4.0"
     ext.ktx = "1.7.0"
-    ext.coroutines = "1.5.2"
+    ext.coroutines = "1.6.0"
 
     project.ext {
         min = 20
@@ -31,7 +31,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.1.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
 
