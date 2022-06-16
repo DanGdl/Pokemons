@@ -51,11 +51,7 @@ abstract class HostedFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getEffectObservable()?.observe(this, object : Observer<EFFECT> {
-            override fun onChanged(effect: EFFECT) {
-                effect.visit(this as VIEW)
-            }
-        })
+        model?.getEffectObservable()?.observe(this) { it.visit(this@HostedFragment as VIEW) }
     }
 
     protected abstract fun createModel(): VIEW_MODEL
@@ -72,7 +68,7 @@ abstract class HostedFragment<
     }
 
     override fun onChanged(screenState: STATE) {
-        screenState.visit(this as VIEW)
+        screenState.visit(this@HostedFragment as VIEW)
     }
 
     protected fun setModel(model: VIEW_MODEL) {

@@ -10,10 +10,10 @@ import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
 
 class PokemonsViewModel(
     private val repo: PokemonsRepo, private val filtersFactory: StatsFilter,
@@ -21,6 +21,10 @@ class PokemonsViewModel(
 ) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenEffect>(),
     PokemonsContract.ViewModel {
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, e ->
+        e.printStackTrace()
+        setEffect(PokemonsScreenEffect.Error(e))
+    }
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
     private var launch: Job? = null
@@ -28,7 +32,7 @@ class PokemonsViewModel(
     override fun onStateChanged(event: Lifecycle.Event) {
         super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
-            launch = viewModelScope.launch {
+            launch = viewModelScope.launch(exceptionHandler) {
                 pageFlow
                     .onEach { setState(PokemonsScreenState.Loading()) }
                     .flowOn(dispatchers.getMain())
@@ -48,7 +52,7 @@ class PokemonsViewModel(
                     }
             }
 
-            viewModelScope.launch {
+            viewModelScope.launch(exceptionHandler) {
                 filterFlow
                     .map { sort(it, repo.getPokemons()) }
                     .collect { sortedList ->
@@ -62,10 +66,10 @@ class PokemonsViewModel(
     private fun sort(
         filters: FilterData, pokemons: List<PokemonFullDataSchema>
     ): List<PokemonFullDataSchema> {
-        // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
+        val list = ArrayList(pokemons)
         if (!filters.isEmpty) {
             val comparators = filtersFactory.getFilters()
-            Collections.sort(pokemons) { pokemon1: PokemonFullDataSchema?, pokemon2: PokemonFullDataSchema? ->
+            list.sortWith { pokemon1: PokemonFullDataSchema?, pokemon2: PokemonFullDataSchema? ->
                 var compare = 0
                 for (filter in filters.filters) {
                     // swap, instead of multiply on -1
@@ -77,26 +81,26 @@ class PokemonsViewModel(
                 compare
             }
         }
-        return pokemons
+        return list
     }
 
     override fun reload() {
-        viewModelScope.launch {
-            pageFlow.emit(0)
-        }
+        pageFlow.tryEmit(0)
     }
 
     override fun loadPage(page: Int) {
-        viewModelScope.launch {
-            pageFlow.emit(page)
-        }
+        pageFlow.tryEmit(page)
     }
 
     override fun sort(filter: String) {
-        setState(PokemonsScreenState.ChangeFilterState(filter))
-        viewModelScope.launch {
-            filterFlow.emit(FilterData(getState()?.activeFilters ?: listOf()))
+        val filters = getState()?.activeFilters?.toMutableList() ?: mutableListOf()
+        if (filters.contains(filter)) {
+            filters.remove(filter)
+        } else {
+            filters.add(filter)
         }
+        setState(PokemonsScreenState.ChangeFilterState(filters))
+        filterFlow.tryEmit(FilterData(filters))
     }
 
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {

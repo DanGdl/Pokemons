@@ -16,10 +16,9 @@ abstract class MviViewModel<V, S : ScreenState<V, S>, A> : ViewModel(), Fragment
     override fun getEffectObservable() = effectHolder
 
     protected fun setState(state: S) {
-        stateHolder.value?.let {
+        stateHolder.value = stateHolder.value?.let {
             state.merge(it)
-        }
-        stateHolder.value = state
+        } ?: state
     }
 
     protected fun getState() = stateHolder.value

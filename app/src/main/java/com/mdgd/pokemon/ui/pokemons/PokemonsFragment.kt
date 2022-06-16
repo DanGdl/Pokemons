@@ -21,7 +21,6 @@ import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
 import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PokemonsFragment : HostedFragment<

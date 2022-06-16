@@ -71,16 +71,12 @@ open class PokemonsScreenState(
         }
     }
 
-    class ChangeFilterState(private val filter: String) : PokemonsScreenState() {
+    class ChangeFilterState(filters: List<String>) : PokemonsScreenState(activeFilters = filters) {
 
         override fun merge(prevState: PokemonsScreenState): PokemonsScreenState {
-            val filters = prevState.activeFilters.toMutableList()
-            if (filters.contains(filter)) {
-                filters.remove(filter)
-            } else {
-                filters.add(filter)
-            }
-            return PokemonsScreenState(isProgressVisible, list, prevState.availableFilters, filters)
+            return PokemonsScreenState(
+                isProgressVisible, list, prevState.availableFilters, activeFilters
+            )
         }
     }
 
