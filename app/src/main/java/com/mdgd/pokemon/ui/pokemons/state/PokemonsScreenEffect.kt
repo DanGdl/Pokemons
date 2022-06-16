@@ -20,4 +20,11 @@ sealed class PokemonsScreenEffect : AbstractEffect<PokemonsContract.View>() {
             screen.proceedToNextScreen(id)
         }
     }
+
+    class ScrollToStart : PokemonsScreenEffect() {
+
+        override fun handle(screen: PokemonsContract.View) {
+            screen.scrollToStart()
+        }
+    }
 }

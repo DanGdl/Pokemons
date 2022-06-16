@@ -35,7 +35,7 @@ fun ErrorScreen(params: MutableState<ErrorParams>) {
                 // button. If you want to disable that functionality, simply use an empty
                 // onCloseRequest.
                 params.value = params.value.hide()
-            },
+            }
         )
     }
 }

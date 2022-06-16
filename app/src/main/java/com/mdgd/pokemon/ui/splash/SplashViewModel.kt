@@ -11,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -23,7 +22,7 @@ class SplashViewModel @Inject constructor(private val cache: Cache) :
     SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        setAction(SplashScreenEffect.ShowError(e))
+        setEffect(SplashScreenEffect.ShowError(e))
     }
 
     private var progressJob: Job? = null
@@ -40,13 +39,13 @@ class SplashViewModel @Inject constructor(private val cache: Cache) :
                     // Result<Long>(Throwable("Dummy"))
                 }.collect {
                     if (it.isError()) {
-                        setAction(SplashScreenEffect.ShowError(it.getError()))
+                        setEffect(SplashScreenEffect.ShowError(it.getError()))
                     } else if (it.getValue() != 0L) {
-                        setAction(SplashScreenEffect.NextScreen)
+                        setEffect(SplashScreenEffect.NextScreen)
                     }
                 }
             }
-            setAction(SplashScreenEffect.LaunchWorker)
+            setEffect(SplashScreenEffect.LaunchWorker)
         }
     }
 

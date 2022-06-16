@@ -7,7 +7,7 @@ class FragmentContract {
     interface ViewModel<S, E> {
         fun onStateChanged(event: Lifecycle.Event)
         fun getStateObservable(): LiveData<S>
-        fun getActionObservable(): LiveData<E>
+        fun getEffectObservable(): LiveData<E>
     }
 
     interface View

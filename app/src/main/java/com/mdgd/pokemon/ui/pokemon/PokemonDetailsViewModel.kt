@@ -16,7 +16,10 @@ import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -102,7 +105,7 @@ class PokemonDetailsViewModel @Inject constructor(private val repo: PokemonsRepo
     }
 
     override fun onBackPressed() {
-        setAction(PokemonDetailsScreenEffect.EffectBack())
+        setEffect(PokemonDetailsScreenEffect.EffectBack())
     }
 
     override fun onCleared() {

@@ -27,7 +27,7 @@ class PokemonsViewModel @Inject constructor(
 
     private var firstVisibleIndex: Int = 0
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        setAction(PokemonsScreenEffect.Error(e))
+        setEffect(PokemonsScreenEffect.Error(e))
     }
     private val pageFlow = MutableStateFlow(0)
     private val filterFlow = MutableStateFlow(FilterData())
@@ -42,7 +42,7 @@ class PokemonsViewModel @Inject constructor(
                     .flowOn(dispatchers.getMain())
                     .map { page -> Pair(page, repo.getPage(page)) }
                     .flowOn(dispatchers.getIO())
-                    .catch { e: Throwable -> setAction(PokemonsScreenEffect.Error(e)) }
+                    .catch { e: Throwable -> setEffect(PokemonsScreenEffect.Error(e)) }
                     .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
                         if (pagePair.first == 0) {
                             setState(
@@ -62,6 +62,7 @@ class PokemonsViewModel @Inject constructor(
                     .collect { sortedList ->
                         firstVisibleIndex = 0
                         setState(PokemonsScreenState.UpdateData(sortedList))
+                        setEffect(PokemonsScreenEffect.ScrollToStart())
                     }
             }
         }
@@ -76,8 +77,8 @@ class PokemonsViewModel @Inject constructor(
             list.sortWith { pokemon1: PokemonFullDataSchema?, pokemon2: PokemonFullDataSchema? ->
                 var compare = 0
                 for (filter in filters.filters) {
-                    compare = comparators[filter]?.compare(pokemon2!!, pokemon1!!)
-                        ?: 0 // swap, instead of multiply on -1
+                    // swap, instead of multiply on -1
+                    compare = comparators[filter]?.compare(pokemon2!!, pokemon1!!) ?: 0
                     if (compare != 0) {
                         break
                     }
@@ -93,18 +94,18 @@ class PokemonsViewModel @Inject constructor(
     }
 
     override fun sort(filter: String) {
-        val filters = ArrayList(getState()?.getActiveFilters() ?: listOf())
+        val filters = getState()?.activeFilters?.toMutableList() ?: mutableListOf()
         if (filters.contains(filter)) {
             filters.remove(filter)
         } else {
             filters.add(filter)
         }
         setState(PokemonsScreenState.ChangeFilterState(filters))
-        filterFlow.tryEmit(FilterData(getState()?.getActiveFilters() ?: listOf()))
+        filterFlow.tryEmit(FilterData(filters))
     }
 
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {
-        setAction(PokemonsScreenEffect.ShowDetails(pokemon.pokemonSchema?.id))
+        setEffect(PokemonsScreenEffect.ShowDetails(pokemon.pokemonSchema?.id))
     }
 
     override fun onScroll(firstVisibleIndex: Int, lastVisibleIndex: Int) {

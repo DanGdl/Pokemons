@@ -14,8 +14,8 @@ import java.lang.reflect.ParameterizedType
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        ACTION : ScreenEffect<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
+        EFFECT : ScreenEffect<VIEW>,
+        VIEW_MODEL : FragmentContract.ViewModel<STATE, EFFECT>,
         HOST : FragmentContract.Host>
     : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
@@ -51,11 +51,7 @@ abstract class HostedFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getActionObservable()?.observe(this, object : Observer<ACTION> {
-            override fun onChanged(effect: ACTION) {
-                effect.visit(this as VIEW)
-            }
-        })
+        model?.getEffectObservable()?.observe(this) { it.visit(this@HostedFragment as VIEW) }
     }
 
     protected abstract fun createModel(): VIEW_MODEL
@@ -66,13 +62,13 @@ abstract class HostedFragment<
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)
             // order matters
-            model?.getActionObservable()?.removeObservers(this)
+            model?.getEffectObservable()?.removeObservers(this)
             model?.getStateObservable()?.removeObservers(this)
         }
     }
 
     override fun onChanged(screenState: STATE) {
-        screenState.visit(this as VIEW)
+        screenState.visit(this@HostedFragment as VIEW)
     }
 
     protected fun setModel(model: VIEW_MODEL) {

@@ -1,5 +1,6 @@
 package com.mdgd.mvi
 
+import androidx.annotation.CallSuper
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,25 +10,26 @@ import com.mdgd.mvi.states.ScreenState
 
 abstract class MviViewModel<V, S : ScreenState<V, S>, E> : ViewModel(),
     FragmentContract.ViewModel<S, E> {
-    private val stateHolder =
-        MutableLiveData<S>() // TODO: use StateFlow: val uiState: StateFlow<LatestNewsUiState> = _uiState ?
+    private val stateHolder = MutableLiveData<S>()
     private val effectHolder = MutableLiveData<E>()
 
     override fun getStateObservable(): LiveData<S> = stateHolder
 
-    override fun getActionObservable(): LiveData<E> = effectHolder
+    override fun getEffectObservable(): LiveData<E> = effectHolder
 
     protected fun setState(state: S) {
-        stateHolder.value?.let { state.merge(it) }
-        stateHolder.value = state
+        stateHolder.value = stateHolder.value?.let {
+            state.merge(it)
+        } ?: state
     }
 
     protected fun getState() = stateHolder.value
 
-    protected fun setAction(effect: E) {
+    protected fun setEffect(effect: E) {
         effectHolder.value = effect
     }
 
+    @CallSuper
     override fun onStateChanged(event: Lifecycle.Event) {
     }
 }
