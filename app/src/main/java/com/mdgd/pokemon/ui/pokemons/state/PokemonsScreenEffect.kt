@@ -3,7 +3,7 @@ package com.mdgd.pokemon.ui.pokemons.state
 import com.mdgd.mvi.states.AbstractEffect
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
 
-sealed class PokemonsScreenEffect() : AbstractEffect<PokemonsContract.View>() {
+sealed class PokemonsScreenEffect : AbstractEffect<PokemonsContract.View>() {
 
     class Error(val error: Throwable?) : PokemonsScreenEffect() {
 
@@ -18,6 +18,13 @@ sealed class PokemonsScreenEffect() : AbstractEffect<PokemonsContract.View>() {
         override fun handle(screen: PokemonsContract.View) {
             screen.hideProgress()
             screen.proceedToNextScreen(id)
+        }
+    }
+
+    class ScrollToStart : PokemonsScreenEffect() {
+
+        override fun handle(screen: PokemonsContract.View) {
+            screen.scrollToStart()
         }
     }
 }

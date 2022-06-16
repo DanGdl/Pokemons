@@ -12,7 +12,6 @@ sealed class SplashScreenEffect : AbstractEffect<SplashContract.View>() {
         }
     }
 
-
     object LaunchWorker : SplashScreenEffect() {
 
         override fun handle(screen: SplashContract.View) {

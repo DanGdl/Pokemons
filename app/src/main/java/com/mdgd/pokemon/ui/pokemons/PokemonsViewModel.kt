@@ -26,6 +26,7 @@ class PokemonsViewModel(
     private var launch: Job? = null
 
     override fun onStateChanged(event: Lifecycle.Event) {
+        super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE && launch == null) {
             launch = viewModelScope.launch {
                 pageFlow
@@ -33,13 +34,12 @@ class PokemonsViewModel(
                     .flowOn(dispatchers.getMain())
                     .map { page -> Pair(page, repo.getPage(page)) }
                     .flowOn(dispatchers.getIO())
-                    .catch { e: Throwable -> setAction(PokemonsScreenEffect.Error(e)) }
+                    .catch { e: Throwable -> setEffect(PokemonsScreenEffect.Error(e)) }
                     .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
                         if (pagePair.first == 0) {
                             setState(
                                 PokemonsScreenState.SetData(
-                                    pagePair.second,
-                                    filtersFactory.getAvailableFilters()
+                                    pagePair.second, filtersFactory.getAvailableFilters()
                                 )
                             )
                         } else {
@@ -53,14 +53,14 @@ class PokemonsViewModel(
                     .map { sort(it, repo.getPokemons()) }
                     .collect { sortedList ->
                         setState(PokemonsScreenState.UpdateData(sortedList))
+                        setEffect(PokemonsScreenEffect.ScrollToStart())
                     }
             }
         }
     }
 
     private fun sort(
-        filters: FilterData,
-        pokemons: List<PokemonFullDataSchema>
+        filters: FilterData, pokemons: List<PokemonFullDataSchema>
     ): List<PokemonFullDataSchema> {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
         if (!filters.isEmpty) {
@@ -95,12 +95,12 @@ class PokemonsViewModel(
     override fun sort(filter: String) {
         setState(PokemonsScreenState.ChangeFilterState(filter))
         viewModelScope.launch {
-            filterFlow.emit(FilterData(getState()?.getActiveFilters() ?: listOf()))
+            filterFlow.emit(FilterData(getState()?.activeFilters ?: listOf()))
         }
     }
 
     override fun onItemClicked(pokemon: PokemonFullDataSchema) {
-        setAction(PokemonsScreenEffect.ShowDetails(pokemon.pokemonSchema?.id))
+        setEffect(PokemonsScreenEffect.ShowDetails(pokemon.pokemonSchema?.id))
     }
 
     public override fun onCleared() {

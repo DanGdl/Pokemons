@@ -5,10 +5,12 @@ abstract class AbstractEffect<T> : ScreenEffect<T> {
 
     override fun visit(screen: T) {
         if (!isHandled) {
-            handle(screen);
+            handle(screen)
             isHandled = true
         }
     }
 
-    abstract fun handle(screen: T);
+    open fun handle(screen: T) {
+
+    }
 }

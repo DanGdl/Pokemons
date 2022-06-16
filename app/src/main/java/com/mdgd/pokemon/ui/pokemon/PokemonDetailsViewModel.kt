@@ -15,10 +15,12 @@ import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 class PokemonDetailsViewModel(private val repo: PokemonsRepo) :
     MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenEffect>(),
@@ -33,7 +35,7 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) :
         }
     }
 
-    public override fun onStateChanged(event: Lifecycle.Event) {
+    override fun onStateChanged(event: Lifecycle.Event) {
         super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {

@@ -16,7 +16,7 @@ class SplashViewModel(private val cache: Cache) :
     SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        setAction(SplashScreenEffect.ShowError(e))
+        setEffect(SplashScreenEffect.ShowError(e))
     }
 
     private var progressJob: Job? = null
@@ -27,12 +27,12 @@ class SplashViewModel(private val cache: Cache) :
                 delay(SplashContract.SPLASH_DELAY)
                 val value = cache.getProgressChanel().receive()
                 if (value.isError()) {
-                    setAction(SplashScreenEffect.ShowError(value.getError()))
+                    setEffect(SplashScreenEffect.ShowError(value.getError()))
                 } else if (value.getValue() != 0L) {
-                    setAction(SplashScreenEffect.NextScreen)
+                    setEffect(SplashScreenEffect.NextScreen)
                 }
             }
-            setAction(SplashScreenEffect.LaunchWorker)
+            setEffect(SplashScreenEffect.LaunchWorker)
         }
     }
 
