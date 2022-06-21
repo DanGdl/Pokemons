@@ -16,7 +16,7 @@ buildscript {
     ext.junit_android = "1.1.3"
     ext.espresso = "3.4.0"
     ext.ktx = "1.8.0"
-    ext.coroutines = "1.6.0"
+    ext.coroutines = "1.6.1"
 
     project.ext {
         min = 20
