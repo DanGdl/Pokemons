@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 
 @Entity(
-    tableName = "stats", indices = [Index("id")],
+    tableName = "stats", indices = [Index("id"), Index("pokemonId")],
     foreignKeys = [ForeignKey(
         entity = PokemonSchema::class,
         parentColumns = ["id"],
