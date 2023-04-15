@@ -5,15 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.mdgd.mvi.MviViewModel
 import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect
-import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SplashViewModel(private val cache: Cache) :
-    MviViewModel<SplashContract.View, SplashScreenState>(),
-    SplashContract.ViewModel {
+class SplashViewModel(
+    private val cache: Cache
+) : MviViewModel<SplashContract.View>(), SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         setEffect(SplashScreenEffect.ShowError(e))
@@ -22,6 +21,8 @@ class SplashViewModel(private val cache: Cache) :
     private var progressJob: Job? = null
 
     override fun onStateChanged(event: Lifecycle.Event) {
+        super.onStateChanged(event)
+
         if (event == Lifecycle.Event.ON_START && progressJob == null) {
             progressJob = viewModelScope.launch(exceptionHandler) {
                 delay(SplashContract.SPLASH_DELAY)

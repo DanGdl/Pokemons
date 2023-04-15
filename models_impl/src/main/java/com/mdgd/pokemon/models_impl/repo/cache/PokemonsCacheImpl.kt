@@ -2,7 +2,6 @@ package com.mdgd.pokemon.models_impl.repo.cache
 
 import com.mdgd.pokemon.models.repo.cache.PokemonsCache
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import java.util.*
 
 class PokemonsCacheImpl : PokemonsCache {
     private val pokemons = mutableListOf<PokemonFullDataSchema>()
@@ -11,9 +10,7 @@ class PokemonsCacheImpl : PokemonsCache {
         pokemons.addAll(list)
     }
 
-    override fun getPokemons(): List<PokemonFullDataSchema> {
-        return ArrayList(pokemons)
-    }
+    override fun getPokemons(): List<PokemonFullDataSchema> = ArrayList(pokemons)
 
     override fun setPokemons(list: List<PokemonFullDataSchema>) {
         pokemons.clear()

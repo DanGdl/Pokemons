@@ -21,9 +21,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.*
 
-class PokemonDetailsViewModel(private val repo: PokemonsRepo) :
-    MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState>(),
-    PokemonDetailsContract.ViewModel {
+class PokemonDetailsViewModel(
+    private val repo: PokemonsRepo
+) : MviViewModel<PokemonDetailsContract.View>(), PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null
@@ -36,6 +36,7 @@ class PokemonDetailsViewModel(private val repo: PokemonsRepo) :
 
     override fun onStateChanged(event: Lifecycle.Event) {
         super.onStateChanged(event)
+
         if (event == Lifecycle.Event.ON_CREATE && pokemonLoadingJob == null) {
             pokemonLoadingJob = viewModelScope.launch {
                 pokemonIdFlow

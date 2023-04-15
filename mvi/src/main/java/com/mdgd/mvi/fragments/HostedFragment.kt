@@ -12,10 +12,10 @@ import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
-        STATE : ScreenState<VIEW, STATE>,
-        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW>,
         HOST : FragmentContract.Host>
-    : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
+    : NavHostFragment(), FragmentContract.View, Observer<ScreenState<VIEW>>,
+    LifecycleEventObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -65,7 +65,7 @@ abstract class HostedFragment<
         }
     }
 
-    override fun onChanged(value: STATE) {
+    override fun onChanged(value: ScreenState<VIEW>) {
         value.visit(this@HostedFragment as VIEW)
     }
 

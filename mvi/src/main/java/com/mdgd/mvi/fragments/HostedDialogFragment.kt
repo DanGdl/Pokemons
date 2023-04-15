@@ -12,10 +12,10 @@ import java.lang.reflect.ParameterizedType
 
 abstract class HostedDialogFragment<
         VIEW : FragmentContract.View,
-        STATE : ScreenState<VIEW, STATE>,
-        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW>,
         HOST : FragmentContract.Host>
-    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
+    : AppCompatDialogFragment(), FragmentContract.View, Observer<ScreenState<VIEW>>,
+    LifecycleEventObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -61,7 +61,7 @@ abstract class HostedDialogFragment<
         }
     }
 
-    override fun onChanged(value: STATE) {
+    override fun onChanged(value: ScreenState<VIEW>) {
         value.visit(this as VIEW)
     }
 

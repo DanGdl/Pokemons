@@ -7,10 +7,12 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 
 class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
-    private val pokemonsRoomDao: PokemonsRoomDao? = Room.databaseBuilder(ctx, AppDatabase::class.java, "PokemonsAppDB").build().pokemonsDao()
+    private val pokemonsRoomDao: PokemonsRoomDao? = Room.databaseBuilder(
+        ctx, AppDatabase::class.java, "PokemonsAppDB"
+    ).build().pokemonsDao()
 
     override suspend fun save(list: List<PokemonDetails>) {
-        pokemonsRoomDao!!.save(list)
+        pokemonsRoomDao?.save(list)
     }
 
     override suspend fun getPage(page: Int, pageSize: Int): List<PokemonFullDataSchema> {
@@ -24,11 +26,8 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
         }
     }
 
-    override suspend fun getCount(): Long {
-        return pokemonsRoomDao?.countRows()?.toLong() ?: 0
-    }
+    override suspend fun getCount(): Long = pokemonsRoomDao?.countRows()?.toLong() ?: 0
 
-    override suspend fun getPokemonById(pokemonId: Long): PokemonFullDataSchema? {
-        return pokemonsRoomDao?.getPokemonById(pokemonId)
-    }
+    override suspend fun getPokemonById(pokemonId: Long): PokemonFullDataSchema? =
+        pokemonsRoomDao?.getPokemonById(pokemonId)
 }

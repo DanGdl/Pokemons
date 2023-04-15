@@ -11,7 +11,5 @@ class CacheImpl : Cache {
         progressChanel.send(value)
     }
 
-    override fun getProgressChanel(): Channel<Result<Long>> {
-        return progressChanel
-    }
+    override fun getProgressChanel(): Channel<Result<Long>> = progressChanel
 }

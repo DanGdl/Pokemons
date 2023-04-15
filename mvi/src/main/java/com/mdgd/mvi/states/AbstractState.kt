@@ -1,12 +1,10 @@
 package com.mdgd.mvi.states
 
-abstract class AbstractState<T, S> : ScreenState<T, S> {
+abstract class AbstractState<T, S> : ScreenState<T> {
 
     override fun visit(screen: T) {
 
     }
 
-    override fun merge(prevState: S): S {
-        return this as S
-    }
+    open fun merge(prevState: S): S = this as S
 }

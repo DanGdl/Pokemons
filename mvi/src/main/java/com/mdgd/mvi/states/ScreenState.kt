@@ -1,7 +1,5 @@
 package com.mdgd.mvi.states
 
-interface ScreenState<V, S> {
+interface ScreenState<V> {
     fun visit(screen: V)
-
-    fun merge(prevState: S): S
 }

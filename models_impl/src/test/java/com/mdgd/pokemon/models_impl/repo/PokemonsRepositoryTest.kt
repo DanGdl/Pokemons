@@ -8,7 +8,7 @@ import com.mdgd.pokemon.models.repo.network.Network
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models_impl.Mocks
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +16,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito
 import java.util.*
-import kotlin.collections.ArrayList
 
 @RunWith(JUnit4::class)
 class PokemonsRepositoryTest {
@@ -53,7 +52,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_getPageFromDao_InitialPage() = runBlockingTest {
+    fun test_getPageFromDao_InitialPage() = runTest {
         val list = listOf(Mocks.getPokemon())
         Mockito.`when`(dao.getPage(0, PokemonsRepo.PAGE_SIZE)).thenReturn(list)
 
@@ -66,7 +65,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_getPageFromDao() = runBlockingTest {
+    fun test_getPageFromDao() = runTest {
         val list = listOf(Mocks.getPokemon())
         Mockito.`when`(dao.getPage(1, PokemonsRepo.PAGE_SIZE)).thenReturn(list)
 
@@ -79,7 +78,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_getPageFromNetwork() = runBlockingTest {
+    fun test_getPageFromNetwork() = runTest {
         val emptyList = listOf<PokemonFullDataSchema>()
         val list = listOf(Mocks.getPokemon())
         val networkList = listOf<PokemonDetails>()
@@ -102,7 +101,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_loadPokemons_AllLoaded() = runBlockingTest {
+    fun test_loadPokemons_AllLoaded() = runTest {
         val initialAmount = 10L
         Mockito.`when`(dao.getCount()).thenReturn(initialAmount)
         Mockito.`when`(network.getPokemonsCount()).thenReturn(initialAmount)
@@ -116,10 +115,11 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_loadPokemons_NothingLoaded() = runBlockingTest {
+    fun test_loadPokemons_NothingLoaded() = runTest {
         val initialAmount = 10L
         val totalAmount = 20L
-        val networkList = ArrayList(Collections.nCopies(totalAmount.toInt(), Mocks.getPokemonDetails()))
+        val networkList =
+            ArrayList(Collections.nCopies(totalAmount.toInt(), Mocks.getPokemonDetails()))
         Mockito.`when`(dao.getCount()).thenReturn(initialAmount)
         Mockito.`when`(network.getPokemonsCount()).thenReturn(totalAmount)
         Mockito.`when`(network.loadPokemons(totalAmount, initialAmount)).thenReturn(networkList)
@@ -135,9 +135,10 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_loadInitialPages_NoData() = runBlockingTest {
+    fun test_loadInitialPages_NoData() = runTest {
         val initialAmount = 10L
-        val networkList = ArrayList(Collections.nCopies(initialAmount.toInt(), Mocks.getPokemonDetails()))
+        val networkList =
+            ArrayList(Collections.nCopies(initialAmount.toInt(), Mocks.getPokemonDetails()))
         Mockito.`when`(dao.getCount()).thenReturn(0)
         Mockito.`when`(network.loadPokemons(initialAmount, 0)).thenReturn(networkList)
 
@@ -150,7 +151,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_loadInitialPages() = runBlockingTest {
+    fun test_loadInitialPages() = runTest {
         val initialAmount = 10L
         Mockito.`when`(dao.getCount()).thenReturn(initialAmount)
 
@@ -161,7 +162,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_getPokemonById_Cached() = runBlockingTest {
+    fun test_getPokemonById_Cached() = runTest {
         val pokemonId = 0L
         val pokemon = Mocks.getPokemon()
         pokemon.pokemonSchema?.id = pokemonId
@@ -175,7 +176,7 @@ class PokemonsRepositoryTest {
     }
 
     @Test
-    fun test_getPokemonById_NotCached() = runBlockingTest {
+    fun test_getPokemonById_NotCached() = runTest {
         val pokemonId = 0L
         val pokemon = Mocks.getPokemon()
         Mockito.`when`(dao.getPokemonById(pokemonId)).thenReturn(pokemon)

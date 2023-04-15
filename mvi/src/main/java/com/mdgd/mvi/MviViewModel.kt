@@ -5,27 +5,23 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mdgd.mvi.fragments.FragmentContract
-import com.mdgd.mvi.states.ScreenEffect
 import com.mdgd.mvi.states.ScreenState
 
-abstract class MviViewModel<V, S : ScreenState<V, S>> : ViewModel(),
-    FragmentContract.ViewModel<V, S> {
-    private val stateHolder = MutableLiveData<S>()
-    private val effectHolder = MutableLiveData<ScreenEffect<V>>()
+abstract class MviViewModel<V> : ViewModel(), FragmentContract.ViewModel<V> {
+    private val stateHolder = MutableLiveData<ScreenState<V>>()
+    private val effectHolder = MutableLiveData<ScreenState<V>>()
 
     override fun getStateObservable() = stateHolder
 
     override fun getEffectObservable() = effectHolder
 
-    protected fun setState(state: S) {
-        stateHolder.value = stateHolder.value?.let {
-            state.merge(it)
-        } ?: state
+    protected fun setState(state: ScreenState<V>) {
+        stateHolder.value = state
     }
 
     protected fun getState() = stateHolder.value
 
-    protected fun setEffect(action: ScreenEffect<V>) {
+    protected fun setEffect(action: ScreenState<V>) {
         effectHolder.value = action
     }
 

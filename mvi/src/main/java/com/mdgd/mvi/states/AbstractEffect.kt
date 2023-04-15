@@ -1,6 +1,6 @@
 package com.mdgd.mvi.states
 
-abstract class AbstractEffect<T> : ScreenEffect<T> {
+abstract class AbstractEffect<T> : ScreenState<T> {
     var isHandled = false
 
     override fun visit(screen: T) {
