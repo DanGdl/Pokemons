@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.splash
 
 import com.mdgd.mvi.fragments.FragmentContract
-import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 
 class SplashContract {
     companion object {
@@ -9,7 +8,7 @@ class SplashContract {
     }
 
 
-    interface ViewModel : FragmentContract.ViewModel<View, SplashScreenState>
+    interface ViewModel : FragmentContract.ViewModel<View>
 
     interface View : FragmentContract.View {
         fun proceedToNextScreen()

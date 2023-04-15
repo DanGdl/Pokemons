@@ -5,11 +5,9 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.mdgd.pokemon.R
-import com.mdgd.pokemon.ui.error.state.ErrorFragmentState
 
 class ErrorFragment : MessageDialog<
         ErrorContract.View,
-        ErrorFragmentState,
         ErrorContract.ViewModel,
         ErrorContract.Host>(),
     ErrorContract.View, DialogInterface.OnClickListener {
