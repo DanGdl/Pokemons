@@ -1,8 +1,8 @@
 package com.mdgd.mvi.states
 
-abstract class AbstractState<T, S> : ScreenState<T> {
+abstract class AbstractState<V, S> : ScreenState<V> {
 
-    override fun visit(screen: T) {
+    override fun visit(screen: V) {
 
     }
 
