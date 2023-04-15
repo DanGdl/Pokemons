@@ -8,10 +8,10 @@ import com.mdgd.mvi.fragments.FragmentContract
 import com.mdgd.mvi.states.ScreenEffect
 import com.mdgd.mvi.states.ScreenState
 
-abstract class MviViewModel<V, S : ScreenState<V, S>, E : ScreenEffect<V>> : ViewModel(),
-    FragmentContract.ViewModel<V, S, E> {
+abstract class MviViewModel<V, S : ScreenState<V, S>> : ViewModel(),
+    FragmentContract.ViewModel<V, S> {
     private val stateHolder = MutableLiveData<S>()
-    private val effectHolder = MutableLiveData<E>()
+    private val effectHolder = MutableLiveData<ScreenEffect<V>>()
 
     override fun getStateObservable() = stateHolder
 
@@ -25,7 +25,7 @@ abstract class MviViewModel<V, S : ScreenState<V, S>, E : ScreenEffect<V>> : Vie
 
     protected fun getState() = stateHolder.value
 
-    protected fun setEffect(action: E) {
+    protected fun setEffect(action: ScreenEffect<V>) {
         effectHolder.value = action
     }
 

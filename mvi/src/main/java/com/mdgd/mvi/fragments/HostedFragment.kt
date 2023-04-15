@@ -7,15 +7,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
-import com.mdgd.mvi.states.ScreenEffect
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        EFFECT : ScreenEffect<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE, EFFECT>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE>,
         HOST : FragmentContract.Host>
     : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 

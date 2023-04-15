@@ -19,14 +19,12 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.adapter.ClickEvent
 import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
 import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
-import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import kotlinx.coroutines.launch
 
 class PokemonsFragment : HostedFragment<
         PokemonsContract.View,
         PokemonsScreenState,
-        PokemonsScreenEffect,
         PokemonsContract.ViewModel,
         PokemonsContract.Host>(),
     PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {

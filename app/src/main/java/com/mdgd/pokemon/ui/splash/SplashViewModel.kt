@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashViewModel(private val cache: Cache) :
-    MviViewModel<SplashContract.View, SplashScreenState, SplashScreenEffect>(),
+    MviViewModel<SplashContract.View, SplashScreenState>(),
     SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->

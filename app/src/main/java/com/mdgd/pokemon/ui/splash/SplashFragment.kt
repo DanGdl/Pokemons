@@ -11,11 +11,10 @@ import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.bg.UploadWorker
-import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect
 import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 
 class SplashFragment :
-    HostedFragment<SplashContract.View, SplashScreenState, SplashScreenEffect, SplashContract.ViewModel, SplashContract.Host>(),
+    HostedFragment<SplashContract.View, SplashScreenState, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
 
     override fun createModel(): SplashContract.ViewModel {

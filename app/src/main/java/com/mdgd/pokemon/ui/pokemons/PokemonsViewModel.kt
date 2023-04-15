@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class PokemonsViewModel(
     private val repo: PokemonsRepo, private val filtersFactory: StatsFilter,
     private val dispatchers: DispatchersHolder
-) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenEffect>(),
+) : MviViewModel<PokemonsContract.View, PokemonsScreenState>(),
     PokemonsContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->

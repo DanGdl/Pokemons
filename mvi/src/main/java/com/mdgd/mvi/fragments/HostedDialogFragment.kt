@@ -7,15 +7,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.mdgd.mvi.states.AbstractEffect
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
 
 abstract class HostedDialogFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        EFFECT : AbstractEffect<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE, EFFECT>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE>,
         HOST : FragmentContract.Host>
     : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
