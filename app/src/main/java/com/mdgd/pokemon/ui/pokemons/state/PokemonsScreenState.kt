@@ -5,7 +5,7 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
 
 open class PokemonsScreenState(
-    protected val isProgressVisible: Boolean = false,
+    val isProgressVisible: Boolean = false,
     val list: List<PokemonFullDataSchema> = listOf(),
     protected val availableFilters: List<String> = listOf(),
     val activeFilters: List<String> = listOf()
@@ -25,7 +25,6 @@ open class PokemonsScreenState(
 
 
     // PARTIAL STATES
-
     class Loading : PokemonsScreenState(true) {
 
         override fun merge(prevState: PokemonsScreenState): PokemonsScreenState {

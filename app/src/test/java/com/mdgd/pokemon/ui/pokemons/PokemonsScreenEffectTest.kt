@@ -1,7 +1,7 @@
 package com.mdgd.pokemon.ui.pokemons
 
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +22,7 @@ class PokemonsScreenEffectTest {
     }
 
     @Test
-    fun test_ErrorState() = runBlockingTest {
+    fun test_ErrorState() = runBlocking {
         val error = Throwable("TestError")
 
         val state = PokemonsScreenEffect.Error(error)
@@ -38,7 +38,7 @@ class PokemonsScreenEffectTest {
     }
 
     @Test
-    fun test_ShowDetailsState() = runBlockingTest {
+    fun test_ShowDetailsState() = runBlocking {
         val pokemonId = 1L
 
         val state = PokemonsScreenEffect.ShowDetails(pokemonId)

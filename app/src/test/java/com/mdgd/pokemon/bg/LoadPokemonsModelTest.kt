@@ -1,14 +1,13 @@
 package com.mdgd.pokemon.bg
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.mdgd.pokemon.MainDispatcherRule
 import com.mdgd.pokemon.TestSuit
 import com.mdgd.pokemon.models.cache.Cache
 import com.mdgd.pokemon.models.infra.Result
 import com.mdgd.pokemon.models.repo.PokemonsRepo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -16,6 +15,9 @@ import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
 class LoadPokemonsModelTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -25,15 +27,9 @@ class LoadPokemonsModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(Dispatchers.Unconfined)
         cache = Mockito.mock(Cache::class.java)
         repo = Mockito.mock(PokemonsRepo::class.java)
         model = LoadPokemonsModel(repo, cache)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     private fun verifyNoMoreInteractions() {
@@ -42,10 +38,10 @@ class LoadPokemonsModelTest {
     }
 
     @Test
-    fun test_LoadPokemonsCrash() = runBlockingTest {
+    fun test_LoadPokemonsCrash() = runBlocking {
         val initialLoadingAmount = (PokemonsRepo.PAGE_SIZE * 2).toLong()
         val error = RuntimeException("TestError")
-        val resultCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<Result<Long>>()
+        val resultCaptor = argumentCaptor<Result<Long>>()
         Mockito.`when`(repo.loadInitialPages(initialLoadingAmount)).thenThrow(error)
 
         model.load()
@@ -60,7 +56,7 @@ class LoadPokemonsModelTest {
     }
 
     @Test
-    fun test_LoadPokemonsOk() = runBlockingTest {
+    fun test_LoadPokemonsOk() = runBlocking {
         val initialLoadingAmount = (PokemonsRepo.PAGE_SIZE * 2).toLong()
         val totalLoadingAmount = initialLoadingAmount * 2
         Mockito.`when`(repo.loadPokemons(initialLoadingAmount)).thenReturn(totalLoadingAmount)

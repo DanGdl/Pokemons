@@ -3,6 +3,8 @@ package com.mdgd.pokemon.ui.pokemon
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import com.mdgd.mvi.states.ScreenState
+import com.mdgd.pokemon.MainDispatcherRule
 import com.mdgd.pokemon.Mocks
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.PokemonsRepo
@@ -10,13 +12,9 @@ import com.mdgd.pokemon.ui.pokemon.infra.ImagePropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.LabelPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TextPropertyData
 import com.mdgd.pokemon.ui.pokemon.infra.TitlePropertyData
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -25,20 +23,17 @@ import org.mockito.Mockito
 @RunWith(JUnit4::class)
 class PokemonDetailsViewModelTest {
     @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @get:Rule
     val rule = InstantTaskExecutorRule()
     private lateinit var model: PokemonDetailsViewModel
     private lateinit var repo: PokemonsRepo
 
     @Before
     fun setup() {
-        Dispatchers.setMain(Dispatchers.Unconfined)
         repo = Mockito.mock(PokemonsRepo::class.java)
         model = PokemonDetailsViewModel(repo)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     private fun verifyNoMoreInteractions() {
@@ -46,12 +41,13 @@ class PokemonDetailsViewModelTest {
     }
 
     @Test
-    fun testSetup_NotingHappened() = runBlockingTest {
-        val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
+    fun testSetup_NotingHappened() = runBlocking {
+        val observerMock =
+            Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonDetailsContract.View>>
         model.getStateObservable().observeForever(observerMock)
 
         val actionObserverMock =
-            Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenEffect>
+            Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonDetailsContract.View>>
         model.getEffectObservable().observeForever(actionObserverMock)
 
         model.onStateChanged(Lifecycle.Event.ON_START)
@@ -69,15 +65,16 @@ class PokemonDetailsViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchError() = runBlockingTest {
+    fun testSetup_LaunchError() = runBlocking {
         val error = RuntimeException("TestError")
         Mockito.`when`(repo.getPokemonById(0)).thenThrow(error)
 
-        val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
+        val observerMock =
+            Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonDetailsContract.View>>
         model.getStateObservable().observeForever(observerMock)
 
         val actionObserverMock =
-            Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenEffect>
+            Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonDetailsContract.View>>
         model.getEffectObservable().observeForever(actionObserverMock)
 
         model.onStateChanged(Lifecycle.Event.ON_CREATE)
@@ -93,16 +90,17 @@ class PokemonDetailsViewModelTest {
     }
 
     @Test
-    fun testSetup_LaunchOk() = runBlockingTest {
+    fun testSetup_LaunchOk() = runBlocking {
         val pokemon = Mocks.getPokemon()
         Mockito.`when`(repo.getPokemonById(0)).thenReturn(pokemon)
 
-        val observerMock = Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenState>
+        val observerMock =
+            Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonDetailsContract.View>>
         val stateCaptor = argumentCaptor<PokemonDetailsScreenState>()
         model.getStateObservable().observeForever(observerMock)
 
         val actionObserverMock =
-            Mockito.mock(Observer::class.java) as Observer<PokemonDetailsScreenEffect>
+            Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonDetailsContract.View>>
         model.getEffectObservable().observeForever(actionObserverMock)
 
 
