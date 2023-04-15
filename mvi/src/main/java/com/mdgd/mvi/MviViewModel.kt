@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.mdgd.mvi.fragments.FragmentContract
 import com.mdgd.mvi.states.ScreenState
 
-abstract class MviViewModel<V> : ViewModel(), FragmentContract.ViewModel<V> {
+abstract class MviViewModel<V, STATE> : ViewModel(), FragmentContract.ViewModel<V> {
     private val stateHolder = MutableLiveData<ScreenState<V>>()
     private val effectHolder = MutableLiveData<ScreenState<V>>()
 
@@ -19,7 +19,7 @@ abstract class MviViewModel<V> : ViewModel(), FragmentContract.ViewModel<V> {
         stateHolder.value = state
     }
 
-    protected fun getState() = stateHolder.value
+    protected fun getState() = stateHolder.value as STATE?
 
     protected fun setEffect(action: ScreenState<V>) {
         effectHolder.value = action

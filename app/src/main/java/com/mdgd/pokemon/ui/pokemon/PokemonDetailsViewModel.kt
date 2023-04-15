@@ -23,7 +23,8 @@ import java.util.*
 
 class PokemonDetailsViewModel(
     private val repo: PokemonsRepo
-) : MviViewModel<PokemonDetailsContract.View>(), PokemonDetailsContract.ViewModel {
+) : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState>(),
+    PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
     private var pokemonLoadingJob: Job? = null

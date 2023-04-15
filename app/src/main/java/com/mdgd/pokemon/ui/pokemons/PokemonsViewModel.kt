@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class PokemonsViewModel(
     private val repo: PokemonsRepo, private val filtersFactory: StatsFilter,
     private val dispatchers: DispatchersHolder
-) : MviViewModel<PokemonsContract.View>(), PokemonsContract.ViewModel {
+) : MviViewModel<PokemonsContract.View, PokemonsScreenState>(), PokemonsContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.printStackTrace()
@@ -92,8 +92,7 @@ class PokemonsViewModel(
     }
 
     override fun sort(filter: String) {
-        val filters =
-            (getState() as PokemonsScreenState?)?.activeFilters?.toMutableList() ?: mutableListOf()
+        val filters = getState()?.activeFilters?.toMutableList() ?: mutableListOf()
         if (filters.contains(filter)) {
             filters.remove(filter)
         } else {
