@@ -52,9 +52,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
 
     testImplementation "junit:junit:$junit"
-    testImplementation "org.mockito:mockito-core:4.8.1"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation "android.arch.core:core-testing:1.1.1"
+    testImplementation "org.mockito:mockito-core:$mockito_core"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin"
+    testImplementation "android.arch.core:core-testing:$testing"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
     testImplementation "com.google.code.gson:gson:$gson"
 }
