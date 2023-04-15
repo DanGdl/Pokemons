@@ -7,7 +7,6 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.Network
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models_impl.Mocks
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -82,13 +81,17 @@ class PokemonsRepositoryTest {
         val emptyList = listOf<PokemonFullDataSchema>()
         val list = listOf(Mocks.getPokemon())
         val networkList = listOf<PokemonDetails>()
-        Mockito.`when`(dao.getPage(1, PokemonsRepo.PAGE_SIZE)).thenReturn(emptyList)
-        Mockito.`when`(network.loadPokemons(1, PokemonsRepo.PAGE_SIZE)).then {
-            launch {
-                Mockito.`when`(dao.getPage(1, PokemonsRepo.PAGE_SIZE)).thenReturn(list)
+
+        val invocations = Array(1) { 0 }
+        Mockito.`when`(dao.getPage(1, PokemonsRepo.PAGE_SIZE)).then {
+            invocations[0]++
+            if (invocations[0] == 1) {
+                emptyList
+            } else {
+                list
             }
-            networkList
         }
+        Mockito.`when`(network.loadPokemons(1, PokemonsRepo.PAGE_SIZE)).thenReturn(networkList)
 
         val pokemons = repo.getPage(1)
 
