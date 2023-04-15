@@ -10,7 +10,7 @@ class SplashContract {
     }
 
 
-    interface ViewModel : FragmentContract.ViewModel<SplashScreenState, SplashScreenEffect>
+    interface ViewModel : FragmentContract.ViewModel<View, SplashScreenState, SplashScreenEffect>
 
     interface View : FragmentContract.View {
         fun proceedToNextScreen()

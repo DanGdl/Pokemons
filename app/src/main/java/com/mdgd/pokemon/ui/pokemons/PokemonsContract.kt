@@ -6,7 +6,8 @@ import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 
 class PokemonsContract {
-    interface ViewModel : FragmentContract.ViewModel<PokemonsScreenState, PokemonsScreenEffect> {
+    interface ViewModel :
+        FragmentContract.ViewModel<View, PokemonsScreenState, PokemonsScreenEffect> {
         fun reload()
         fun loadPage(page: Int)
         fun sort(filter: String)

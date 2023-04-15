@@ -15,7 +15,7 @@ abstract class HostedFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
         EFFECT : ScreenEffect<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<STATE, EFFECT>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE, EFFECT>,
         HOST : FragmentContract.Host>
     : NavHostFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
@@ -56,7 +56,7 @@ abstract class HostedFragment<
 
     protected abstract fun createModel(): VIEW_MODEL
 
-    override fun onStateChanged(owner: LifecycleOwner, event: Lifecycle.Event) {
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         model?.onStateChanged(event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
@@ -67,8 +67,8 @@ abstract class HostedFragment<
         }
     }
 
-    override fun onChanged(screenState: STATE) {
-        screenState.visit(this@HostedFragment as VIEW)
+    override fun onChanged(value: STATE) {
+        value.visit(this@HostedFragment as VIEW)
     }
 
     protected fun setModel(model: VIEW_MODEL) {

@@ -3,13 +3,12 @@ package com.mdgd.mvi.fragments
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
-import com.mdgd.mvi.states.ScreenEffect
 
 class FragmentContract {
-    interface ViewModel<V, S> : LifecycleObserver {
+    interface ViewModel<V, S, E> : LifecycleObserver {
         fun onStateChanged(event: Lifecycle.Event)
         fun getStateObservable(): LiveData<S>
-        fun getEffectObservable(): LiveData<ScreenEffect<V>>
+        fun getEffectObservable(): LiveData<E>
     }
 
     interface View

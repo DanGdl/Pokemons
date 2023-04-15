@@ -3,7 +3,10 @@ package com.mdgd.mvi.fragments
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.mdgd.mvi.states.AbstractEffect
 import com.mdgd.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType
@@ -11,10 +14,10 @@ import java.lang.reflect.ParameterizedType
 abstract class HostedDialogFragment<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
-        ACTION : AbstractEffect<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
+        EFFECT : AbstractEffect<VIEW>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE, EFFECT>,
         HOST : FragmentContract.Host>
-    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleObserver {
+    : AppCompatDialogFragment(), FragmentContract.View, Observer<STATE>, LifecycleEventObserver {
 
     protected var model: VIEW_MODEL? = null
         private set
@@ -46,13 +49,10 @@ abstract class HostedDialogFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getEffectObservable()?.observe(this, { action ->
-            action.visit(this as VIEW)
-        })
+        model?.getEffectObservable()?.observe(this) { it.visit(this@HostedDialogFragment as VIEW) }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected open fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event) {
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         model?.onStateChanged(event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
@@ -63,8 +63,8 @@ abstract class HostedDialogFragment<
         }
     }
 
-    override fun onChanged(state: STATE) {
-        state.visit(this as VIEW)
+    override fun onChanged(value: STATE) {
+        value.visit(this as VIEW)
     }
 
     protected abstract fun createModel(): VIEW_MODEL?

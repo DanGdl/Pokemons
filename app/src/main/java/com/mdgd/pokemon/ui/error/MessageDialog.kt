@@ -9,7 +9,7 @@ abstract class MessageDialog<
         VIEW : FragmentContract.View,
         STATE : ScreenState<VIEW, STATE>,
         ACTION : AbstractEffect<VIEW>,
-        VIEW_MODEL : FragmentContract.ViewModel<STATE, ACTION>,
+        VIEW_MODEL : FragmentContract.ViewModel<VIEW, STATE, ACTION>,
         HOST : FragmentContract.Host>
     : HostedDialogFragment<VIEW, STATE, ACTION, VIEW_MODEL, HOST>() {
 

@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
-import java.util.*
 
 class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
     private val pokemonsRoomDao: PokemonsRoomDao? = Room.databaseBuilder(ctx, AppDatabase::class.java, "PokemonsAppDB").build().pokemonsDao()
@@ -16,25 +15,20 @@ class PokemonsDaoImpl(ctx: Context) : PokemonsDao {
 
     override suspend fun getPage(page: Int, pageSize: Int): List<PokemonFullDataSchema> {
         val offset = page * pageSize
-        val rows = pokemonsRoomDao!!.countRows()
+        val rows = pokemonsRoomDao?.countRows() ?: 0
         return when {
-            rows == 0 -> {
-                ArrayList(0)
-            }
-            pokemonsRoomDao.countRows() <= offset -> {
-                throw Exception(PokemonsDao.NO_MORE_POKEMONS_MSG)
-            }
-            else -> {
-                pokemonsRoomDao.getPage(offset, pageSize)
-            }
+            rows == 0 -> ArrayList(0)
+            (pokemonsRoomDao?.countRows()
+                ?: 0) <= offset -> throw Exception(PokemonsDao.NO_MORE_POKEMONS_MSG)
+            else -> pokemonsRoomDao?.getPage(offset, pageSize) ?: listOf()
         }
     }
 
     override suspend fun getCount(): Long {
-        return pokemonsRoomDao!!.countRows().toLong()
+        return pokemonsRoomDao?.countRows()?.toLong() ?: 0
     }
 
     override suspend fun getPokemonById(pokemonId: Long): PokemonFullDataSchema? {
-        return pokemonsRoomDao!!.getPokemonById(pokemonId)
+        return pokemonsRoomDao?.getPokemonById(pokemonId)
     }
 }

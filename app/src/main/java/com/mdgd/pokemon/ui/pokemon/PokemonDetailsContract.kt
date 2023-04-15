@@ -8,7 +8,7 @@ import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 class PokemonDetailsContract {
 
     interface ViewModel :
-        FragmentContract.ViewModel<PokemonDetailsScreenState, PokemonDetailsScreenEffect> {
+        FragmentContract.ViewModel<View, PokemonDetailsScreenState, PokemonDetailsScreenEffect> {
         fun setPokemonId(pokemonId: Long)
     }
 
