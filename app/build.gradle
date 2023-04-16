@@ -63,6 +63,11 @@ dependencies {
 
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
+    // kotlin
+    implementation "androidx.core:core-ktx:$ktx"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+
     testImplementation "junit:junit:$junit"
     testImplementation "org.mockito:mockito-core:$mockito_core"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin"
@@ -75,8 +80,4 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:1.1.5"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:3.3.0"
-
-    implementation "androidx.core:core-ktx:$ktx"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
 }
