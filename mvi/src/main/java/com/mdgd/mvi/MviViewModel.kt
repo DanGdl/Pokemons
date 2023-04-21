@@ -2,31 +2,29 @@ package com.mdgd.mvi
 
 import androidx.annotation.CallSuper
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mdgd.mvi.fragments.FragmentContract
+import com.mdgd.mvi.states.AbstractState
 import com.mdgd.mvi.states.ScreenState
 
-abstract class MviViewModel<V, S : ScreenState<V, S>, E> : ViewModel(),
-    FragmentContract.ViewModel<S, E> {
-    private val stateHolder = MutableLiveData<S>()
-    private val effectHolder = MutableLiveData<E>()
+abstract class MviViewModel<V, STATE : AbstractState<V, STATE>> : ViewModel(),
+    FragmentContract.ViewModel<V> {
+    private val stateHolder = MutableLiveData<ScreenState<V>>()
+    private val effectHolder = MutableLiveData<ScreenState<V>>()
 
-    override fun getStateObservable(): LiveData<S> = stateHolder
+    override fun getStateObservable() = stateHolder
 
-    override fun getEffectObservable(): LiveData<E> = effectHolder
+    override fun getEffectObservable() = effectHolder
 
-    protected fun setState(state: S) {
-        stateHolder.value = stateHolder.value?.let {
-            state.merge(it)
-        } ?: state
+    protected fun setState(state: STATE) {
+        stateHolder.value = stateHolder.value?.let { state.merge(it as STATE) } ?: state
     }
 
-    protected fun getState() = stateHolder.value
+    protected fun getState() = stateHolder.value as STATE?
 
-    protected fun setEffect(effect: E) {
-        effectHolder.value = effect
+    protected fun setEffect(action: ScreenState<V>) {
+        effectHolder.value = action
     }
 
     @CallSuper

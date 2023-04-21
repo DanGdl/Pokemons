@@ -6,10 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -42,16 +53,20 @@ import com.mdgd.pokemon.models.repo.schemas.Stat
 import com.mdgd.pokemon.models.repo.schemas.Stat_
 import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
-import com.mdgd.pokemon.ui.pokemon.dto.*
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
+import com.mdgd.pokemon.ui.pokemon.dto.ImageProperty
+import com.mdgd.pokemon.ui.pokemon.dto.ImagePropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.LabelProperty
+import com.mdgd.pokemon.ui.pokemon.dto.LabelPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TextProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TextPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.TitleProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TitlePropertyData
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PokemonDetailsFragment : HostedFragment<
         PokemonDetailsContract.View,
-        PokemonDetailsScreenState,
-        PokemonDetailsScreenEffect,
         PokemonDetailsContract.ViewModel,
         PokemonDetailsContract.Host>(), PokemonDetailsContract.View {
 

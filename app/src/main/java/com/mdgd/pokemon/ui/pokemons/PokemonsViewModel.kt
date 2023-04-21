@@ -13,7 +13,11 @@ import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +26,7 @@ class PokemonsViewModel @Inject constructor(
     private val repo: PokemonsRepo,
     private val filtersFactory: StatsFilter,
     private val dispatchers: DispatchersHolder
-) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenEffect>(),
-    PokemonsContract.ViewModel {
+) : MviViewModel<PokemonsContract.View, PokemonsScreenState>(), PokemonsContract.ViewModel {
 
     private var firstVisibleIndex: Int = 0
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->

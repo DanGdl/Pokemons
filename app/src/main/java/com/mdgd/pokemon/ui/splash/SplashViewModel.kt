@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(private val cache: Cache) :
-    MviViewModel<SplashContract.View, SplashScreenState, SplashScreenEffect>(),
-    SplashContract.ViewModel {
+class SplashViewModel @Inject constructor(
+    private val cache: Cache
+) : MviViewModel<SplashContract.View, SplashScreenState>(), SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         setEffect(SplashScreenEffect.ShowError(e))

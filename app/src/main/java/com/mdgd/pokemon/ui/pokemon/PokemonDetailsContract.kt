@@ -2,12 +2,9 @@ package com.mdgd.pokemon.ui.pokemon
 
 import com.mdgd.mvi.fragments.FragmentContract
 import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
-import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 
 class PokemonDetailsContract {
-    interface ViewModel :
-        FragmentContract.ViewModel<PokemonDetailsScreenState, PokemonDetailsScreenEffect> {
+    interface ViewModel : FragmentContract.ViewModel<View> {
         fun setPokemonId(pokemonId: Long)
         fun onBackPressed()
     }

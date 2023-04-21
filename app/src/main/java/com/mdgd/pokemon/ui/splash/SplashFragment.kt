@@ -32,13 +32,11 @@ import com.mdgd.pokemon.bg.UploadWorker
 import com.mdgd.pokemon.ui.error.DefaultErrorParams
 import com.mdgd.pokemon.ui.error.ErrorParams
 import com.mdgd.pokemon.ui.error.ErrorScreen
-import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect
-import com.mdgd.pokemon.ui.splash.state.SplashScreenState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplashFragment :
-    HostedFragment<SplashContract.View, SplashScreenState, SplashScreenEffect, SplashContract.ViewModel, SplashContract.Host>(),
+    HostedFragment<SplashContract.View, SplashContract.ViewModel, SplashContract.Host>(),
     SplashContract.View {
 
     private val errorDialogTrigger = mutableStateOf<ErrorParams>(DefaultErrorParams())
