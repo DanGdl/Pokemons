@@ -4,12 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class Move_ {
-
-    @Expose
     @SerializedName("name")
+    @Expose
     var name: String? = null
 
-    @Expose
     @SerializedName("url")
+    @Expose
     var url: String? = null
 }

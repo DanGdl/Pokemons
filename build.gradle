@@ -1,16 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.7.20' // update according to composeVersion
-    ext.compat = "1.5.1"
+    ext.kotlin_version = '1.8.20' // update according to composeVersion
+    ext.compat = "1.6.1"
     ext.nav_version = "2.5.3"
-    ext.work_version = "2.7.1"
+    ext.work_version = "2.8.1"
 
-    ext.ktx = "1.9.0"
+    ext.ktx = "1.10.0"
     ext.coroutines = "1.6.4"
-    ext.lifecycle_ktx = "2.5.1"
+    ext.lifecycle_ktx = "2.6.1"
 
-    ext.room = "2.4.3"
-    ext.room_compiler = "2.2.5"
+    ext.room = "2.5.1"
+    ext.room_compiler = "2.5.1"
 
     ext.gson = "2.9.0"
     ext.retrofit = "2.9.0"
@@ -18,21 +18,21 @@ buildscript {
     ext.okhttp_log = "4.10.0"
     ext.okhttp = "4.10.0"
 
-    ext.composeVersion = "1.3.1"
+    ext.composeVersion = "1.4.2"
     // update kotlinCompilerExtensionVersion when composeVersion updated
-    ext.composeVersionTheme = "1.1.21"
+    ext.composeVersionTheme = "1.2.1"
     // update kotlinCompilerExtensionVersion when composeVersionTheme updated
 
     ext.hilt = "2.42"
     ext.hilt_jetpack = "1.0.0"
 
     ext.junit = "4.13.2"
-    ext.junit_android = "1.1.3"
-    ext.mockito_core = "4.8.1"
+    ext.junit_android = "1.1.5"
+    ext.mockito_core = "5.2.0"
     ext.mockito_kotlin = "2.2.0"
     ext.testing_core = "1.1.1"
     ext.testing_coroutine = "1.6.0"
-    ext.espresso = "3.4.0"
+    ext.espresso = "3.5.1"
 
     project.ext {
         min = 21
@@ -50,7 +50,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:2.45"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

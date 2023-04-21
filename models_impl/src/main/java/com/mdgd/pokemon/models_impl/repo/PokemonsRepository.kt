@@ -5,25 +5,23 @@ import com.mdgd.pokemon.models.repo.cache.PokemonsCache
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.models.repo.network.Network
-import javax.inject.Inject
 
-class PokemonsRepository @Inject constructor(
-    private val dao: PokemonsDao, private val network: Network, private val cache: PokemonsCache
+class PokemonsRepository(
+    private val dao: PokemonsDao,
+    private val network: Network,
+    private val cache: PokemonsCache
 ) : PokemonsRepo {
 
     override fun getPokemons() = cache.getPokemons()
 
     override suspend fun getPage(page: Int): List<PokemonFullDataSchema> {
         val list = getPageFromDao(page)
-        return if (list.isEmpty()) {
-            loadPage(page)
-        } else {
-            list
-        }
+        return list.ifEmpty { loadPage(page) }
     }
 
     private suspend fun loadPage(page: Int): List<PokemonFullDataSchema> {
-        dao.save(network.loadPokemons(page, PokemonsRepo.PAGE_SIZE))
+        val list = network.loadPokemons(page, PokemonsRepo.PAGE_SIZE)
+        dao.save(list)
         return getPageFromDao(page)
     }
 
@@ -65,7 +63,8 @@ class PokemonsRepository @Inject constructor(
     }
 
     override suspend fun loadInitialPages(amount: Long) {
-        if (dao.getCount() < amount) {
+        val count = dao.getCount()
+        if (count < amount) {
             loadPokemonsInner(amount, 0)
         }
     }

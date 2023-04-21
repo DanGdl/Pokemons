@@ -8,7 +8,6 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema
 import com.mdgd.pokemon.models.repo.network.schemas.PokemonDetails
 import com.mdgd.pokemon.models.repo.schemas.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Dao
 abstract class PokemonsRoomDao {
@@ -111,8 +110,8 @@ abstract class PokemonsRoomDao {
 
     fun getPage(offset: Int, pageSize: Int): List<PokemonFullDataSchema> {
         val pokemons = getPokemonsForPage(offset, pageSize)
-        val schemas: List<PokemonFullDataSchema> = ArrayList(mapPokemons(pokemons))
-        Collections.shuffle(schemas)
+        val schemas: MutableList<PokemonFullDataSchema> = ArrayList(mapPokemons(pokemons))
+        schemas.shuffle()
         return schemas
     }
 

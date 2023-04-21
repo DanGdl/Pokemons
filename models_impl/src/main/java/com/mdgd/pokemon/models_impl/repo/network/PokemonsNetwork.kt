@@ -11,9 +11,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
+import java.util.Vector
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 import kotlin.math.max
 
 class PokemonsNetwork : Network {
@@ -21,11 +20,8 @@ class PokemonsNetwork : Network {
 
     init {
         val logging = HttpLoggingInterceptor()
-        logging.level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BASIC
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
+        logging.level =
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(logging)
         httpClient.readTimeout(10, TimeUnit.SECONDS)
@@ -40,11 +36,13 @@ class PokemonsNetwork : Network {
     }
 
     override suspend fun loadPokemons(pokemonsCount: Long, offset: Long): List<PokemonDetails> {
-        return mapToDetails(service.loadPage(pokemonsCount.toInt(), offset.toInt()))
+        val nextPage = service.loadPage(pokemonsCount.toInt(), offset.toInt())
+        return mapToDetails(nextPage)
     }
 
     override suspend fun loadPokemons(page: Int, pageSize: Int): List<PokemonDetails> {
-        val dataPage = service.loadPage(pageSize, max(page - 1, 0) * pageSize)
+        val i = max(page - 1, 0)
+        val dataPage = service.loadPage(pageSize, i * pageSize)
         return mapToDetails(dataPage)
     }
 
@@ -53,10 +51,10 @@ class PokemonsNetwork : Network {
     }
 
     private suspend fun mapToDetails(result: PokemonsList): List<PokemonDetails> {
-        val list = result.results?.let {
-            it
-        } ?: kotlin.run {
+        val list = if (result.results == null) {
             ArrayList()
+        } else {
+            result.results!!
         }
         val details = Vector<PokemonDetails>(list.size)
         val channel = Channel<PokemonDetails>()
