@@ -3,7 +3,7 @@ package com.mdgd.pokemon.ui.pokemon
 import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +25,7 @@ class PokemonDetailsScreenStateTest {
     }
 
     @Test
-    fun testSetDataState() = runBlockingTest {
+    fun testSetDataState() = runBlocking {
         val detailsCaptor = argumentCaptor<List<PokemonProperty>>()
         val list = ArrayList<PokemonProperty>(0)
         PokemonDetailsScreenState.SetData(list).visit(view)
