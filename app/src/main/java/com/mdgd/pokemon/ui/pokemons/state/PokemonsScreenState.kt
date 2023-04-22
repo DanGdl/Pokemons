@@ -74,7 +74,7 @@ open class PokemonsScreenState(
 
         override fun merge(prevState: PokemonsScreenState): PokemonsScreenState {
             return PokemonsScreenState(
-                isProgressVisible, list, prevState.availableFilters, activeFilters
+                isProgressVisible, prevState.list, prevState.availableFilters, activeFilters
             )
         }
     }

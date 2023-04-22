@@ -112,12 +112,11 @@ class PokemonsViewModelTest {
         var errorCounter = 0
         var scrollCounter = 0
         for (state in stateCaptor.allValues) {
-            when (state) {
-                is PokemonsScreenState.Loading -> loadingCounter += 1
-                is PokemonsScreenState.UpdateData -> {
-                    updatesCounter += 1
-                    Assert.assertTrue((state as PokemonsScreenState).list.isEmpty())
-                }
+            if (state.isProgressVisible) {
+                loadingCounter += 1
+            } else if (state.activeFilters.isEmpty()) {
+                Assert.assertTrue(state.list.isEmpty())
+                updatesCounter += 1
             }
         }
         for (action in actionCaptor.allValues) {
@@ -211,16 +210,14 @@ class PokemonsViewModelTest {
         var setsCounter = 0
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
-            when (state) {
-                is PokemonsScreenState.Loading -> loadingCounter += 1
-                is PokemonsScreenState.SetData -> {
-                    setsCounter += 1
-                    Assert.assertEquals(pokemons, state.list)
-                }
-                is PokemonsScreenState.UpdateData -> {
-                    Assert.assertEquals(pokemons, state.list)
-                    updatesCounter += 1
-                }
+            if (state.isProgressVisible) {
+                loadingCounter += 1
+            } else if (setsCounter == 1 && state.list.isNotEmpty() && state.activeFilters.isEmpty()) {
+                Assert.assertEquals(pokemons, state.list)
+                updatesCounter += 1
+            } else if (state.list.isNotEmpty() && state.activeFilters.isEmpty()) {
+                setsCounter += 1
+                Assert.assertEquals(pokemons, state.list)
             }
         }
         Assert.assertEquals(1, loadingCounter)
@@ -288,6 +285,8 @@ class PokemonsViewModelTest {
 
 
         Mockito.verify(observerMock, Mockito.times(5)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(1)).onChanged(actionCaptor.capture())
+        Assert.assertTrue(actionCaptor.firstValue is PokemonsScreenEffect.ScrollToStart)
 
         var loadingCounter = 0
         var setsCounter = 0
@@ -296,20 +295,15 @@ class PokemonsViewModelTest {
         for (state in stateCaptor.allValues) {
             if (state.isProgressVisible) {
                 loadingCounter += 1
-            }
-            when (state) {
-                is PokemonsScreenState.SetData -> {
-                    setsCounter += 1
-                    Assert.assertEquals(page1, state.list)
-                }
-                is PokemonsScreenState.AddData -> {
-                    addingsCounter += 1
-                    Assert.assertEquals(list, state.list)
-                }
-                is PokemonsScreenState.UpdateData -> {
-                    updatesCounter += 1
-                    Assert.assertEquals(page1, state.list)
-                }
+            } else if (setsCounter != 0 && state.list.isNotEmpty() && state.list == list && state.activeFilters.isEmpty()) {
+                Assert.assertEquals(list, state.list)
+                addingsCounter += 1
+            } else if (setsCounter != 0 && state.list.isNotEmpty() && state.activeFilters.isEmpty()) {
+                Assert.assertEquals(page1, state.list)
+                updatesCounter += 1
+            } else if (state.list.isNotEmpty() && state.activeFilters.isEmpty()) {
+                setsCounter += 1
+                Assert.assertEquals(page1, state.list)
             }
         }
         Assert.assertEquals(2, loadingCounter)
@@ -361,57 +355,58 @@ class PokemonsViewModelTest {
 
 
         Mockito.verify(observerMock, Mockito.times(5)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(2)).onChanged(actionCaptor.capture())
+        for (effect in actionCaptor.allValues) {
+            Assert.assertTrue(effect is PokemonsScreenEffect.ScrollToStart)
+        }
 
         var loadingCounter = 0
         var setsCounter = 0
         var filtersCounter = 0
         var updatesCounter = 0
         for (state in stateCaptor.allValues) {
-            when (state) {
-                is PokemonsScreenState.SetData -> {
+            if (state.isProgressVisible) {
+                loadingCounter += 1
+            } else if (filtersCounter == 0 && state.activeFilters.isNotEmpty()) {
+                filtersCounter += 1
+                val items = state.list
+                Assert.assertEquals(PAGE_SIZE, items.size)
+                Assert.assertTrue(state.activeFilters.contains(testFilter))
+            } else if (setsCounter != 0 && state.list.isNotEmpty()
+                && ((updatesCounter == 0 && state.activeFilters.isEmpty()) || state.activeFilters.isNotEmpty())
+            ) {
+                updatesCounter += 1
+                if (updatesCounter == 1) {
                     Assert.assertEquals(page1, state.list)
-                    setsCounter += 1
-                }
-                is PokemonsScreenState.UpdateData -> {
-                    if (updatesCounter == 0) {
-                        Assert.assertEquals(page1, state.list)
-                    } else {
-                        val items = state.list
-                        Assert.assertEquals(PAGE_SIZE, items.size)
-                        Assert.assertNotEquals(page1, items)
-                        for ((idx, item) in items.withIndex()) {
-                            if (idx == 0) {
-                                continue
-                            }
-                            var prevStat: Stat? = null
-                            for (ps in items[idx - 1].stats) {
-                                if (testFilter == ps.stat?.name) {
-                                    prevStat = ps
-                                    break
-                                }
-                            }
-
-                            var stat: Stat? = null
-                            for (ps in item.stats) {
-                                if (testFilter == ps.stat?.name) {
-                                    stat = ps
-                                    break
-                                }
-                            }
-                            Assert.assertTrue(prevStat!!.baseStat!! >= stat!!.baseStat!!)
-                        }
-                    }
-                    updatesCounter += 1
-                }
-                is PokemonsScreenState.ChangeFilterState -> {
-                    filtersCounter += 1
+                } else {
                     val items = state.list
                     Assert.assertEquals(PAGE_SIZE, items.size)
-                    Assert.assertTrue(state.activeFilters.contains(testFilter))
+                    Assert.assertNotEquals(page1, items)
+                    for ((idx, item) in items.withIndex()) {
+                        if (idx == 0) {
+                            continue
+                        }
+                        var prevStat: Stat? = null
+                        for (ps in items[idx - 1].stats) {
+                            if (testFilter == ps.stat?.name) {
+                                prevStat = ps
+                                break
+                            }
+                        }
+
+                        var stat: Stat? = null
+                        for (ps in item.stats) {
+                            if (testFilter == ps.stat?.name) {
+                                stat = ps
+                                break
+                            }
+                        }
+                        Assert.assertTrue(prevStat!!.baseStat!! >= stat!!.baseStat!!)
+                    }
                 }
-                is PokemonsScreenState.Loading -> {
-                    loadingCounter += 1
-                }
+            } else if (state.list.isNotEmpty() && state.activeFilters.isEmpty()) {
+                setsCounter += 1
+                Assert.assertEquals(page1, state.list)
             }
         }
         Assert.assertEquals(1, loadingCounter)
@@ -466,67 +461,68 @@ class PokemonsViewModelTest {
 
 
         Mockito.verify(observerMock, Mockito.times(7)).onChanged(stateCaptor.capture())
+        Mockito.verify(actionObserverMock, Mockito.times(3)).onChanged(actionCaptor.capture())
+        for (effect in actionCaptor.allValues) {
+            Assert.assertTrue(effect is PokemonsScreenEffect.ScrollToStart)
+        }
 
         var loadingCounter = 0
         var setsCounter = 0
         var filtersCounter = 0
         var updatesCounter = 0
-        for (state in stateCaptor.allValues) {
-            when (state) {
-                is PokemonsScreenState.Loading -> {
-                    loadingCounter += 1
+        for (idx in stateCaptor.allValues.indices) {
+            val state = stateCaptor.allValues[idx]
+            if (state.isProgressVisible) {
+                loadingCounter += 1
+            } else if (idx == 3 || idx == 5) {
+                filtersCounter += 1
+                val items = state.list
+                Assert.assertEquals(PAGE_SIZE, items.size)
+                if (filtersCounter == 1) {
+                    Assert.assertTrue(state.activeFilters.contains(testFilter))
+                } else {
+                    Assert.assertFalse(state.activeFilters.contains(testFilter))
                 }
-                is PokemonsScreenState.SetData -> {
-                    setsCounter += 1
+            } else if (idx == 2 || idx == 4 || idx == 6) {
+                updatesCounter += 1
+                if (updatesCounter == 1) {
                     Assert.assertEquals(page1, state.list)
-                }
-                is PokemonsScreenState.ChangeFilterState -> {
+                } else if (updatesCounter == 2) {
                     val items = state.list
                     Assert.assertEquals(PAGE_SIZE, items.size)
-                    if (filtersCounter == 0) {
-                        Assert.assertTrue(state.activeFilters.contains(testFilter))
-                    } else {
-                        Assert.assertFalse(state.activeFilters.contains(testFilter))
-                    }
-                    filtersCounter += 1
-                }
-                is PokemonsScreenState.UpdateData -> {
-                    if (updatesCounter == 0) {
-                        Assert.assertEquals(page1, state.list)
-                    } else if (updatesCounter == 1) {
-                        val items = state.list
-                        Assert.assertNotEquals(page1, items)
-                        Assert.assertEquals(PAGE_SIZE, items.size)
-                        for ((idx, item) in items.withIndex()) {
-                            if (idx == 0) {
-                                continue
-                            }
-                            var prevStat: Stat? = null
-                            for (ps in items[idx - 1].stats) {
-                                if (FilterData.FILTER_ATTACK == ps.stat?.name) {
-                                    prevStat = ps
-                                    break
-                                }
-                            }
-
-                            var stat: Stat? = null
-                            for (ps in item.stats) {
-                                if (FilterData.FILTER_ATTACK == ps.stat?.name) {
-                                    stat = ps
-                                    break
-                                }
-                            }
-                            Assert.assertTrue(prevStat!!.baseStat!! >= stat!!.baseStat!!)
+                    Assert.assertNotEquals(page1, items)
+                    for ((idx, item) in items.withIndex()) {
+                        if (idx == 0) {
+                            continue
                         }
-                    } else if (updatesCounter == 2) {
-                        val items = state.list
-                        Assert.assertEquals(page1, items)
-                        Assert.assertEquals(PAGE_SIZE, items.size)
+                        var prevStat: Stat? = null
+                        for (ps in items[idx - 1].stats) {
+                            if (testFilter == ps.stat?.name) {
+                                prevStat = ps
+                                break
+                            }
+                        }
+
+                        var stat: Stat? = null
+                        for (ps in item.stats) {
+                            if (testFilter == ps.stat?.name) {
+                                stat = ps
+                                break
+                            }
+                        }
+                        Assert.assertTrue(prevStat!!.baseStat!! >= stat!!.baseStat!!)
                     }
-                    updatesCounter += 1
+                } else if (updatesCounter == 3) {
+                    val items = state.list
+                    Assert.assertEquals(page1, items)
+                    Assert.assertEquals(PAGE_SIZE, items.size)
                 }
+            } else if (idx == 1) {
+                setsCounter += 1
+                Assert.assertEquals(page1, state.list)
             }
         }
+
         Assert.assertEquals(1, loadingCounter)
         Assert.assertEquals(1, setsCounter)
         Assert.assertEquals(2, filtersCounter)
