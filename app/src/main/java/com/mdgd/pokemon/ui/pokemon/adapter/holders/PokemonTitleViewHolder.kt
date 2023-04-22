@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.TextView
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.adapter.RecyclerVH
-import com.mdgd.pokemon.ui.pokemon.infra.TitleProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TitleProperty
 
 class PokemonTitleViewHolder(view: View) : RecyclerVH<TitleProperty>(view) {
     private val title: TextView = view.findViewById(R.id.pokemon_property_title)

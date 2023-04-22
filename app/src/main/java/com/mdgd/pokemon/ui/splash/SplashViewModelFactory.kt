@@ -6,6 +6,7 @@ import com.mdgd.pokemon.models.AppModule
 
 class SplashViewModelFactory(private val appComponent: AppModule) : ViewModelProvider.NewInstanceFactory() {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass == SplashViewModel::class.java) {
             SplashViewModel(appComponent.getCache()) as T

@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.adapter.RecyclerVH
-import com.mdgd.pokemon.ui.pokemon.infra.LabelProperty
+import com.mdgd.pokemon.ui.pokemon.dto.LabelProperty
 
 class PokemonLabelViewHolder(view: View) : RecyclerVH<LabelProperty>(view) {
     private val label: TextView = view.findViewById(R.id.pokemon_details_label_text)

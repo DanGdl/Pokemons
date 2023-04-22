@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemon.infra
+package com.mdgd.pokemon.ui.pokemon.dto
 
 interface LabelProperty : TitleProperty {
     val text: String

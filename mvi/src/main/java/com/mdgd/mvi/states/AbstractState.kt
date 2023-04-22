@@ -6,5 +6,6 @@ abstract class AbstractState<V, S> : ScreenState<V> {
 
     }
 
+    @Suppress("UNCHECKED_CAST")
     open fun merge(prevState: S): S = this as S
 }

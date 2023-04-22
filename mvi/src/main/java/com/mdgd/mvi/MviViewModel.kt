@@ -17,12 +17,14 @@ abstract class MviViewModel<V, STATE : AbstractState<V, STATE>> : ViewModel(),
 
     override fun getEffectObservable() = effectHolder
 
+    @Suppress("UNCHECKED_CAST")
     protected fun setState(state: STATE) {
         stateHolder.value = stateHolder.value?.let {
             state.merge(it as STATE)
         } ?: state
     }
 
+    @Suppress("UNCHECKED_CAST")
     protected fun getState() = stateHolder.value as STATE?
 
     protected fun setEffect(action: ScreenState<V>) {

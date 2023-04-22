@@ -6,7 +6,7 @@ import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.adapter.RecyclerAdapter
 import com.mdgd.pokemon.ui.adapter.RecyclerVH
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.*
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
 import java.util.*
 
 class PokemonPropertiesAdapter : RecyclerAdapter<PokemonProperty>() {

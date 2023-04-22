@@ -6,6 +6,7 @@ import com.mdgd.pokemon.models.AppModule
 
 class PokemonDetailsViewModelFactory(private val appComponent: AppModule) : ViewModelProvider.NewInstanceFactory() {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass == PokemonDetailsViewModel::class.java) {
             PokemonDetailsViewModel(appComponent.getPokemonsRepo()) as T

@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemon.infra
+package com.mdgd.pokemon.ui.pokemon.dto
 
 open class TitlePropertyData @JvmOverloads constructor(
     override val titleResId: Int, override val nestingLevel: Int = 0

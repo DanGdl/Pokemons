@@ -10,7 +10,11 @@ import com.mdgd.pokemon.models.repo.schemas.Ability
 import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
-import com.mdgd.pokemon.ui.pokemon.infra.*
+import com.mdgd.pokemon.ui.pokemon.dto.ImagePropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.LabelPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TextPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.TitlePropertyData
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,7 +23,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.LinkedList
 
 class PokemonDetailsViewModel(
     private val repo: PokemonsRepo

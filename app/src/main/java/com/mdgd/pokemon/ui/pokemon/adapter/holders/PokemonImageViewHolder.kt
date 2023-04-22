@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.adapter.RecyclerVH
-import com.mdgd.pokemon.ui.pokemon.infra.ImageProperty
+import com.mdgd.pokemon.ui.pokemon.dto.ImageProperty
 import com.squareup.picasso.Picasso
 
 class PokemonImageViewHolder(view: View) : RecyclerVH<ImageProperty>(view) {

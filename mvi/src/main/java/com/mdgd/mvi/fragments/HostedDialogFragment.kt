@@ -23,6 +23,7 @@ abstract class HostedDialogFragment<
     protected var fragmentHost: HOST? = null
         private set
 
+    @Suppress("UNCHECKED_CAST")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // keep the call back
@@ -30,7 +31,7 @@ abstract class HostedDialogFragment<
             fragmentHost = context as HOST
         } catch (e: Throwable) {
             val hostClassName = ((javaClass.genericSuperclass as ParameterizedType)
-                    .actualTypeArguments[1] as Class<*>).canonicalName
+                .actualTypeArguments[1] as Class<*>).canonicalName
             throw RuntimeException("Activity must implement " + hostClassName
                     + " to attach " + javaClass.simpleName, e)
         }
@@ -42,6 +43,7 @@ abstract class HostedDialogFragment<
         fragmentHost = null
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setModel(createModel())
@@ -61,6 +63,7 @@ abstract class HostedDialogFragment<
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onChanged(value: ScreenState<VIEW>) {
         value.visit(this as VIEW)
     }

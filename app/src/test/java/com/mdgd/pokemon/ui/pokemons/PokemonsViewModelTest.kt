@@ -56,6 +56,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_NotingHappened() = runBlocking {
         val observerMock =
             Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonsContract.View>>
@@ -82,6 +83,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_LaunchError() = runBlocking {
         val error = RuntimeException("TestError")
         Mockito.`when`(repo.getPage(0)).thenThrow(error)
@@ -145,6 +147,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun test_OnItemClick() = runBlocking {
         val testId = 1L
         val pokemon = PokemonFullDataSchema()
@@ -178,6 +181,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_Ok() = runBlocking {
         val observerMock =
             Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonsContract.View>>
@@ -249,6 +253,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun test_NextPageOk() = runBlocking {
         val observerMock =
             Mockito.mock(Observer::class.java) as Observer<ScreenState<PokemonsContract.View>>
@@ -323,6 +328,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun test_Filter_Add() = runBlocking {
         Mockito.`when`(filtersFactory.getAvailableFilters())
             .thenReturn(listOf(FilterData.FILTER_ATTACK, FilterData.FILTER_SPEED))
@@ -426,6 +432,7 @@ class PokemonsViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun test_Filter_Remove() = runBlocking {
         Mockito.`when`(filtersFactory.getAvailableFilters())
             .thenReturn(listOf(FilterData.FILTER_ATTACK, FilterData.FILTER_SPEED))
@@ -491,12 +498,12 @@ class PokemonsViewModelTest {
                     val items = state.list
                     Assert.assertEquals(PAGE_SIZE, items.size)
                     Assert.assertNotEquals(page1, items)
-                    for ((idx, item) in items.withIndex()) {
-                        if (idx == 0) {
+                    for ((idx_, item) in items.withIndex()) {
+                        if (idx_ == 0) {
                             continue
                         }
                         var prevStat: Stat? = null
-                        for (ps in items[idx - 1].stats) {
+                        for (ps in items[idx_ - 1].stats) {
                             if (testFilter == ps.stat?.name) {
                                 prevStat = ps
                                 break

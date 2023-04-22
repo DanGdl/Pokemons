@@ -40,6 +40,7 @@ class SplashViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_NotingHappened() = runBlocking {
         val stateObserverMock =
             Mockito.mock(Observer::class.java) as Observer<ScreenState<SplashContract.View>>
@@ -64,6 +65,7 @@ class SplashViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_LaunchError() = runBlocking {
         val error = Throwable("TestError")
         val progressChanel = Channel<Result<Long>>(Channel.Factory.CONFLATED)
@@ -100,6 +102,7 @@ class SplashViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_LaunchCrash() = runBlocking {
         val error = RuntimeException("TestError")
         Mockito.`when`(cache.getProgressChanel()).thenThrow(error)
@@ -135,6 +138,7 @@ class SplashViewModelTest {
     }
 
     @Test
+    @Suppress("UNCHECKED_CAST")
     fun testSetup_LaunchOk() = runBlocking {
         val progressChanel = Channel<Result<Long>>(Channel.Factory.CONFLATED)
         Mockito.`when`(cache.getProgressChanel()).thenReturn(progressChanel)

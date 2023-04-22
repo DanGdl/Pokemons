@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.mdgd.pokemon.models.repo.schemas.Move_
 
 @Entity(
-    tableName = "moves", indices = [Index("id")],
+    tableName = "moves", indices = [Index("id"), Index("pokemonId")],
     foreignKeys = [ForeignKey(
         entity = PokemonSchema::class, parentColumns = ["id"],
         childColumns = ["pokemonId"], onDelete = ForeignKey.CASCADE

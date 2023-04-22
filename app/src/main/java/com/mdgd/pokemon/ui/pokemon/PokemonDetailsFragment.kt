@@ -11,7 +11,7 @@ import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp.Companion.instance
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
 
 class PokemonDetailsFragment : HostedFragment<
         PokemonDetailsContract.View,

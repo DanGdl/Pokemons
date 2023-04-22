@@ -2,7 +2,7 @@ package com.mdgd.pokemon.ui.pokemon.state
 
 import com.mdgd.mvi.states.AbstractState
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
 
 open class PokemonDetailsScreenState(
     val items: List<PokemonProperty>

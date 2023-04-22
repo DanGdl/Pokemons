@@ -1,6 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon
 
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty
+import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.runBlocking
