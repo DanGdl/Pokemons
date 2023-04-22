@@ -107,7 +107,7 @@ class PokemonsFragment : HostedFragment<
 
     override fun onClick(view: View) {
         if (view === refresh) {
-            showProgress()
+            setProgressVisibility(true)
         } else {
             when {
                 filterAttack === view -> model?.sort(FilterData.FILTER_ATTACK)
@@ -122,15 +122,9 @@ class PokemonsFragment : HostedFragment<
         model?.reload()
     }
 
-    override fun showProgress() {
-        if (refreshSwipe?.isRefreshing == false) {
-            refreshSwipe?.isRefreshing = true
-        }
-    }
-
-    override fun hideProgress() {
-        if (refreshSwipe?.isRefreshing == true) {
-            refreshSwipe?.isRefreshing = false
+    override fun setProgressVisibility(isVisible: Boolean) {
+        if (refreshSwipe?.isRefreshing != isVisible) {
+            refreshSwipe?.isRefreshing = isVisible
         }
     }
 

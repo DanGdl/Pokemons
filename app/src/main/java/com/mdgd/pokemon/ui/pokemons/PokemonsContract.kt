@@ -12,8 +12,7 @@ class PokemonsContract {
     }
 
     interface View : FragmentContract.View {
-        fun showProgress()
-        fun hideProgress()
+        fun setProgressVisibility(isVisible: Boolean)
         fun setItems(list: List<PokemonFullDataSchema>)
         fun showError(error: Throwable?)
         fun proceedToNextScreen(pokemonId: Long?)

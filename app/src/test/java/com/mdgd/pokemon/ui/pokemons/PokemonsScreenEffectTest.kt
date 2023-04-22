@@ -28,11 +28,11 @@ class PokemonsScreenEffectTest {
         val state = PokemonsScreenEffect.Error(error)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
         Mockito.verify(view, Mockito.times(1)).showError(error)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
 
         verifyNoMoreInteractions()
     }
@@ -44,11 +44,11 @@ class PokemonsScreenEffectTest {
         val state = PokemonsScreenEffect.ShowDetails(pokemonId)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
         Mockito.verify(view, Mockito.times(1)).proceedToNextScreen(pokemonId)
 
         state.visit(view)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
 
         verifyNoMoreInteractions()
     }

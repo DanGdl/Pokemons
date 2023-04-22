@@ -12,11 +12,7 @@ open class PokemonsScreenState(
 ) : AbstractState<PokemonsContract.View, PokemonsScreenState>() {
 
     override fun visit(screen: PokemonsContract.View) {
-        if (isProgressVisible) {
-            screen.showProgress()
-        } else {
-            screen.hideProgress()
-        }
+        screen.setProgressVisibility(isProgressVisible)
         screen.setItems(list)
         for (filter in availableFilters) {
             screen.updateFilterButtons(activeFilters.contains(filter), filter)

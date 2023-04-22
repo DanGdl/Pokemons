@@ -8,7 +8,7 @@ sealed class PokemonsScreenEffect : AbstractEffect<PokemonsContract.View>() {
     class Error(val error: Throwable?) : PokemonsScreenEffect() {
 
         override fun handle(screen: PokemonsContract.View) {
-            screen.hideProgress()
+            screen.setProgressVisibility(false)
             screen.showError(error)
         }
     }
@@ -16,7 +16,7 @@ sealed class PokemonsScreenEffect : AbstractEffect<PokemonsContract.View>() {
     class ShowDetails(val id: Long?) : PokemonsScreenEffect() {
 
         override fun handle(screen: PokemonsContract.View) {
-            screen.hideProgress()
+            screen.setProgressVisibility(false)
             screen.proceedToNextScreen(id)
         }
     }

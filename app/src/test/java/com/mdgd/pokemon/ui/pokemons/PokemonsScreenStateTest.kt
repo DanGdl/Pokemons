@@ -36,7 +36,7 @@ class PokemonsScreenStateTest {
         state.visit(view)
 
 
-        Mockito.verify(view, Mockito.times(1)).showProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(true)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
         verifyNoMoreInteractions()
     }
@@ -49,7 +49,7 @@ class PokemonsScreenStateTest {
 
         state.visit(view)
 
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
         Mockito.verify(view, Mockito.times(1)).setItems(list)
         verifyNoMoreInteractions()
     }
@@ -70,7 +70,7 @@ class PokemonsScreenStateTest {
         state.visit(view)
 
 
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
         Mockito.verify(view, Mockito.times(1)).setItems(listCaptor.capture())
         val capturedList = listCaptor.firstValue
         Assert.assertEquals(1, capturedList.size)
@@ -95,7 +95,7 @@ class PokemonsScreenStateTest {
         state.visit(view)
 
 
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
         Mockito.verify(view, Mockito.times(1)).setItems(listCaptor.capture())
         val capturedList = listCaptor.firstValue
         Assert.assertEquals(1, capturedList.size)
@@ -121,8 +121,9 @@ class PokemonsScreenStateTest {
 
 
         Mockito.verify(view, Mockito.times(1)).setItems(list)
-        Mockito.verify(view, Mockito.times(1)).hideProgress()
-        Mockito.verify(view, Mockito.times(2)).updateFilterButtons(activeStateCaptor.capture(), filterTypeCaptor.capture())
+        Mockito.verify(view, Mockito.times(1)).setProgressVisibility(false)
+        Mockito.verify(view, Mockito.times(2))
+            .updateFilterButtons(activeStateCaptor.capture(), filterTypeCaptor.capture())
         for (i in 0..1) {
             Assert.assertEquals(availableFilters[i], filterTypeCaptor.allValues[i])
             Assert.assertEquals(availableFilters[i] == filter[0], activeStateCaptor.allValues[i])
