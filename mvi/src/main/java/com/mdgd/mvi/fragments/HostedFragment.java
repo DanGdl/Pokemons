@@ -1,4 +1,4 @@
-package com.mdgd.mvi;
+package com.mdgd.mvi.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,17 +6,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.mdgd.mvi.states.ScreenState;
 
 import java.lang.reflect.ParameterizedType;
 
-public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
-        extends NavHostFragment
-        implements FragmentContract.View, Observer<STATE>, LifecycleObserver {
+public abstract class HostedFragment<
+        VIEW extends FragmentContract.View,
+        VIEW_MODEL extends FragmentContract.ViewModel<VIEW>,
+        HOST extends FragmentContract.Host
+        > extends NavHostFragment implements FragmentContract.View, Observer<ScreenState<VIEW>>, LifecycleEventObserver {
 
     private VIEW_MODEL model;
     private HOST fragmentHost;
@@ -29,8 +32,7 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
             fragmentHost = (HOST) context;
         } catch (Throwable e) {
             final String hostClassName = ((Class) ((ParameterizedType) getClass().
-                    getGenericSuperclass())
-                    .getActualTypeArguments()[1]).getCanonicalName();
+                    getGenericSuperclass()).getActualTypeArguments()[1]).getCanonicalName();
             throw new RuntimeException("Activity must implement " + hostClassName
                     + " to attach " + this.getClass().getSimpleName(), e);
         }
@@ -43,20 +45,21 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
         getLifecycle().addObserver(this);
         if (getModel() != null) {
             getModel().getStateObservable().observe(this, this);
+            getModel().getEffectObservable().observe(this, this);
         }
     }
 
     protected abstract VIEW_MODEL createModel();
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    public void onStateChanged(@NonNull LifecycleOwner owner, @NonNull Lifecycle.Event event) {
         if (getModel() != null) {
-            getModel().onAny(owner, event);
+            getModel().onStateChanged(event);
         }
-        if (getLifecycle().getCurrentState().ordinal() <= Lifecycle.State.DESTROYED.ordinal()) {
+        if (getLifecycle().getCurrentState().ordinal() == Lifecycle.State.DESTROYED.ordinal()) {
             getLifecycle().removeObserver(this);
             if (getModel() != null) {
                 getModel().getStateObservable().removeObservers(this);
+                getModel().getEffectObservable().removeObservers(this);
             }
         }
     }
@@ -69,8 +72,8 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
     }
 
     @Override
-    public void onChanged(STATE screenState) {
-        screenState.visit(this);
+    public void onChanged(ScreenState<VIEW> screenState) {
+        screenState.visit((VIEW) this);
     }
 
     protected boolean hasHost() {

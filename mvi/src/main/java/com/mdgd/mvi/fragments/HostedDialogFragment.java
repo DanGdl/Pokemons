@@ -1,4 +1,4 @@
-package com.mdgd.mvi;
+package com.mdgd.mvi.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,11 +8,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.lifecycle.Observer;
 
+import com.mdgd.mvi.states.ScreenState;
+
 import java.lang.reflect.ParameterizedType;
 
-public abstract class HostedDialogFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
-        extends AppCompatDialogFragment
-        implements FragmentContract.View, Observer<STATE> {
+public abstract class HostedDialogFragment<
+        VIEW extends FragmentContract.View,
+        VIEW_MODEL extends FragmentContract.ViewModel<VIEW>,
+        HOST extends FragmentContract.Host
+        > extends AppCompatDialogFragment implements FragmentContract.View, Observer<ScreenState<VIEW>> {
 
     private VIEW_MODEL model;
     private HOST fragmentHost;
@@ -49,8 +53,8 @@ public abstract class HostedDialogFragment<STATE extends ScreenState, VIEW_MODEL
     }
 
     @Override
-    public void onChanged(STATE state) {
-
+    public void onChanged(ScreenState<VIEW> screenState) {
+        screenState.visit((VIEW) this);
     }
 
     @Override
@@ -80,6 +84,4 @@ public abstract class HostedDialogFragment<STATE extends ScreenState, VIEW_MODEL
     protected void setModel(VIEW_MODEL model) {
         this.model = model;
     }
-
-
 }

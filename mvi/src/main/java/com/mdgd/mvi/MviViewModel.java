@@ -2,28 +2,35 @@ package com.mdgd.mvi;
 
 import androidx.annotation.CallSuper;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModel;
+
+import com.mdgd.mvi.fragments.FragmentContract;
+import com.mdgd.mvi.states.AbstractState;
+import com.mdgd.mvi.states.ScreenState;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public abstract class MviViewModel<T> extends ViewModel implements FragmentContract.ViewModel<T> {
+public abstract class MviViewModel<VIEW, STATE extends AbstractState<VIEW, STATE>> extends ViewModel implements FragmentContract.ViewModel<VIEW> {
     private final CompositeDisposable onStopDisposables = new CompositeDisposable();
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
-    private final MutableLiveData<T> stateHolder = new MutableLiveData<>();
+    private final MutableLiveData<ScreenState<VIEW>> stateHolder = new MutableLiveData<>();
+    private final MutableLiveData<ScreenState<VIEW>> effectHolder = new MutableLiveData<>();
 
     @Override
-    public LiveData<T> getStateObservable() {
+    public LiveData<ScreenState<VIEW>> getStateObservable() {
         return stateHolder;
     }
 
+    @Override
+    public LiveData<ScreenState<VIEW>> getEffectObservable() {
+        return effectHolder;
+    }
+
     @CallSuper
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    public void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    public void onStateChanged(Lifecycle.Event event) {
         if (event == Lifecycle.Event.ON_STOP) {
             onStopDisposables.clear();
         }
@@ -40,12 +47,16 @@ public abstract class MviViewModel<T> extends ViewModel implements FragmentContr
         onDestroyDisposables.addAll(subscriptions);
     }
 
-    protected void setState(T state) {
+    protected void setState(STATE state) {
+        STATE current = (STATE) effectHolder.getValue();
+        if (current != null) {
+            state = state.merge(current);
+        }
         stateHolder.setValue(state);
     }
 
-    protected void postState(T state) {
-        stateHolder.postValue(state);
+    protected void setEffect(ScreenState<VIEW> effect) {
+        effectHolder.setValue(effect);
     }
 
     protected boolean hasOnDestroyDisposables() {
@@ -55,10 +66,4 @@ public abstract class MviViewModel<T> extends ViewModel implements FragmentContr
     protected boolean hasOStopDisposables() {
         return onStopDisposables.size() != 0;
     }
-
-    protected T getLastState() {
-        return stateHolder.getValue() == null ? getDefaultState() : stateHolder.getValue();
-    }
-
-    protected abstract T getDefaultState();
 }
