@@ -3,6 +3,7 @@ package com.mdgd.pokemon.models;
 import android.content.Context;
 
 import com.mdgd.pokemon.models.cache.Cache;
+import com.mdgd.pokemon.models.filters.StatsFilter;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao;
 import com.mdgd.pokemon.models.repo.network.Network;
@@ -18,4 +19,6 @@ public interface AppModule {
     PokemonsRepo getPokemonsRepo();
 
     Cache getCache();
+
+    StatsFilter getStatsFilters();
 }

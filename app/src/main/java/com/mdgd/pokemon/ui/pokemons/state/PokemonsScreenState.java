@@ -9,44 +9,78 @@ import java.util.List;
 
 public class PokemonsScreenState extends AbstractState<PokemonsContract.View, PokemonsScreenState> {
 
-    private final List<PokemonFullDataSchema> list;
-    private final boolean isLoading;
+    protected final List<PokemonFullDataSchema> list;
+    protected final List<String> availableFilters;
+    protected final List<String> activeFilters;
+    protected final boolean isLoading;
 
-    public PokemonsScreenState(List<PokemonFullDataSchema> list, boolean isLoading) {
+    public PokemonsScreenState(
+            List<PokemonFullDataSchema> list, boolean isLoading,
+            List<String> availableFilters, List<String> activeFilters
+    ) {
         this.list = list;
         this.isLoading = isLoading;
+        this.availableFilters = availableFilters;
+        this.activeFilters = activeFilters;
     }
 
     @Override
-    public void visit(PokemonsContract.View pokemonsScreen) {
-        pokemonsScreen.setProgressVisibility(isLoading);
-        pokemonsScreen.setItems(list);
+    public void visit(PokemonsContract.View screen) {
+        screen.setProgressVisibility(isLoading);
+        screen.setItems(list);
+        for (String filter : availableFilters) {
+            screen.updateFilterButtons(activeFilters.contains(filter), filter);
+        }
     }
 
     public static class SetItems extends PokemonsScreenState {
 
-        public SetItems(List<PokemonFullDataSchema> items) {
-            super(items, false);
+        public SetItems(List<PokemonFullDataSchema> items, List<String> availableFilters) {
+            super(items, false, availableFilters, new ArrayList<>(0));
+        }
+
+        @Override
+        public PokemonsScreenState merge(PokemonsScreenState prevState) {
+            return new PokemonsScreenState(prevState.list, prevState.isLoading, prevState.availableFilters, activeFilters);
         }
     }
 
     public static class AddItems extends PokemonsScreenState {
 
         public AddItems(List<PokemonFullDataSchema> items) {
-            super(items, false);
+            super(items, false, new ArrayList<>(0), new ArrayList<>(0));
         }
 
         @Override
         public PokemonsScreenState merge(PokemonsScreenState prevState) {
-            // TODO: impl
-            return super.merge(prevState);
+            List<PokemonFullDataSchema> list1 = new ArrayList<>(prevState.list.size() + list.size());
+            list1.addAll(prevState.list);
+            list1.addAll(list);
+            return new PokemonsScreenState(list1, false, prevState.availableFilters, prevState.activeFilters);
         }
     }
 
     public static class SetProgressVisibility extends PokemonsScreenState {
 
         public SetProgressVisibility(boolean isLoading) {
-            super(new ArrayList<>(0), isLoading);
+            super(new ArrayList<>(0), isLoading, new ArrayList<>(0), new ArrayList<>(0));
+        }
+
+        @Override
+        public PokemonsScreenState merge(PokemonsScreenState prevState) {
+            return new PokemonsScreenState(prevState.list, isLoading, prevState.availableFilters, prevState.activeFilters);
+        }
+    }
+
+    public static class ChangeFilterState extends PokemonsScreenState {
+
+        public ChangeFilterState(List<String> filters) {
+            super(new ArrayList<>(0), false, new ArrayList<>(0), filters);
+        }
+
+        @Override
+        public PokemonsScreenState merge(PokemonsScreenState prevState) {
+            return new PokemonsScreenState(prevState.list, prevState.isLoading, prevState.availableFilters, activeFilters);
         }
     }
 }

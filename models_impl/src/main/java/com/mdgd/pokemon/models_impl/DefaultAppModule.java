@@ -4,11 +4,13 @@ import android.content.Context;
 
 import com.mdgd.pokemon.models.AppModule;
 import com.mdgd.pokemon.models.cache.Cache;
+import com.mdgd.pokemon.models.filters.StatsFilter;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.cache.PokemonsCache;
 import com.mdgd.pokemon.models.repo.dao.PokemonsDao;
 import com.mdgd.pokemon.models.repo.network.Network;
 import com.mdgd.pokemon.models_impl.cache.CacheImpl;
+import com.mdgd.pokemon.models_impl.filters.StatsFiltersFactory;
 import com.mdgd.pokemon.models_impl.repo.PokemonsRepository;
 import com.mdgd.pokemon.models_impl.repo.cache.PokemonsCacheImpl;
 import com.mdgd.pokemon.models_impl.repo.dao.PokemonsDaoImpl;
@@ -43,5 +45,9 @@ public class DefaultAppModule implements AppModule {
 
     public Cache getCache() {
         return cache;
+    }
+
+    public StatsFilter getStatsFilters() {
+        return new StatsFiltersFactory();
     }
 }

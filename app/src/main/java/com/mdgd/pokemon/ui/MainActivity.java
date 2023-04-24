@@ -11,7 +11,6 @@ import com.mdgd.mvi.HostActivity;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.error.ErrorFragment;
 import com.mdgd.pokemon.ui.pokemon.PokemonDetailsContract;
-import com.mdgd.pokemon.ui.pokemon.PokemonDetailsFragmentArgs;
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract;
 import com.mdgd.pokemon.ui.splash.SplashContract;
 
@@ -44,8 +43,8 @@ public class MainActivity extends HostActivity implements SplashContract.Host, P
 
     @Override
     public void proceedToPokemonScreen(long id) {
-        navController.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment,
-                new PokemonDetailsFragmentArgs(id).toBundle());
+//        navController.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment,
+//                new PokemonDetailsFragmentArgs(id).toBundle());
     }
 
     @Override

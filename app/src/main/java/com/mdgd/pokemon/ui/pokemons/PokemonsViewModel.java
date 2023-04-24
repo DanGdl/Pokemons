@@ -4,17 +4,16 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.Lifecycle;
 
 import com.mdgd.mvi.MviViewModel;
+import com.mdgd.pokemon.models.filters.CharacteristicComparator;
+import com.mdgd.pokemon.models.filters.FilterData;
+import com.mdgd.pokemon.models.filters.StatsFilter;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.models.repo.schemas.Stat;
-import com.mdgd.pokemon.ui.pokemons.infra.CharacteristicComparator;
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect;
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,31 +26,12 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
 
     private final PublishSubject<Integer> loadPageSubject = PublishSubject.create();
     private final BehaviorSubject<FilterData> filtersSubject = BehaviorSubject.createDefault(new FilterData());
+    private final StatsFilter statsFilters;
     private final PokemonsRepo repo;
-    private final Map<String, CharacteristicComparator> comparators = new HashMap<String, CharacteristicComparator>() {{
-        put(FilterData.FILTER_ATTACK, (p1, p2) -> compareProperty("attack", p1, p2));
-        put(FilterData.FILTER_DEFENCE, (p1, p2) -> compareProperty("defense", p1, p2));
-        put(FilterData.FILTER_SPEED, (p1, p2) -> compareProperty("speed", p1, p2));
-    }};
 
-    public PokemonsViewModel(PokemonsRepo repo) {
+    public PokemonsViewModel(PokemonsRepo repo, StatsFilter statsFilters) {
         this.repo = repo;
-    }
-
-    private int compareProperty(String property, PokemonFullDataSchema p1, PokemonFullDataSchema p2) {
-        int val1 = -1;
-        for (Stat s : p1.getStats()) {
-            if (property.equals(s.getStat().getName())) {
-                val1 = s.getBaseStat();
-            }
-        }
-        int val2 = -1;
-        for (Stat s : p2.getStats()) {
-            if (property.equals(s.getStat().getName())) {
-                val2 = s.getBaseStat();
-            }
-        }
-        return Integer.compare(val1, val2);
+        this.statsFilters = statsFilters;
     }
 
     @Override
@@ -81,11 +61,12 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
     private PokemonsScreenState sort(FilterData filters, List<PokemonFullDataSchema> pokemons) {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
         if (!filters.isEmpty()) {
+            final Map<String, CharacteristicComparator> comparatorMap = statsFilters.getFilters();
             Collections.sort(pokemons, (pokemon1, pokemon2) -> {
                 int compare = 0;
                 for (String filter : filters.getFilters()) {
-                    if (comparators.get(filter) != null) {
-                        compare = comparators.get(filter).compare(pokemon2, pokemon1); // swap, instead of multiply on -1
+                    if (comparatorMap.get(filter) != null) {
+                        compare = comparatorMap.get(filter).compare(pokemon2, pokemon1); // swap, instead of multiply on -1
                         if (compare != 0) {
                             break;
                         }
@@ -94,7 +75,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
                 return compare;
             });
         }
-        return new PokemonsScreenState.SetItems(pokemons);
+        return new PokemonsScreenState.SetItems(pokemons, statsFilters.getAvailableFilters());
     }
 
     private void handleResult(Pair<Integer, Result<List<PokemonFullDataSchema>>> pair) {
@@ -103,7 +84,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
         } else {
             final List<PokemonFullDataSchema> list = pair.second.getValue();
             if (pair.first == 0) {
-                setState(new PokemonsScreenState.SetItems(list));
+                setState(new PokemonsScreenState.SetItems(list, statsFilters.getAvailableFilters()));
             } else {
                 setState(new PokemonsScreenState.AddItems(list));
             }

@@ -17,7 +17,7 @@ public class PokemonsViewModelFactory extends ViewModelProvider.NewInstanceFacto
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass == PokemonsViewModel.class) {
-            return (T) new PokemonsViewModel(appComponent.getPokemonsRepo());
+            return (T) new PokemonsViewModel(appComponent.getPokemonsRepo(), appComponent.getStatsFilters());
         }
         return null;
     }

@@ -17,10 +17,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.mdgd.mvi.fragments.HostedFragment;
 import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
+import com.mdgd.pokemon.models.filters.FilterData;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -28,11 +28,9 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class PokemonsFragment extends HostedFragment<PokemonsContract.View, PokemonsContract.ViewModel, PokemonsContract.Host>
         implements PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private final List<String> filters = new ArrayList<>(3);
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final PokemonsAdapter adapter = new PokemonsAdapter();
     private SwipeRefreshLayout refreshSwipe;
-    // maybe paging library?
     private final EndlessScrollListener scrollListener = new EndlessScrollListener() {
         @Override
         public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -42,7 +40,6 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
             getModel().loadPage(page);
         }
     };
-    private RecyclerView recyclerView;
     private ImageButton filterAttack;
     private ImageButton filterDefence;
     private ImageButton filterSpeed;
@@ -73,7 +70,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.pokemons_recycler);
+        final RecyclerView recyclerView = view.findViewById(R.id.pokemons_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setAdapter(adapter);
@@ -92,9 +89,47 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     }
 
     @Override
+    public void onDestroyView() {
+        refresh = null;
+        refreshSwipe = null;
+        filterAttack = null;
+        filterDefence = null;
+        filterSpeed = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void proceedToNextScreen(long id) {
         if (hasHost()) {
             getFragmentHost().proceedToPokemonScreen(id);
+        }
+    }
+
+    @Override
+    public void updateFilterButtons(boolean isActive, String filter) {
+        final ImageButton view;
+        switch (filter) {
+            case FilterData.FILTER_ATTACK:
+                view = filterAttack;
+                break;
+
+            case FilterData.FILTER_DEFENCE:
+                view = filterDefence;
+                break;
+
+            case FilterData.FILTER_SPEED:
+                view = filterSpeed;
+                break;
+            default:
+                view = null;
+        }
+        if (view == null) {
+            return;
+        }
+        if (isActive) {
+            view.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_active));
+        } else {
+            view.setColorFilter(ContextCompat.getColor(requireContext(), R.color.filter_inactive));
         }
     }
 
@@ -106,23 +141,12 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
             }
         } else {
             if (filterAttack == view) {
-                setupFilter(filterAttack, FilterData.FILTER_ATTACK);
+                getModel().sort(new FilterData(Arrays.asList(FilterData.FILTER_ATTACK)));
             } else if (filterDefence == view) {
-                setupFilter(filterDefence, FilterData.FILTER_DEFENCE);
+                getModel().sort(new FilterData(Arrays.asList(FilterData.FILTER_DEFENCE)));
             } else if (filterSpeed == view) {
-                setupFilter(filterSpeed, FilterData.FILTER_SPEED);
+                getModel().sort(new FilterData(Arrays.asList(FilterData.FILTER_SPEED)));
             }
-            getModel().sort(new FilterData(new ArrayList<>(filters)));
-        }
-    }
-
-    private void setupFilter(ImageButton filterView, String filterTag) {
-        if (filters.contains(filterTag)) {
-            filters.remove(filterTag);
-            filterView.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_inactive));
-        } else {
-            filters.add(filterTag);
-            filterView.setColorFilter(ContextCompat.getColor(getContext(), R.color.filter_active));
         }
     }
 
@@ -148,12 +172,6 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     @Override
     public void setItems(List<PokemonFullDataSchema> list) {
         adapter.setItems(list);
-    }
-
-    @Override
-    public void updateItems(List<PokemonFullDataSchema> list) {
-        adapter.updateItems(list);
-        recyclerView.scrollToPosition(0);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.mdgd.pokemon.ui.pokemons;
 
 import com.mdgd.mvi.fragments.FragmentContract;
+import com.mdgd.pokemon.models.filters.FilterData;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
-import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ public class PokemonsContract {
 
         void setItems(List<PokemonFullDataSchema> list);
 
-        void updateItems(List<PokemonFullDataSchema> list);
-
         void showError(Throwable error);
 
         void proceedToNextScreen(long id);
+
+        void updateFilterButtons(boolean isActive, String filter);
     }
 
     public interface Host extends FragmentContract.Host {
