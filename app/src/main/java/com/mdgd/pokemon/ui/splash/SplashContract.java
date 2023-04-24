@@ -1,10 +1,10 @@
 package com.mdgd.pokemon.ui.splash;
 
-import com.mdgd.mvi.FragmentContract;
+import com.mdgd.mvi.fragments.FragmentContract;
 
 public class SplashContract {
 
-    public interface ViewModel extends FragmentContract.ViewModel<SplashScreenState> {
+    public interface ViewModel extends FragmentContract.ViewModel<View> {
     }
 
     public interface View extends FragmentContract.View {

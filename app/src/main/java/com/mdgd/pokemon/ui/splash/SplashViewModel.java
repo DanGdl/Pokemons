@@ -1,17 +1,18 @@
 package com.mdgd.pokemon.ui.splash;
 
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.mdgd.mvi.MviViewModel;
 import com.mdgd.pokemon.models.cache.Cache;
+import com.mdgd.pokemon.ui.splash.state.SplashScreenEffect;
+import com.mdgd.pokemon.ui.splash.state.SplashScreenState;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 
-public class SplashViewModel extends MviViewModel<SplashScreenState> implements SplashContract.ViewModel {
+public class SplashViewModel extends MviViewModel<SplashContract.View, SplashScreenState> implements SplashContract.ViewModel {
 
     private final Cache cache;
 
@@ -20,32 +21,29 @@ public class SplashViewModel extends MviViewModel<SplashScreenState> implements 
     }
 
     @Override
-    public void onAny(LifecycleOwner owner, Lifecycle.Event event) {
-        super.onAny(owner, event);
+    public void onStateChanged(Lifecycle.Event event) {
+        super.onStateChanged(event);
         if (event == Lifecycle.Event.ON_START && !hasOnDestroyDisposables()) {
             observeTillDestroy(
                     Observable.combineLatest(
-                            Observable.timer(1, TimeUnit.SECONDS)
-                                    .observeOn(AndroidSchedulers.mainThread()),
-                            cache.getProgressObservable()
-                                    .skip(1) // skip default value
-                                    .observeOn(AndroidSchedulers.mainThread()),
-                            (e, result) -> result)
+                                    Observable.timer(1, TimeUnit.SECONDS)
+                                            .observeOn(AndroidSchedulers.mainThread()),
+
+                                    cache.getProgressObservable()
+                                            .skip(1) // skip default value
+                                            .observeOn(AndroidSchedulers.mainThread()),
+
+                                    (e, result) -> result)
                             .firstOrError()
                             // .map(e -> new Result<Long>(new Throwable("Dummy error"))) // error test
                             .subscribe(value -> {
                                 if (value.isError()) {
-                                    setState(SplashScreenState.createShowError(value.getError()));
+                                    setEffect(new SplashScreenEffect.ShowErrorEffect(value.getError()));
                                 } else if (value.getValue() != 0L) {
-                                    setState(SplashScreenState.createNextScreen());
+                                    setEffect(new SplashScreenEffect.ProceedToNextScreeEffect());
                                 }
-                            }, e -> setState(SplashScreenState.createShowError(e))));
-            setState(SplashScreenState.createLaunchWorkerState());
+                            }, e -> setEffect(new SplashScreenEffect.ShowErrorEffect(e))));
+            setEffect(new SplashScreenEffect.LaunchWorkerEffect());
         }
-    }
-
-    @Override
-    protected SplashScreenState getDefaultState() {
-        return SplashScreenState.createDefaultState();
     }
 }

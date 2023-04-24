@@ -12,12 +12,12 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
-import com.mdgd.mvi.HostedFragment;
+import com.mdgd.mvi.fragments.HostedFragment;
 import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.bg.UploadWorker;
 
-public class SplashFragment extends HostedFragment<SplashScreenState, SplashContract.ViewModel, SplashContract.Host> implements SplashContract.View {
+public class SplashFragment extends HostedFragment<SplashContract.View, SplashContract.ViewModel, SplashContract.Host> implements SplashContract.View {
 
     public static SplashFragment newInstance() {
         return new SplashFragment();
