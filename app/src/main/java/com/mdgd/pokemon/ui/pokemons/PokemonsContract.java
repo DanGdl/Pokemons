@@ -1,15 +1,14 @@
 package com.mdgd.pokemon.ui.pokemons;
 
-import com.mdgd.mvi.FragmentContract;
+import com.mdgd.mvi.fragments.FragmentContract;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
 import java.util.List;
 
 public class PokemonsContract {
 
-    public interface ViewModel extends FragmentContract.ViewModel<PokemonsScreenState> {
+    public interface ViewModel extends FragmentContract.ViewModel<View> {
         void reload();
 
         void loadPage(int page);
@@ -21,9 +20,7 @@ public class PokemonsContract {
     }
 
     public interface View extends FragmentContract.View {
-        void showProgress();
-
-        void hideProgress();
+        void setProgressVisibility(boolean isVisible);
 
         void setItems(List<PokemonFullDataSchema> list);
 

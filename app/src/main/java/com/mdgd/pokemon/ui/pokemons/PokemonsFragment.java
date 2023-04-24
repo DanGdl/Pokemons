@@ -14,19 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.mdgd.mvi.HostedFragment;
+import com.mdgd.mvi.fragments.HostedFragment;
 import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.pokemons.infra.FilterData;
-import com.mdgd.pokemon.ui.pokemons.infra.PokemonsScreenState;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-public class PokemonsFragment extends HostedFragment<PokemonsScreenState, PokemonsContract.ViewModel, PokemonsContract.Host>
+public class PokemonsFragment extends HostedFragment<PokemonsContract.View, PokemonsContract.ViewModel, PokemonsContract.Host>
         implements PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private final List<String> filters = new ArrayList<>(3);
@@ -140,16 +139,9 @@ public class PokemonsFragment extends HostedFragment<PokemonsScreenState, Pokemo
     }
 
     @Override
-    public void showProgress() {
-        if (refreshSwipe != null && !refreshSwipe.isRefreshing()) {
-            refreshSwipe.setRefreshing(true);
-        }
-    }
-
-    @Override
-    public void hideProgress() {
-        if (refreshSwipe != null && refreshSwipe.isRefreshing()) {
-            refreshSwipe.setRefreshing(false);
+    public void setProgressVisibility(boolean isVisible) {
+        if (refreshSwipe != null && refreshSwipe.isRefreshing() != isVisible) {
+            refreshSwipe.setRefreshing(isVisible);
         }
     }
 
