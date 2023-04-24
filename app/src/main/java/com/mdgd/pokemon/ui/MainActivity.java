@@ -44,10 +44,8 @@ public class MainActivity extends HostActivity implements SplashContract.Host, P
 
     @Override
     public void proceedToPokemonScreen(long id) {
-        navController.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment, new PokemonDetailsFragmentArgs.Builder()
-                .setPokemonId(id)
-                .build()
-                .toBundle());
+        navController.navigate(R.id.action_pokemonsFragment_to_pokemonDetailsFragment,
+                new PokemonDetailsFragmentArgs(id).toBundle());
     }
 
     @Override

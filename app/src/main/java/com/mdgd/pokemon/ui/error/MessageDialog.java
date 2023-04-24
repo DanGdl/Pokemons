@@ -1,11 +1,13 @@
 package com.mdgd.pokemon.ui.error;
 
-import com.mdgd.mvi.FragmentContract;
-import com.mdgd.mvi.HostedDialogFragment;
-import com.mdgd.mvi.ScreenState;
+import com.mdgd.mvi.fragments.FragmentContract;
+import com.mdgd.mvi.fragments.HostedDialogFragment;
 
-public abstract class MessageDialog<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
-        extends HostedDialogFragment<STATE, VIEW_MODEL, HOST> {
+public abstract class MessageDialog<
+        VIEW extends FragmentContract.View,
+        VIEW_MODEL extends FragmentContract.ViewModel<VIEW>,
+        HOST extends FragmentContract.Host
+        > extends HostedDialogFragment<VIEW, VIEW_MODEL, HOST> {
 
     protected static final String KEY_TITLE = "key_title";
     protected static final String KEY_MSG = "key_msg";

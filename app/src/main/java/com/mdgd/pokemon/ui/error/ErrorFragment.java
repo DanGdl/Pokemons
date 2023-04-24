@@ -10,8 +10,9 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.mdgd.pokemon.R;
 
-public class ErrorFragment extends MessageDialog<ErrorFragmentState, ErrorContract.ViewModel, ErrorContract.Host>
-        implements ErrorContract.View, DialogInterface.OnClickListener {
+public class ErrorFragment extends MessageDialog<
+        ErrorContract.View, ErrorContract.ViewModel, ErrorContract.Host
+        > implements ErrorContract.View, DialogInterface.OnClickListener {
 
     private Throwable error;
 

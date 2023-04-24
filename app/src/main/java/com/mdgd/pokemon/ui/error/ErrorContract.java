@@ -1,10 +1,10 @@
 package com.mdgd.pokemon.ui.error;
 
-import com.mdgd.mvi.FragmentContract;
+import com.mdgd.mvi.fragments.FragmentContract;
 
 public class ErrorContract {
 
-    public interface ViewModel extends FragmentContract.ViewModel<ErrorFragmentState> {
+    public interface ViewModel extends FragmentContract.ViewModel<View> {
     }
 
     public interface View extends FragmentContract.View {
