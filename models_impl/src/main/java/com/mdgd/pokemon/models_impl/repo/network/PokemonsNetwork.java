@@ -47,8 +47,7 @@ public class PokemonsNetwork implements Network {
     public Single<Result<List<PokemonDetails>>> loadPokemons(Integer page, int pageSize) {
         final int i = Math.max(page - 1, 0);
         return service.loadPage(pageSize, i * pageSize)
-                .flatMap(result -> mapToDetails(result, pageSize)
-                        .firstOrError())
+                .flatMap(result -> mapToDetails(result, pageSize).firstOrError())
                 .map(Result::new)
                 .onErrorReturn(Result::new);
     }
@@ -90,12 +89,10 @@ public class PokemonsNetwork implements Network {
             lists.add(list.subList(start, list.size()));
         }
 
-        return Observable.fromIterable(lists)
-                .flatMap(bulk -> Observable.fromIterable(bulk)
-                        .flatMap(data -> service.getPokemonsDetails(data.getUrl())
-                                .toObservable())
-                        .collectInto(new ArrayList<PokemonDetails>(), ArrayList::add)
-                        .toObservable()
-                        .map(collected -> collected));
+        return Observable.fromIterable(lists).flatMap(bulk -> Observable.fromIterable(bulk)
+                .flatMap(data -> service.getPokemonsDetails(data.getUrl()).toObservable())
+                .collectInto(new ArrayList<PokemonDetails>(), ArrayList::add)
+                .toObservable()
+                .map(collected -> collected));
     }
 }

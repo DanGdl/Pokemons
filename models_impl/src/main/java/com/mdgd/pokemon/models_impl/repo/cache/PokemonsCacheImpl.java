@@ -34,8 +34,6 @@ public class PokemonsCacheImpl implements PokemonsCache {
 
     @Override
     public Observable<List<PokemonFullDataSchema>> getPokemonsObservable() {
-        return pokemons
-                .map(list -> (List<PokemonFullDataSchema>) new ArrayList<>(list))
-                .hide();
+        return pokemons.map(list -> (List<PokemonFullDataSchema>) new ArrayList<>(list)).hide();
     }
 }

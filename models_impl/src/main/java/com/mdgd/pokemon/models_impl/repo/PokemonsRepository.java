@@ -26,46 +26,42 @@ public class PokemonsRepository implements PokemonsRepo {
 
     @Override
     public Single<Result<List<PokemonFullDataSchema>>> getPage(Integer page) {
-        return getPageFromDao(page)
-                .flatMap(result -> {
-                    if (result.isError()) {
-                        return Single.just(new Result<>(result.getError()));
-                    } else {
-                        final List<PokemonFullDataSchema> list = result.getValue();
-                        return list.isEmpty() ? loadPage(page) : Single.just(new Result<>(list));
-                    }
-                });
+        return getPageFromDao(page).flatMap(result -> {
+            if (result.isError()) {
+                return Single.just(new Result<>(result.getError()));
+            } else {
+                final List<PokemonFullDataSchema> list = result.getValue();
+                return list.isEmpty() ? loadPage(page) : Single.just(new Result<>(list));
+            }
+        });
     }
 
     private Single<Result<List<PokemonFullDataSchema>>> getPageFromDao(int page) {
-        return dao.getPage(page, PokemonsRepo.PAGE_SIZE)
-                .map(result -> {
-                    if (!result.isError() && !result.getValue().isEmpty()) {
-                        List<PokemonFullDataSchema> list = result.getValue();
-                        if (page == 0) {
-                            cache.setPokemons(list);
-                        } else {
-                            cache.addPokemons(list);
-                        }
-                    }
-                    return result;
-                });
+        return dao.getPage(page, PokemonsRepo.PAGE_SIZE).map(result -> {
+            if (!result.isError() && !result.getValue().isEmpty()) {
+                List<PokemonFullDataSchema> list = result.getValue();
+                if (page == 0) {
+                    cache.setPokemons(list);
+                } else {
+                    cache.addPokemons(list);
+                }
+            }
+            return result;
+        });
     }
 
     @Override
     public Observable<Result<Long>> loadPokemons() {
         final long count = dao.getCount();
-        return network.getPokemonsCount()
-                .flatMapObservable(result -> {
-                    if (result.isError()) {
-                        return Observable.just(new Result<>(result.getError()));
-                    } else if (count == result.getValue()) {
-                        return Observable.just(new Result<>(count));
-                    } else {
-                        return loadPokemonsInner();
-                    }
-                });
-
+        return network.getPokemonsCount().flatMapObservable(result -> {
+            if (result.isError()) {
+                return Observable.just(new Result<>(result.getError()));
+            } else if (count == result.getValue()) {
+                return Observable.just(new Result<>(count));
+            } else {
+                return loadPokemonsInner();
+            }
+        });
     }
 
     @Override
@@ -98,14 +94,12 @@ public class PokemonsRepository implements PokemonsRepo {
     }
 
     private Single<Result<List<PokemonFullDataSchema>>> loadPage(Integer page) {
-        return network.loadPokemons(page, PAGE_SIZE)
-                .flatMap(result -> {
-                    if (result.isError()) {
-                        return Single.just(new Result<>(result.getError()));
-                    } else {
-                        return dao.save(result.getValue())
-                                .andThen(getPageFromDao(page));
-                    }
-                });
+        return network.loadPokemons(page, PAGE_SIZE).flatMap(result -> {
+            if (result.isError()) {
+                return Single.just(new Result<>(result.getError()));
+            } else {
+                return dao.save(result.getValue()).andThen(getPageFromDao(page));
+            }
+        });
     }
 }
