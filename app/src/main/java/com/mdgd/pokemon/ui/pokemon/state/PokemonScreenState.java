@@ -14,6 +14,10 @@ public class PokemonScreenState extends AbstractState<PokemonDetailsContract.Vie
         this.items = items;
     }
 
+    public void visit(PokemonDetailsContract.View screen) {
+        screen.setItems(items);
+    }
+
 
     public static class SetItems extends PokemonScreenState {
 
@@ -21,8 +25,5 @@ public class PokemonScreenState extends AbstractState<PokemonDetailsContract.Vie
             super(items);
         }
 
-        public void visit(PokemonDetailsContract.View screen) {
-            screen.setItems(items);
-        }
     }
 }
