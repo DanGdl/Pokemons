@@ -5,17 +5,9 @@ import com.mdgd.pokemon.ui.splash.SplashContract;
 
 public class SplashScreenEffect extends AbstractEffect<SplashContract.View> {
 
-    protected final Throwable error;
-
-    public SplashScreenEffect(Throwable e) {
-        error = e;
-    }
-
-
     public static class LaunchWorkerEffect extends SplashScreenEffect {
 
         public LaunchWorkerEffect() {
-            super(null);
         }
 
         @Override
@@ -26,8 +18,10 @@ public class SplashScreenEffect extends AbstractEffect<SplashContract.View> {
 
     public static class ShowErrorEffect extends SplashScreenEffect {
 
+        private final Throwable error;
+
         public ShowErrorEffect(Throwable e) {
-            super(e);
+            error = e;
         }
 
         @Override
@@ -39,7 +33,6 @@ public class SplashScreenEffect extends AbstractEffect<SplashContract.View> {
     public static class ProceedToNextScreeEffect extends SplashScreenEffect {
 
         public ProceedToNextScreeEffect() {
-            super(null);
         }
 
         @Override
