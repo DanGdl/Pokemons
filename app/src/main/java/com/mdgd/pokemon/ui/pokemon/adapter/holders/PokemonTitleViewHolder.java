@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
-import com.mdgd.pokemon.ui.pokemon.infra.TitleProperty;
+import com.mdgd.pokemon.ui.pokemon.items.TitleProperty;
 
 public class PokemonTitleViewHolder extends PokemonPropertyViewHolder<TitleProperty> {
 

@@ -11,16 +11,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mdgd.mvi.HostedFragment;
+import com.mdgd.mvi.fragments.HostedFragment;
 import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertiesAdapter;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
+import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
 
 import java.util.List;
 
-public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsScreenState, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>
+public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsContract.View, PokemonDetailsContract.ViewModel, PokemonDetailsContract.Host>
         implements PokemonDetailsContract.View {
 
     private final PokemonPropertiesAdapter adapter = new PokemonPropertiesAdapter();

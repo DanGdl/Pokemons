@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.pokemon;
 
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.mdgd.mvi.MviViewModel;
 import com.mdgd.pokemon.R;
@@ -13,12 +12,12 @@ import com.mdgd.pokemon.models.repo.schemas.Form;
 import com.mdgd.pokemon.models.repo.schemas.GameIndex;
 import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.mdgd.pokemon.models.repo.schemas.Type;
-import com.mdgd.pokemon.ui.pokemon.infra.ImagePropertyData;
-import com.mdgd.pokemon.ui.pokemon.infra.LabelPropertyData;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
-import com.mdgd.pokemon.ui.pokemon.infra.TextPropertyData;
-import com.mdgd.pokemon.ui.pokemon.infra.TitlePropertyData;
+import com.mdgd.pokemon.ui.pokemon.items.ImagePropertyData;
+import com.mdgd.pokemon.ui.pokemon.items.LabelPropertyData;
+import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
+import com.mdgd.pokemon.ui.pokemon.items.TextPropertyData;
+import com.mdgd.pokemon.ui.pokemon.items.TitlePropertyData;
+import com.mdgd.pokemon.ui.pokemon.state.PokemonScreenState;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -28,7 +27,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenState> implements PokemonDetailsContract.ViewModel {
+public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract.View, PokemonScreenState> implements PokemonDetailsContract.ViewModel {
 
     private final BehaviorSubject<Long> pokemonIdSubject = BehaviorSubject.create();
     private final PokemonsRepo repo;
@@ -43,15 +42,15 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenSt
     }
 
     @Override
-    public void onAny(LifecycleOwner owner, Lifecycle.Event event) {
-        super.onAny(owner, event);
+    public void onStateChanged(Lifecycle.Event event) {
+        super.onStateChanged(event);
         if (event == Lifecycle.Event.ON_CREATE && !hasOnDestroyDisposables()) {
             observeTillDestroy(pokemonIdSubject
                     .switchMap(repo::getPokemonsById)
                     .map(optional -> optional.isPresent() ? mapToListPokemon(optional.get()) : new LinkedList<PokemonProperty>())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(list -> setState(PokemonDetailsScreenState.createSetDataState(list))));
+                    .subscribe(list -> setState(new PokemonScreenState.SetItems(list))));
         }
     }
 
@@ -113,10 +112,5 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsScreenSt
         }
         properties.add(new TextPropertyData(gameIndicesText.toString(), 1));
         return properties;
-    }
-
-    @Override
-    protected PokemonDetailsScreenState getDefaultState() {
-        return PokemonDetailsScreenState.createSetDataState(new ArrayList(0));
     }
 }

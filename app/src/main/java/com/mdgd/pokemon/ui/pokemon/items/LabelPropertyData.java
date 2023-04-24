@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.items;
 
 public class LabelPropertyData extends TitlePropertyData implements LabelProperty {
 

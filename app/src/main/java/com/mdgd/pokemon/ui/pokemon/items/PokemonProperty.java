@@ -1,4 +1,4 @@
-package com.mdgd.pokemon.ui.pokemon.infra;
+package com.mdgd.pokemon.ui.pokemon.items;
 
 public interface PokemonProperty {
     int PROPERTY_IMAGE = 1;

@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
-import com.mdgd.pokemon.ui.pokemon.infra.LabelProperty;
+import com.mdgd.pokemon.ui.pokemon.items.LabelProperty;
 
 public class PokemonLabelViewHolder extends PokemonPropertyViewHolder<LabelProperty> {
 

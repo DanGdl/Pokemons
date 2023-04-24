@@ -1,14 +1,13 @@
 package com.mdgd.pokemon.ui.pokemon;
 
-import com.mdgd.mvi.FragmentContract;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonDetailsScreenState;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
+import com.mdgd.mvi.fragments.FragmentContract;
+import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
 
 import java.util.List;
 
 public class PokemonDetailsContract {
 
-    public interface ViewModel extends FragmentContract.ViewModel<PokemonDetailsScreenState> {
+    public interface ViewModel extends FragmentContract.ViewModel<View> {
         void setPokemonId(long pokemonId);
     }
 

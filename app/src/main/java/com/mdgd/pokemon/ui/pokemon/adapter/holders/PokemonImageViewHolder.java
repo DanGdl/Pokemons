@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
-import com.mdgd.pokemon.ui.pokemon.infra.ImageProperty;
+import com.mdgd.pokemon.ui.pokemon.items.ImageProperty;
 import com.squareup.picasso.Picasso;
 
 public class PokemonImageViewHolder extends PokemonPropertyViewHolder<ImageProperty> {

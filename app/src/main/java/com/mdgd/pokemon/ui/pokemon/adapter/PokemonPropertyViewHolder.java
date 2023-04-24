@@ -5,7 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
+import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
 
 public abstract class PokemonPropertyViewHolder<T extends PokemonProperty> extends RecyclerView.ViewHolder {
 

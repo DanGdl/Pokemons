@@ -12,7 +12,7 @@ import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonLabelViewHolder;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonTextViewHolder;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.PokemonTitleViewHolder;
 import com.mdgd.pokemon.ui.pokemon.adapter.holders.ViewHolderFactory;
-import com.mdgd.pokemon.ui.pokemon.infra.PokemonProperty;
+import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
