@@ -24,6 +24,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -51,7 +52,6 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.filters.FilterData
@@ -133,7 +133,7 @@ fun PokemonsScreen(screenState: MutableState<PokemonsUiState>, model: PokemonsCo
     val errorDialogTrigger = remember { screenState as MutableState<ErrorParams> }
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
-    MdcTheme {
+    MaterialTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -391,7 +391,7 @@ fun PokemonItemPreviewThemeDark() {
     speed.baseStat = 100502
     pokemon.stats.add(speed)
 
-    MdcTheme {
+    MaterialTheme {
         PokemonItem(pokemon, null)
     }
 }
@@ -426,8 +426,11 @@ fun PokemonsPreviewThemeLight() {
     speed.baseStat = 100502
     pokemon.stats.add(speed)
 
-    MdcTheme {
-        PokemonsScreen(mutableStateOf(PokemonsUiState(pokemons = listOf(pokemon))), null)
+    MaterialTheme {
+        val state: MutableState<PokemonsUiState> = remember {
+            mutableStateOf(PokemonsUiState(pokemons = listOf(pokemon)))
+        }
+        PokemonsScreen(state, null)
     }
 }
 
@@ -438,7 +441,10 @@ fun PokemonsPreviewThemeLight() {
 )
 @Composable
 fun PokemonsPreviewThemeDark() {
-    MdcTheme {
-        PokemonsScreen(mutableStateOf(PokemonsUiState()), null)
+    MaterialTheme {
+        val state: MutableState<PokemonsUiState> = remember {
+            mutableStateOf(PokemonsUiState())
+        }
+        PokemonsScreen(state, null)
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -44,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
@@ -109,7 +109,7 @@ fun PokemonScreen(
     model: PokemonDetailsContract.ViewModel?
 ) {
     val errorDialogTrigger = remember { screenState as MutableState<ErrorParams> }
-    MdcTheme {
+    MaterialTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -303,8 +303,11 @@ fun PokemonPreviewThemeLight() {
     speed.stat?.name = "speed"
     speed.baseStat = 100502
     pokemon.stats.add(speed)
-    MdcTheme {
-        PokemonScreen(mutableStateOf(PokemonUiState(properties = listOf())), null)
+    MaterialTheme {
+        val state: MutableState<PokemonUiState> = remember {
+            mutableStateOf(PokemonUiState(properties = listOf()))
+        }
+        PokemonScreen(state, null)
     }
 }
 
@@ -330,7 +333,10 @@ fun PokemonPreviewThemeDark() {
     properties.add(TextPropertyData("bro, king", 1))
     properties.add(TitlePropertyData(R.string.pokemon_detail_game_indicies))
     properties.add(TextPropertyData("some indicies here", 1))
-    MdcTheme {
-        PokemonScreen(mutableStateOf(PokemonUiState(properties = properties)), null)
+    MaterialTheme {
+        val state: MutableState<PokemonUiState> = remember {
+            mutableStateOf(PokemonUiState(properties = properties))
+        }
+        PokemonScreen(state, null)
     }
 }
