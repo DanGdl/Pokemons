@@ -107,7 +107,7 @@ class PokemonsFragment : HostedFragment<
 
     override fun onClick(view: View) {
         if (view === refresh) {
-            setProgressVisibility(true)
+            onRefresh()
         } else {
             when {
                 filterAttack === view -> model?.sort(FilterData.FILTER_ATTACK)
