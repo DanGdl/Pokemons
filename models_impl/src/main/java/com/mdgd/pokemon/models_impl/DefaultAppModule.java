@@ -20,11 +20,13 @@ public class DefaultAppModule implements AppModule {
     private final Context app;
     private final Cache cache;
     private final PokemonsCache pokemonsCache;
+    private final PokemonsDao dao;
 
     public DefaultAppModule(Context app) {
         this.app = app;
         cache = new CacheImpl();
         pokemonsCache = new PokemonsCacheImpl();
+        dao = new PokemonsDaoImpl(app);
     }
 
     public Context getApp() {
@@ -36,7 +38,7 @@ public class DefaultAppModule implements AppModule {
     }
 
     public PokemonsDao getPokemonsDao() {
-        return new PokemonsDaoImpl(app);
+        return dao;
     }
 
     public PokemonsRepo getPokemonsRepo() {
