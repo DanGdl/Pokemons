@@ -1,12 +1,12 @@
 package com.mdgd.pokemon.ui.pokemons.state
 
 import com.mdgd.mvi.states.AbstractState
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon
 
 open class PokemonsScreenState(
     val isProgressVisible: Boolean = false,
-    val list: List<PokemonFullDataSchema> = listOf(),
+    val list: List<Pokemon> = listOf(),
     protected val availableFilters: List<String> = listOf(),
     val activeFilters: List<String> = listOf()
 ) : AbstractState<PokemonsContract.View, PokemonsScreenState>() {
@@ -32,7 +32,7 @@ open class PokemonsScreenState(
     }
 
     class SetData(
-        list: List<PokemonFullDataSchema>, availableFilters: List<String>
+        list: List<Pokemon>, availableFilters: List<String>
     ) : PokemonsScreenState(false, list, availableFilters) {
 
         override fun merge(prevState: PokemonsScreenState): PokemonsScreenState {
@@ -42,9 +42,7 @@ open class PokemonsScreenState(
         }
     }
 
-    class AddData(
-        list: List<PokemonFullDataSchema>
-    ) : PokemonsScreenState(false, list) {
+    class AddData(list: List<Pokemon>) : PokemonsScreenState(false, list) {
 
         override fun merge(prevState: PokemonsScreenState): PokemonsScreenState {
             val items = list.toMutableList()
@@ -55,9 +53,7 @@ open class PokemonsScreenState(
         }
     }
 
-    class UpdateData(
-        items: List<PokemonFullDataSchema>
-    ) : PokemonsScreenState(false, items) {
+    class UpdateData(items: List<Pokemon>) : PokemonsScreenState(false, items) {
 
         override fun merge(prevState: PokemonsScreenState): PokemonsScreenState {
             return PokemonsScreenState(

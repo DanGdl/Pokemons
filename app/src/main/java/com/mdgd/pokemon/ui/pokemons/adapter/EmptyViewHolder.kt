@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons.adapter
 
 import android.view.View
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import com.mdgd.pokemon.ui.adapter.RecyclerVH
+import com.mdgd.pokemon.adapter.AbstractVH
 
-class EmptyViewHolder(itemView: View) : RecyclerVH<PokemonFullDataSchema>(itemView)
+class EmptyViewHolder(itemView: View) : AbstractVH<Pokemon>(itemView)

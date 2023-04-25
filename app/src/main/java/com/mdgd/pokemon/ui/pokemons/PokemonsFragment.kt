@@ -15,8 +15,7 @@ import com.mdgd.mvi.fragments.HostedFragment
 import com.mdgd.pokemon.PokemonsApp
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.filters.FilterData
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
-import com.mdgd.pokemon.ui.adapter.ClickEvent
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon
 import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter
 import com.mdgd.pokemon.ui.pokemons.infra.EndlessScrollListener
 import kotlinx.coroutines.launch
@@ -27,7 +26,7 @@ class PokemonsFragment : HostedFragment<
         PokemonsContract.Host>(),
     PokemonsContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private val adapter = PokemonsAdapter(lifecycleScope)
+    private val adapter = PokemonsAdapter()
     private var refreshSwipe: SwipeRefreshLayout? = null
 
     // maybe paging library?
@@ -46,10 +45,8 @@ class PokemonsFragment : HostedFragment<
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            adapter.getItemClickFlow().collect {
-                if (it is ClickEvent.ClickData) {
-                    model?.onItemClicked(it.data)
-                }
+            adapter.getEventsObservable().collect {
+                model?.onItemClicked(it.model)
             }
         }
     }
@@ -128,8 +125,8 @@ class PokemonsFragment : HostedFragment<
         }
     }
 
-    override fun setItems(list: List<PokemonFullDataSchema>) {
-        adapter.setItems(list)
+    override fun setItems(list: List<Pokemon>) {
+        adapter.submitList(list)
     }
 
     override fun scrollToStart() {

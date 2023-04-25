@@ -8,11 +8,16 @@ import com.mdgd.pokemon.models.filters.FilterData
 import com.mdgd.pokemon.models.filters.StatsFilter
 import com.mdgd.pokemon.models.repo.PokemonsRepo
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class PokemonsViewModel(
@@ -39,14 +44,16 @@ class PokemonsViewModel(
                     .flowOn(dispatchers.getIO())
                     .catch { e: Throwable -> setEffect(PokemonsScreenEffect.Error(e)) }
                     .collect { pagePair: Pair<Int, List<PokemonFullDataSchema>> ->
+                        val list = matToDto(pagePair.second)
                         if (pagePair.first == 0) {
                             setState(
                                 PokemonsScreenState.SetData(
-                                    pagePair.second, filtersFactory.getAvailableFilters()
+                                    list,
+                                    filtersFactory.getAvailableFilters()
                                 )
                             )
                         } else {
-                            setState(PokemonsScreenState.AddData(pagePair.second))
+                            setState(PokemonsScreenState.AddData(list))
                         }
                     }
             }
@@ -55,12 +62,15 @@ class PokemonsViewModel(
                 filterFlow
                     .map { sort(it, repo.getPokemons()) }
                     .collect { sortedList ->
-                        setState(PokemonsScreenState.UpdateData(sortedList))
+                        setState(PokemonsScreenState.UpdateData(matToDto(sortedList)))
                         setEffect(PokemonsScreenEffect.ScrollToStart())
                     }
             }
         }
     }
+
+    private fun matToDto(schemas: List<PokemonFullDataSchema>) =
+        schemas.map { Pokemon(it) }.toList()
 
     private fun sort(
         filters: FilterData, pokemons: List<PokemonFullDataSchema>
