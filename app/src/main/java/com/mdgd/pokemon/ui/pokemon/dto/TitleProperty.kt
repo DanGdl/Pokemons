@@ -1,5 +1,7 @@
 package com.mdgd.pokemon.ui.pokemon.dto
 
-interface TitleProperty : PokemonProperty {
-    val titleResId: Int
+open class TitleProperty @JvmOverloads constructor(
+    val titleResId: Int, override val nestingLevel: Int = 0
+) : PokemonProperty {
+    override fun getViewHolderType(position: Int): Int = PokemonProperty.PROPERTY_TITLE
 }

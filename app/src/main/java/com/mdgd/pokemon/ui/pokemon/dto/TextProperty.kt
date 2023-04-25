@@ -1,5 +1,5 @@
 package com.mdgd.pokemon.ui.pokemon.dto
 
-interface TextProperty : PokemonProperty {
-    val text: String
+class TextProperty(val text: String, override val nestingLevel: Int) : PokemonProperty {
+    override fun getViewHolderType(position: Int): Int = PokemonProperty.PROPERTY_TEXT
 }

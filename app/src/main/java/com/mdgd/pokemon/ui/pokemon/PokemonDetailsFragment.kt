@@ -47,6 +47,6 @@ class PokemonDetailsFragment : HostedFragment<
     }
 
     override fun setItems(items: List<PokemonProperty>) {
-        adapter.setItems(items)
+        adapter.submitList(items)
     }
 }

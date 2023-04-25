@@ -5,13 +5,13 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import com.mdgd.pokemon.R
-import com.mdgd.pokemon.ui.adapter.RecyclerVH
+import com.mdgd.pokemon.adapter.AbstractVH
 import com.mdgd.pokemon.ui.pokemon.dto.TitleProperty
 
-class PokemonTitleViewHolder(view: View) : RecyclerVH<TitleProperty>(view) {
+class PokemonTitleViewHolder(view: View) : AbstractVH<TitleProperty>(view) {
     private val title: TextView = view.findViewById(R.id.pokemon_property_title)
 
-    override fun bindItem(item: TitleProperty, position: Int) {
+    override fun bind(item: TitleProperty) {
         if (item.titleResId != 0) {
             title.setText(item.titleResId)
         }

@@ -1,5 +1,5 @@
 package com.mdgd.pokemon.ui.pokemon.dto
 
-interface ImageProperty : PokemonProperty {
-    val imageUrl: String
+class ImageProperty(val imageUrl: String) : PokemonProperty {
+    override fun getViewHolderType(position: Int): Int = PokemonProperty.PROPERTY_IMAGE
 }

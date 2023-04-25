@@ -8,10 +8,10 @@ import com.mdgd.pokemon.MainDispatcherRule
 import com.mdgd.pokemon.Mocks
 import com.mdgd.pokemon.R
 import com.mdgd.pokemon.models.repo.PokemonsRepo
-import com.mdgd.pokemon.ui.pokemon.dto.ImagePropertyData
-import com.mdgd.pokemon.ui.pokemon.dto.LabelPropertyData
-import com.mdgd.pokemon.ui.pokemon.dto.TextPropertyData
-import com.mdgd.pokemon.ui.pokemon.dto.TitlePropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.ImageProperty
+import com.mdgd.pokemon.ui.pokemon.dto.LabelProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TextProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TitleProperty
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import kotlinx.coroutines.runBlocking
@@ -121,32 +121,50 @@ class PokemonDetailsViewModelTest {
 
         for ((idx, item) in state.items.withIndex()) {
             if (idx == 0) {
-                Assert.assertEquals(pokemon.pokemonSchema!!.sprites!!.other!!.officialArtwork!!.frontDefault!!, (item as ImagePropertyData).imageUrl)
+                Assert.assertEquals(
+                    pokemon.pokemonSchema!!.sprites!!.other!!.officialArtwork!!.frontDefault!!,
+                    (item as ImageProperty).imageUrl
+                )
             } else if (idx == 1) {
-                Assert.assertEquals(R.string.pokemon_detail_name, (item as LabelPropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_name,
+                    (item as LabelProperty).titleResId
+                )
                 Assert.assertEquals(pokemon.pokemonSchema!!.name, item.text)
                 Assert.assertEquals("", item.titleStr)
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == 2) {
-                Assert.assertEquals(R.string.pokemon_detail_height, (item as LabelPropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_height,
+                    (item as LabelProperty).titleResId
+                )
                 Assert.assertEquals(pokemon.pokemonSchema!!.height.toString(), item.text)
                 Assert.assertEquals("", item.titleStr)
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == 3) {
-                Assert.assertEquals(R.string.pokemon_detail_weight, (item as LabelPropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_weight,
+                    (item as LabelProperty).titleResId
+                )
                 Assert.assertEquals(pokemon.pokemonSchema!!.weight.toString(), item.text)
                 Assert.assertEquals("", item.titleStr)
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == 4) {
-                Assert.assertEquals(R.string.pokemon_detail_stats, (item as TitlePropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_stats,
+                    (item as TitleProperty).titleResId
+                )
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx in statsStart until statsEnd) {
-                Assert.assertEquals(0, (item as LabelPropertyData).titleResId)
+                Assert.assertEquals(0, (item as LabelProperty).titleResId)
                 Assert.assertEquals(pokemon.stats[idx - 5].baseStat.toString(), item.text)
                 Assert.assertEquals(pokemon.stats[idx - 5].stat?.name, item.titleStr)
                 Assert.assertEquals(1, item.nestingLevel)
             } else if (idx == statsEnd) {
-                Assert.assertEquals(R.string.pokemon_detail_abilities, (item as TitlePropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_abilities,
+                    (item as TitleProperty).titleResId
+                )
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == statsEnd + 1) {
                 val abilitiesSb = StringBuilder()
@@ -156,10 +174,13 @@ class PokemonDetailsViewModelTest {
                         abilitiesSb.append(", ")
                     }
                 }
-                Assert.assertEquals(abilitiesSb.toString(), (item as TextPropertyData).text)
+                Assert.assertEquals(abilitiesSb.toString(), (item as TextProperty).text)
                 Assert.assertEquals(1, item.nestingLevel)
             } else if (idx == statsEnd + 2) {
-                Assert.assertEquals(R.string.pokemon_detail_forms, (item as TitlePropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_forms,
+                    (item as TitleProperty).titleResId
+                )
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == statsEnd + 3) {
                 val formsSb = StringBuilder()
@@ -169,10 +190,13 @@ class PokemonDetailsViewModelTest {
                         formsSb.append(", ")
                     }
                 }
-                Assert.assertEquals(formsSb.toString(), (item as TextPropertyData).text)
+                Assert.assertEquals(formsSb.toString(), (item as TextProperty).text)
                 Assert.assertEquals(1, item.nestingLevel)
             } else if (idx == statsEnd + 4) {
-                Assert.assertEquals(R.string.pokemon_detail_types, (item as TitlePropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_types,
+                    (item as TitleProperty).titleResId
+                )
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == statsEnd + 5) {
                 val typesSb = StringBuilder()
@@ -182,10 +206,13 @@ class PokemonDetailsViewModelTest {
                         typesSb.append(", ")
                     }
                 }
-                Assert.assertEquals(typesSb.toString(), (item as TextPropertyData).text)
+                Assert.assertEquals(typesSb.toString(), (item as TextProperty).text)
                 Assert.assertEquals(1, item.nestingLevel)
             } else if (idx == statsEnd + 6) {
-                Assert.assertEquals(R.string.pokemon_detail_game_indicies, (item as TitlePropertyData).titleResId)
+                Assert.assertEquals(
+                    R.string.pokemon_detail_game_indicies,
+                    (item as TitleProperty).titleResId
+                )
                 Assert.assertEquals(0, item.nestingLevel)
             } else if (idx == statsEnd + 7) {
                 val gameIdxSb = StringBuilder()
@@ -195,7 +222,7 @@ class PokemonDetailsViewModelTest {
                         gameIdxSb.append(", ")
                     }
                 }
-                Assert.assertEquals(gameIdxSb.toString(), (item as TextPropertyData).text)
+                Assert.assertEquals(gameIdxSb.toString(), (item as TextProperty).text)
                 Assert.assertEquals(1, item.nestingLevel)
             }
         }

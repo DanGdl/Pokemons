@@ -10,11 +10,11 @@ import com.mdgd.pokemon.models.repo.schemas.Ability
 import com.mdgd.pokemon.models.repo.schemas.Form
 import com.mdgd.pokemon.models.repo.schemas.GameIndex
 import com.mdgd.pokemon.models.repo.schemas.Type
-import com.mdgd.pokemon.ui.pokemon.dto.ImagePropertyData
-import com.mdgd.pokemon.ui.pokemon.dto.LabelPropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.ImageProperty
+import com.mdgd.pokemon.ui.pokemon.dto.LabelProperty
 import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
-import com.mdgd.pokemon.ui.pokemon.dto.TextPropertyData
-import com.mdgd.pokemon.ui.pokemon.dto.TitlePropertyData
+import com.mdgd.pokemon.ui.pokemon.dto.TextProperty
+import com.mdgd.pokemon.ui.pokemon.dto.TitleProperty
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -61,15 +61,25 @@ class PokemonDetailsViewModel(
     private fun mapToListPokemon(pokemonDetails: PokemonFullDataSchema): List<PokemonProperty> {
         val properties: MutableList<PokemonProperty> = ArrayList()
         val pokemonSchema = pokemonDetails.pokemonSchema
-        properties.add(ImagePropertyData(pokemonSchema!!.sprites!!.other!!.officialArtwork!!.frontDefault!!))
-        properties.add(LabelPropertyData(R.string.pokemon_detail_name, pokemonSchema.name!!))
-        properties.add(LabelPropertyData(R.string.pokemon_detail_height, pokemonSchema.height.toString()))
-        properties.add(LabelPropertyData(R.string.pokemon_detail_weight, pokemonSchema.weight.toString()))
-        properties.add(TitlePropertyData(R.string.pokemon_detail_stats))
+        properties.add(ImageProperty(pokemonSchema!!.sprites!!.other!!.officialArtwork!!.frontDefault!!))
+        properties.add(LabelProperty(R.string.pokemon_detail_name, pokemonSchema.name!!))
+        properties.add(
+            LabelProperty(
+                R.string.pokemon_detail_height,
+                pokemonSchema.height.toString()
+            )
+        )
+        properties.add(
+            LabelProperty(
+                R.string.pokemon_detail_weight,
+                pokemonSchema.weight.toString()
+            )
+        )
+        properties.add(TitleProperty(R.string.pokemon_detail_stats))
         for (s in pokemonDetails.stats) {
-            properties.add(LabelPropertyData(s.stat!!.name!!, s.baseStat.toString(), 1))
+            properties.add(LabelProperty(s.stat!!.name!!, s.baseStat.toString(), 1))
         }
-        properties.add(TitlePropertyData(R.string.pokemon_detail_abilities))
+        properties.add(TitleProperty(R.string.pokemon_detail_abilities))
         val abilities: List<Ability> = pokemonDetails.abilities
         val abilitiesText = StringBuilder()
         for (i in abilities.indices) {
@@ -78,8 +88,8 @@ class PokemonDetailsViewModel(
                 abilitiesText.append(", ")
             }
         }
-        properties.add(TextPropertyData(abilitiesText.toString(), 1))
-        properties.add(TitlePropertyData(R.string.pokemon_detail_forms))
+        properties.add(TextProperty(abilitiesText.toString(), 1))
+        properties.add(TitleProperty(R.string.pokemon_detail_forms))
         val forms: List<Form> = pokemonDetails.forms
         val formsText = StringBuilder()
         for (i in forms.indices) {
@@ -88,8 +98,8 @@ class PokemonDetailsViewModel(
                 formsText.append(", ")
             }
         }
-        properties.add(TextPropertyData(formsText.toString(), 1))
-        properties.add(TitlePropertyData(R.string.pokemon_detail_types))
+        properties.add(TextProperty(formsText.toString(), 1))
+        properties.add(TitleProperty(R.string.pokemon_detail_types))
         val types: List<Type> = pokemonDetails.types
         val typesText = StringBuilder()
         for (i in types.indices) {
@@ -98,8 +108,8 @@ class PokemonDetailsViewModel(
                 typesText.append(", ")
             }
         }
-        properties.add(TextPropertyData(typesText.toString(), 1))
-        properties.add(TitlePropertyData(R.string.pokemon_detail_game_indicies))
+        properties.add(TextProperty(typesText.toString(), 1))
+        properties.add(TitleProperty(R.string.pokemon_detail_game_indicies))
         val gameIndices: List<GameIndex> = pokemonDetails.gameIndices
         val gameIndicesText = StringBuilder()
         for (i in gameIndices.indices) {
@@ -108,7 +118,7 @@ class PokemonDetailsViewModel(
                 gameIndicesText.append(", ")
             }
         }
-        properties.add(TextPropertyData(gameIndicesText.toString(), 1))
+        properties.add(TextProperty(gameIndicesText.toString(), 1))
         return properties
     }
 
