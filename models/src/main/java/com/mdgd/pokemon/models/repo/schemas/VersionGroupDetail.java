@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.dao.schemas.MoveSchema;
 
 @Entity(
-        tableName = "VersionGroupDetails", indices = {@Index("id")},
+        tableName = "VersionGroupDetails", indices = {@Index("id"), @Index("moveId")},
         foreignKeys = {@ForeignKey(
                 entity = MoveSchema.class,
                 parentColumns = "id",

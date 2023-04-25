@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 
 @Entity(
-        tableName = "game_indexes", indices = {@Index("id")},
+        tableName = "game_indexes", indices = {@Index("id"), @Index("pokemonId")},
         foreignKeys = {@ForeignKey(
                 entity = PokemonSchema.class,
                 parentColumns = "id",

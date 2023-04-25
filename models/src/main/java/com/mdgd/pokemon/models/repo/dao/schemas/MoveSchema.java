@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.schemas.Move_;
 
 @Entity(
-        tableName = "moves", indices = {@Index("id")},
+        tableName = "moves", indices = {@Index("id"), @Index("pokemonId")},
         foreignKeys = {@ForeignKey(
                 entity = PokemonSchema.class,
                 parentColumns = "id",
@@ -22,6 +22,7 @@ import com.mdgd.pokemon.models.repo.schemas.Move_;
 public class MoveSchema {
 
     public long pokemonId;
+
     @PrimaryKey(autoGenerate = true)
     private long id;
     @Embedded

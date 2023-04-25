@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonSchema;
 
 @Entity(
-        tableName = "forms", indices = {@Index("id")},
+        tableName = "forms", indices = {@Index("id"), @Index("pokemonId")},
         foreignKeys = {@ForeignKey(
                 entity = PokemonSchema.class,
                 parentColumns = "id",
