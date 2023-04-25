@@ -1,0 +1,33 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'com.mdgd.pokemon.adapter'
+    compileSdkVersion project.compile
+    buildToolsVersion project.tools
+
+    defaultConfig {
+        minSdk project.min
+        targetSdk project.target
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation "androidx.recyclerview:recyclerview:$recycler"
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java"
+}

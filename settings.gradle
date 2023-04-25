@@ -1,5 +1,6 @@
 include ':models_impl'
 include ':mvi'
 include ':models'
+include ':adapter'
 include ':app'
 rootProject.name = "Pokemons"
