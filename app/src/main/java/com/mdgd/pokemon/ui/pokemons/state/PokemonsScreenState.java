@@ -33,6 +33,10 @@ public class PokemonsScreenState extends AbstractState<PokemonsContract.View, Po
         }
     }
 
+    public List<String> getActiveFilters() {
+        return new ArrayList<>(activeFilters);
+    }
+
     public static class SetItems extends PokemonsScreenState {
 
         public SetItems(List<PokemonFullDataSchema> items, List<String> availableFilters) {
@@ -41,7 +45,7 @@ public class PokemonsScreenState extends AbstractState<PokemonsContract.View, Po
 
         @Override
         public PokemonsScreenState merge(PokemonsScreenState prevState) {
-            return new PokemonsScreenState(prevState.list, prevState.isLoading, prevState.availableFilters, activeFilters);
+            return new PokemonsScreenState(list, false, availableFilters, prevState.activeFilters);
         }
     }
 

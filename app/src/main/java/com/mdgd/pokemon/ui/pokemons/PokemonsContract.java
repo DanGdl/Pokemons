@@ -1,7 +1,6 @@
 package com.mdgd.pokemon.ui.pokemons;
 
 import com.mdgd.mvi.fragments.FragmentContract;
-import com.mdgd.pokemon.models.filters.FilterData;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public class PokemonsContract {
 
         void loadPage(int page);
 
-        void sort(FilterData filterData);
+        void sort(String filter);
 
         void onItemClicked(PokemonFullDataSchema pokemon);
 

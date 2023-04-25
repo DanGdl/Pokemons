@@ -13,6 +13,7 @@ import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect;
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,6 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
         }
     }
 
-
     @Override
     public void reload() {
         loadPageSubject.onNext(0);
@@ -103,8 +103,18 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
     }
 
     @Override
-    public void sort(FilterData filterData) {
-        filtersSubject.onNext(filterData);
+    public void sort(String filter) {
+        final List<String> filters = new ArrayList<>(3);
+        if (getState() != null && getState().getActiveFilters() != null) {
+            filters.addAll(getState().getActiveFilters());
+        }
+        if (filters.contains(filter)) {
+            filters.remove(filter);
+        } else {
+            filters.add(filter);
+        }
+        setState(new PokemonsScreenState.ChangeFilterState(filters));
+        filtersSubject.onNext(new FilterData(filters));
     }
 
     @Override

@@ -18,6 +18,7 @@ public class UploadWorker extends Worker {
         model = new PokemonsLoadingModelFactory(PokemonsApp.getInstance().getAppComponent()).create();
     }
 
+    @NonNull
     @Override
     public Result doWork() {
         model.load();

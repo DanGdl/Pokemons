@@ -20,7 +20,6 @@ import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.filters.FilterData;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 
-import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -136,16 +135,14 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     @Override
     public void onClick(View view) {
         if (view == refresh) {
-            if (!refreshSwipe.isRefreshing()) {
-                refreshSwipe.setRefreshing(true);
-            }
+            onRefresh();
         } else {
             if (filterAttack == view) {
-                getModel().sort(new FilterData(Arrays.asList(FilterData.FILTER_ATTACK)));
+                getModel().sort(FilterData.FILTER_ATTACK);
             } else if (filterDefence == view) {
-                getModel().sort(new FilterData(Arrays.asList(FilterData.FILTER_DEFENCE)));
+                getModel().sort(FilterData.FILTER_DEFENCE);
             } else if (filterSpeed == view) {
-                getModel().sort(new FilterData(Arrays.asList(FilterData.FILTER_SPEED)));
+                getModel().sort(FilterData.FILTER_SPEED);
             }
         }
     }
