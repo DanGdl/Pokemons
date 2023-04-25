@@ -48,11 +48,15 @@ public abstract class MviViewModel<VIEW, STATE extends AbstractState<VIEW, STATE
     }
 
     protected void setState(STATE state) {
-        STATE current = (STATE) effectHolder.getValue();
+        STATE current = (STATE) stateHolder.getValue();
         if (current != null) {
             state = state.merge(current);
         }
         stateHolder.setValue(state);
+    }
+
+    protected STATE getState() {
+        return (STATE) stateHolder.getValue();
     }
 
     protected void setEffect(ScreenState<VIEW> effect) {
