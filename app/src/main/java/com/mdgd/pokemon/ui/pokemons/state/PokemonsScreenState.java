@@ -1,21 +1,21 @@
 package com.mdgd.pokemon.ui.pokemons.state;
 
 import com.mdgd.mvi.states.AbstractState;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
 import com.mdgd.pokemon.ui.pokemons.PokemonsContract;
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PokemonsScreenState extends AbstractState<PokemonsContract.View, PokemonsScreenState> {
 
-    protected final List<PokemonFullDataSchema> list;
+    protected final List<Pokemon> list;
     protected final List<String> availableFilters;
     protected final List<String> activeFilters;
     protected final boolean isLoading;
 
     public PokemonsScreenState(
-            List<PokemonFullDataSchema> list, boolean isLoading,
+            List<Pokemon> list, boolean isLoading,
             List<String> availableFilters, List<String> activeFilters
     ) {
         this.list = list;
@@ -39,7 +39,7 @@ public class PokemonsScreenState extends AbstractState<PokemonsContract.View, Po
 
     public static class SetItems extends PokemonsScreenState {
 
-        public SetItems(List<PokemonFullDataSchema> items, List<String> availableFilters) {
+        public SetItems(List<Pokemon> items, List<String> availableFilters) {
             super(items, false, availableFilters, new ArrayList<>(0));
         }
 
@@ -51,13 +51,13 @@ public class PokemonsScreenState extends AbstractState<PokemonsContract.View, Po
 
     public static class AddItems extends PokemonsScreenState {
 
-        public AddItems(List<PokemonFullDataSchema> items) {
+        public AddItems(List<Pokemon> items) {
             super(items, false, new ArrayList<>(0), new ArrayList<>(0));
         }
 
         @Override
         public PokemonsScreenState merge(PokemonsScreenState prevState) {
-            List<PokemonFullDataSchema> list1 = new ArrayList<>(prevState.list.size() + list.size());
+            List<Pokemon> list1 = new ArrayList<>(prevState.list.size() + list.size());
             list1.addAll(prevState.list);
             list1.addAll(list);
             return new PokemonsScreenState(list1, false, prevState.availableFilters, prevState.activeFilters);

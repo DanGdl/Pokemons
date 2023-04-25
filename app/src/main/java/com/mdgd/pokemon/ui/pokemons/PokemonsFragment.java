@@ -18,7 +18,8 @@ import com.mdgd.mvi.fragments.HostedFragment;
 import com.mdgd.pokemon.PokemonsApp;
 import com.mdgd.pokemon.R;
 import com.mdgd.pokemon.models.filters.FilterData;
-import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon;
+import com.mdgd.pokemon.ui.pokemons.adapter.PokemonsAdapter;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onDestroyDisposables.add(adapter.getOnItemClickSubject().subscribe(pokemon -> getModel().onItemClicked(pokemon)));
+        onDestroyDisposables.add(adapter.getEventsObservable().subscribe(event -> getModel().onItemClicked(event.model)));
     }
 
     @Override
@@ -167,8 +168,8 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     }
 
     @Override
-    public void setItems(List<PokemonFullDataSchema> list) {
-        adapter.setItems(list);
+    public void setItems(List<Pokemon> list) {
+        adapter.submitList(list);
     }
 
     @Override

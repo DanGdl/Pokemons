@@ -2,6 +2,7 @@ package com.mdgd.pokemon.ui.pokemons;
 
 import com.mdgd.mvi.fragments.FragmentContract;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PokemonsContract {
     public interface View extends FragmentContract.View {
         void setProgressVisibility(boolean isVisible);
 
-        void setItems(List<PokemonFullDataSchema> list);
+        void setItems(List<Pokemon> list);
 
         void showError(Throwable error);
 

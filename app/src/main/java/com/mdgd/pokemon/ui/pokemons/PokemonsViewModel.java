@@ -10,6 +10,7 @@ import com.mdgd.pokemon.models.filters.StatsFilter;
 import com.mdgd.pokemon.models.infra.Result;
 import com.mdgd.pokemon.models.repo.PokemonsRepo;
 import com.mdgd.pokemon.models.repo.dao.schemas.PokemonFullDataSchema;
+import com.mdgd.pokemon.ui.pokemons.adapter.Pokemon;
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenEffect;
 import com.mdgd.pokemon.ui.pokemons.state.PokemonsScreenState;
 
@@ -51,7 +52,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
 
                     // do we need to sort list once more when there is a filter and new page arrived?
                     filtersSubject
-                            .map(filters -> sort(filters, repo.getPokemons()))
+                            .map(filters -> sort(filters, mapToDto(repo.getPokemons())))
                             .subscribe(this::setState, e -> setEffect(new PokemonsScreenEffect.ShowErrorEffect(e)))
 
             );
@@ -59,7 +60,15 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
         }
     }
 
-    private PokemonsScreenState sort(FilterData filters, List<PokemonFullDataSchema> pokemons) {
+    private List<Pokemon> mapToDto(List<PokemonFullDataSchema> pokemons) {
+        final List<Pokemon> items = new ArrayList<>(pokemons.size());
+        for (PokemonFullDataSchema i : pokemons) {
+            items.add(new Pokemon(i));
+        }
+        return items;
+    }
+
+    private PokemonsScreenState sort(FilterData filters, List<Pokemon> pokemons) {
         // potentially, we can create a custom list of filters in separate model. In UI we can show them in recyclerView
         if (!filters.isEmpty()) {
             final Map<String, CharacteristicComparator> comparatorMap = statsFilters.getFilters();
@@ -67,7 +76,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
                 int compare = 0;
                 for (String filter : filters.getFilters()) {
                     if (comparatorMap.get(filter) != null) {
-                        compare = comparatorMap.get(filter).compare(pokemon2, pokemon1); // swap, instead of multiply on -1
+                        compare = comparatorMap.get(filter).compare(pokemon2.schema, pokemon1.schema); // swap, instead of multiply on -1
                         if (compare != 0) {
                             break;
                         }
@@ -83,7 +92,7 @@ public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, Pokem
         if (pair.second.isError()) {
             setEffect(new PokemonsScreenEffect.ShowErrorEffect(pair.second.getError()));
         } else {
-            final List<PokemonFullDataSchema> list = pair.second.getValue();
+            final List<Pokemon> list = mapToDto(pair.second.getValue());
             if (pair.first == 0) {
                 setState(new PokemonsScreenState.SetItems(list, statsFilters.getAvailableFilters()));
             } else {
