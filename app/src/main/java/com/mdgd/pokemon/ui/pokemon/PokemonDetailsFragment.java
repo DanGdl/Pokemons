@@ -58,6 +58,6 @@ public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsContrac
 
     @Override
     public void setItems(List<PokemonProperty> items) {
-        adapter.setItems(items);
+        adapter.submitList(items);
     }
 }

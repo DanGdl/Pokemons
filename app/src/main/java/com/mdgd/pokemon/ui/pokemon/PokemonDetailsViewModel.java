@@ -12,11 +12,11 @@ import com.mdgd.pokemon.models.repo.schemas.Form;
 import com.mdgd.pokemon.models.repo.schemas.GameIndex;
 import com.mdgd.pokemon.models.repo.schemas.Stat;
 import com.mdgd.pokemon.models.repo.schemas.Type;
-import com.mdgd.pokemon.ui.pokemon.items.ImagePropertyData;
-import com.mdgd.pokemon.ui.pokemon.items.LabelPropertyData;
+import com.mdgd.pokemon.ui.pokemon.items.ImageProperty;
+import com.mdgd.pokemon.ui.pokemon.items.LabelProperty;
 import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
-import com.mdgd.pokemon.ui.pokemon.items.TextPropertyData;
-import com.mdgd.pokemon.ui.pokemon.items.TitlePropertyData;
+import com.mdgd.pokemon.ui.pokemon.items.TextProperty;
+import com.mdgd.pokemon.ui.pokemon.items.TitleProperty;
 import com.mdgd.pokemon.ui.pokemon.state.PokemonScreenState;
 
 import java.util.ArrayList;
@@ -57,16 +57,16 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract
     private List<PokemonProperty> mapToListPokemon(PokemonFullDataSchema pokemonDetails) {
         final List<PokemonProperty> properties = new ArrayList<>();
         final PokemonSchema pokemonSchema = pokemonDetails.getPokemonSchema();
-        properties.add(new ImagePropertyData(pokemonSchema.getSprites().getOther().getOfficialArtwork().getFrontDefault()));
-        properties.add(new LabelPropertyData(R.string.pokemon_detail_name, pokemonSchema.getName()));
-        properties.add(new LabelPropertyData(R.string.pokemon_detail_height, String.valueOf(pokemonSchema.getHeight())));
-        properties.add(new LabelPropertyData(R.string.pokemon_detail_weight, String.valueOf(pokemonSchema.getWeight())));
+        properties.add(new ImageProperty(pokemonSchema.getSprites().getOther().getOfficialArtwork().getFrontDefault()));
+        properties.add(new LabelProperty(R.string.pokemon_detail_name, pokemonSchema.getName()));
+        properties.add(new LabelProperty(R.string.pokemon_detail_height, String.valueOf(pokemonSchema.getHeight())));
+        properties.add(new LabelProperty(R.string.pokemon_detail_weight, String.valueOf(pokemonSchema.getWeight())));
 
-        properties.add(new TitlePropertyData(R.string.pokemon_detail_stats));
+        properties.add(new TitleProperty(R.string.pokemon_detail_stats));
         for (Stat s : pokemonDetails.getStats()) {
-            properties.add(new LabelPropertyData(s.getStat().getName(), String.valueOf(s.getBaseStat()), 1));
+            properties.add(new LabelProperty(s.getStat().getName(), String.valueOf(s.getBaseStat()), 1));
         }
-        properties.add(new TitlePropertyData(R.string.pokemon_detail_abilities));
+        properties.add(new TitleProperty(R.string.pokemon_detail_abilities));
         final List<Ability> abilities = pokemonDetails.getAbilities();
         final StringBuilder abilitiesText = new StringBuilder();
         for (int i = 0; i < abilities.size(); i++) {
@@ -75,9 +75,9 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract
                 abilitiesText.append(", ");
             }
         }
-        properties.add(new TextPropertyData(abilitiesText.toString(), 1));
+        properties.add(new TextProperty(abilitiesText.toString(), 1));
 
-        properties.add(new TitlePropertyData(R.string.pokemon_detail_forms));
+        properties.add(new TitleProperty(R.string.pokemon_detail_forms));
         final List<Form> forms = pokemonDetails.getForms();
         final StringBuilder formsText = new StringBuilder();
         for (int i = 0; i < forms.size(); i++) {
@@ -86,10 +86,10 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract
                 formsText.append(", ");
             }
         }
-        properties.add(new TextPropertyData(formsText.toString(), 1));
+        properties.add(new TextProperty(formsText.toString(), 1));
 
 
-        properties.add(new TitlePropertyData(R.string.pokemon_detail_types));
+        properties.add(new TitleProperty(R.string.pokemon_detail_types));
         final List<Type> types = pokemonDetails.getTypes();
         final StringBuilder typesText = new StringBuilder();
         for (int i = 0; i < types.size(); i++) {
@@ -98,10 +98,10 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract
                 typesText.append(", ");
             }
         }
-        properties.add(new TextPropertyData(typesText.toString(), 1));
+        properties.add(new TextProperty(typesText.toString(), 1));
 
 
-        properties.add(new TitlePropertyData(R.string.pokemon_detail_game_indicies));
+        properties.add(new TitleProperty(R.string.pokemon_detail_game_indicies));
         final List<GameIndex> gameIndices = pokemonDetails.getGameIndices();
         final StringBuilder gameIndicesText = new StringBuilder();
         for (int i = 0; i < gameIndices.size(); i++) {
@@ -110,7 +110,7 @@ public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract
                 gameIndicesText.append(", ");
             }
         }
-        properties.add(new TextPropertyData(gameIndicesText.toString(), 1));
+        properties.add(new TextProperty(gameIndicesText.toString(), 1));
         return properties;
     }
 }

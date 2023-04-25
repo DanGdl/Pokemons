@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
+import com.mdgd.pokemon.adapter.AbstractVH;
 import com.mdgd.pokemon.ui.pokemon.items.TitleProperty;
 
-public class PokemonTitleViewHolder extends PokemonPropertyViewHolder<TitleProperty> {
+public class PokemonTitleViewHolder extends AbstractVH<TitleProperty> {
 
     private final TextView title;
 
@@ -19,7 +19,7 @@ public class PokemonTitleViewHolder extends PokemonPropertyViewHolder<TitlePrope
     }
 
     @Override
-    public void bind(TitleProperty property, int position) {
+    public void bind(TitleProperty property) {
         if (property.getTitleResId() != 0) {
             title.setText(property.getTitleResId());
         }

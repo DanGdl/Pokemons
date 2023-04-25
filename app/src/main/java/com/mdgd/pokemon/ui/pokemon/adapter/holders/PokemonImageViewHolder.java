@@ -5,11 +5,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
+import com.mdgd.pokemon.adapter.AbstractVH;
 import com.mdgd.pokemon.ui.pokemon.items.ImageProperty;
 import com.squareup.picasso.Picasso;
 
-public class PokemonImageViewHolder extends PokemonPropertyViewHolder<ImageProperty> {
+public class PokemonImageViewHolder extends AbstractVH<ImageProperty> {
 
     private final ImageView image;
 
@@ -18,7 +18,8 @@ public class PokemonImageViewHolder extends PokemonPropertyViewHolder<ImagePrope
         image = view.findViewById(R.id.pokemon_details_image);
     }
 
-    public void bind(ImageProperty property, int position) {
+    @Override
+    public void bind(ImageProperty property) {
         if (!TextUtils.isEmpty(property.getImageUrl())) {
             Picasso.get().load(property.getImageUrl()).into(image);
         }

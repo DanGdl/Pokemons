@@ -4,10 +4,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mdgd.pokemon.R;
-import com.mdgd.pokemon.ui.pokemon.adapter.PokemonPropertyViewHolder;
+import com.mdgd.pokemon.adapter.AbstractVH;
 import com.mdgd.pokemon.ui.pokemon.items.TextProperty;
 
-public class PokemonTextViewHolder extends PokemonPropertyViewHolder<TextProperty> {
+public class PokemonTextViewHolder extends AbstractVH<TextProperty> {
 
     private final TextView label;
 
@@ -17,7 +17,7 @@ public class PokemonTextViewHolder extends PokemonPropertyViewHolder<TextPropert
     }
 
     @Override
-    public void bind(TextProperty property, int position) {
+    public void bind(TextProperty property) {
         label.setText(property.getText());
 
         label.setPaddingRelative(
