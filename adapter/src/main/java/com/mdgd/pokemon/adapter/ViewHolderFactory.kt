@@ -1,5 +1,5 @@
-package com.mdgd.pokemon.adapter;
+package com.mdgd.pokemon.adapter
 
-public interface ViewHolderFactory<PARAM> {
-    AbstractVH createViewHolder(PARAM params);
+interface ViewHolderFactory<PARAM> {
+    fun createViewHolder(params: PARAM): AbstractVH<*>
 }

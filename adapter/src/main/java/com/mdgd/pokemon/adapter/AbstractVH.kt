@@ -1,42 +1,26 @@
-package com.mdgd.pokemon.adapter;
+package com.mdgd.pokemon.adapter
 
-import android.view.View;
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+abstract class AbstractVH<ITEM>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    protected var model: ITEM? = null
 
-public abstract class AbstractVH<ITEM> extends RecyclerView.ViewHolder {
-    protected ITEM model = null;
+    open fun onViewAttachedToWindow() {}
 
-    public AbstractVH(@NonNull View itemView) {
-        super(itemView);
-    }
+    open fun onViewDetachedFromWindow() {}
 
-    public void onViewAttachedToWindow() {
+    protected fun hasModel(): Boolean = model != null
 
-    }
+    protected open fun bindSame(): Boolean = false
 
-    public void onViewDetachedFromWindow() {
-
-    }
-
-    protected boolean hasModel() {
-        return model != null;
-    }
-
-    protected boolean bindSame() {
-        return false;
-    }
-
-    public void onBindViewHolder(ITEM item) {
-        if (!bindSame() && model == item) {
-            return;
+    fun onBindViewHolder(item: ITEM) {
+        if (!bindSame() && model === item) {
+            return
         }
-        model = item;
-        bind(item);
+        model = item
+        bind(item)
     }
 
-    public void bind(ITEM item) {
-
-    }
+    open fun bind(item: ITEM) {}
 }

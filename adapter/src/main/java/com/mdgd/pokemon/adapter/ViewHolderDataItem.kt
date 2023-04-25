@@ -1,5 +1,5 @@
-package com.mdgd.pokemon.adapter;
+package com.mdgd.pokemon.adapter
 
-public interface ViewHolderDataItem {
-    int getViewHolderType(int position);
+interface ViewHolderDataItem {
+    fun getViewHolderType(position: Int): Int
 }
