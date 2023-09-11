@@ -4,8 +4,7 @@ plugins {
 
 android {
     namespace 'com.mdgd.pokemon.adapter'
-    compileSdkVersion project.compile
-    buildToolsVersion project.tools
+    compileSdk project.compile
 
     defaultConfig {
         minSdk project.min

@@ -2,8 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 
 android {
-    compileSdkVersion project.compile
-    buildToolsVersion project.tools
+    compileSdk project.compile
 
     defaultConfig {
         applicationId "com.mdgd.pokemon"
@@ -40,7 +39,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.recyclerview:recyclerview:$recycler"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
 
     // to solve conflicts with kotlin in libraries
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
