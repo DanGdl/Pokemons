@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android'
 android {
     namespace 'com.mdgd.pokemon.adapter'
     compileSdk project.compile
-    buildToolsVersion project.tools
 
     defaultConfig {
         minSdk project.min

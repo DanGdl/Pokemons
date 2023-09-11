@@ -26,7 +26,6 @@ buildscript {
         min = 20
         target = 34
         compile = 34
-        tools = "33.0.1"
     }
 
     repositories {

@@ -8,7 +8,6 @@ plugins {
 
 android {
     compileSdk project.compile
-    buildToolsVersion project.tools
 
     defaultConfig {
         applicationId "com.mdgd.pokemon"
