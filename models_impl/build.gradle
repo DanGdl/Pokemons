@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion project.compile
+    compileSdk project.compile
     buildToolsVersion project.tools
 
     defaultConfig {

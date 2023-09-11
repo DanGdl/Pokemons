@@ -53,12 +53,10 @@ abstract class AbstractListAdapter<
         return LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractVH<ITEM> {
         return factories[viewType]!!.createViewHolder(
-            getViewHolderParams(
-                parent,
-                viewType
-            )
+            getViewHolderParams(parent, viewType)
         ) as AbstractVH<ITEM>
     }
 

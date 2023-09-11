@@ -23,6 +23,7 @@ abstract class HostedFragment<
     protected var fragmentHost: HOST? = null
         private set
 
+    @Suppress("UNCHECKED_CAST")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // keep the call back
@@ -63,6 +64,7 @@ abstract class HostedFragment<
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onChanged(value: ScreenState<VIEW>) {
         value.visit(this@HostedFragment as VIEW)
     }

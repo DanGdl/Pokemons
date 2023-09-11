@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.mdgd.pokemon.adapter'
-    compileSdkVersion project.compile
+    compileSdk project.compile
     buildToolsVersion project.tools
 
     defaultConfig {
