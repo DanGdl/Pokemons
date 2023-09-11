@@ -75,7 +75,7 @@ class PokemonDetailsFragment : HostedFragment<
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            model?.setPokemonId(PokemonDetailsFragmentArgs.fromBundle(requireArguments()).pokemonId)
+            viewModel?.setPokemonId(PokemonDetailsFragmentArgs.fromBundle(requireArguments()).pokemonId)
         }
     }
 
@@ -89,7 +89,7 @@ class PokemonDetailsFragment : HostedFragment<
     ): View {
         val view = ComposeView(requireContext())
         view.setContent {
-            PokemonScreen(screenState, model)
+            PokemonScreen(screenState, viewModel)
         }
         return view
     }

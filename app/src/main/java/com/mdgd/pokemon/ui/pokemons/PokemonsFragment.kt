@@ -83,7 +83,7 @@ class PokemonsFragment : HostedFragment<
     ): View {
         val view = ComposeView(requireContext())
         view.setContent {
-            PokemonsScreen(screenState, model)
+            PokemonsScreen(screenState, viewModel)
         }
         return view
     }

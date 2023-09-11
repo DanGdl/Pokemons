@@ -26,7 +26,8 @@ class PokemonsViewModel @Inject constructor(
     private val repo: PokemonsRepo,
     private val filtersFactory: StatsFilter,
     private val dispatchers: DispatchersHolder
-) : MviViewModel<PokemonsContract.View, PokemonsScreenState>(), PokemonsContract.ViewModel {
+) : MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenEffect>(),
+    PokemonsContract.ViewModel {
 
     private var firstVisibleIndex: Int = 0
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->

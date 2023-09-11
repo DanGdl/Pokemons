@@ -31,7 +31,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PokemonDetailsViewModel @Inject constructor(
     private val repo: PokemonsRepo
-) : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState>(),
+) : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenEffect>(),
     PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)
