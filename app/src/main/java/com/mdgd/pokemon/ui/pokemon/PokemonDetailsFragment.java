@@ -32,7 +32,7 @@ public class PokemonDetailsFragment extends HostedFragment<PokemonDetailsContrac
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            getModel().setPokemonId(PokemonDetailsFragmentArgs.fromBundle(getArguments()).getPokemonId());
+            getViewModel().setPokemonId(PokemonDetailsFragmentArgs.fromBundle(getArguments()).getPokemonId());
         }
     }
 

@@ -37,7 +37,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
             if (refreshSwipe != null) {
                 refreshSwipe.setRefreshing(true);
             }
-            getModel().loadPage(page);
+            getViewModel().loadPage(page);
         }
     };
     private ImageButton filterAttack;
@@ -52,7 +52,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onDestroyDisposables.add(adapter.getEventsObservable().subscribe(event -> getModel().onItemClicked(event.model)));
+        onDestroyDisposables.add(adapter.getEventsObservable().subscribe(event -> getViewModel().onItemClicked(event.model)));
     }
 
     @Override
@@ -139,11 +139,11 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
             onRefresh();
         } else {
             if (filterAttack == view) {
-                getModel().sort(FilterData.FILTER_ATTACK);
+                getViewModel().sort(FilterData.FILTER_ATTACK);
             } else if (filterDefence == view) {
-                getModel().sort(FilterData.FILTER_DEFENCE);
+                getViewModel().sort(FilterData.FILTER_DEFENCE);
             } else if (filterSpeed == view) {
-                getModel().sort(FilterData.FILTER_SPEED);
+                getViewModel().sort(FilterData.FILTER_SPEED);
             }
         }
     }
@@ -151,7 +151,7 @@ public class PokemonsFragment extends HostedFragment<PokemonsContract.View, Poke
     @Override
     public void onRefresh() {
         scrollListener.resetState();
-        getModel().reload();
+        getViewModel().reload();
     }
 
     @Override

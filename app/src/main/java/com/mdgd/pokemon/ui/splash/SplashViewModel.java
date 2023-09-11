@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 
-public class SplashViewModel extends MviViewModel<SplashContract.View, SplashScreenState> implements SplashContract.ViewModel {
+public class SplashViewModel extends MviViewModel<SplashContract.View, SplashScreenState, SplashScreenEffect> implements SplashContract.ViewModel {
 
     private final Cache cache;
 

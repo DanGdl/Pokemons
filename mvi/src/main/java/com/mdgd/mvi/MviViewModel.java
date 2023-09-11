@@ -7,13 +7,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mdgd.mvi.fragments.FragmentContract;
+import com.mdgd.mvi.states.AbstractEffect;
 import com.mdgd.mvi.states.AbstractState;
 import com.mdgd.mvi.states.ScreenState;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public abstract class MviViewModel<VIEW, STATE extends AbstractState<VIEW, STATE>> extends ViewModel implements FragmentContract.ViewModel<VIEW> {
+public abstract class MviViewModel<
+        VIEW, STATE extends AbstractState<VIEW, STATE>, EFFECT extends AbstractEffect<VIEW>
+        > extends ViewModel implements FragmentContract.ViewModel<VIEW> {
     private final CompositeDisposable onStopDisposables = new CompositeDisposable();
     private final CompositeDisposable onDestroyDisposables = new CompositeDisposable();
     private final MutableLiveData<ScreenState<VIEW>> stateHolder = new MutableLiveData<>();
@@ -59,7 +62,11 @@ public abstract class MviViewModel<VIEW, STATE extends AbstractState<VIEW, STATE
         return (STATE) stateHolder.getValue();
     }
 
-    protected void setEffect(ScreenState<VIEW> effect) {
+    protected EFFECT getEffect() {
+        return (EFFECT) effectHolder.getValue();
+    }
+
+    protected void setEffect(EFFECT effect) {
         effectHolder.setValue(effect);
     }
 

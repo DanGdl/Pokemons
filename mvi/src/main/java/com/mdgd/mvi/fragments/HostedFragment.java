@@ -21,7 +21,7 @@ public abstract class HostedFragment<
         HOST extends FragmentContract.Host
         > extends NavHostFragment implements FragmentContract.View, Observer<ScreenState<VIEW>>, LifecycleEventObserver {
 
-    private VIEW_MODEL model;
+    private VIEW_MODEL viewModel;
     private HOST fragmentHost;
 
     @Override
@@ -41,26 +41,22 @@ public abstract class HostedFragment<
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setModel(createModel());
+        setViewModel(createModel());
         getLifecycle().addObserver(this);
-        if (getModel() != null) {
-            getModel().getStateObservable().observe(this, this);
-            getModel().getEffectObservable().observe(this, this);
+        if (getViewModel() != null) {
+            getViewModel().getStateObservable().observe(this, this);
+            getViewModel().getEffectObservable().observe(this, this);
         }
     }
 
     protected abstract VIEW_MODEL createModel();
 
     public void onStateChanged(@NonNull LifecycleOwner owner, @NonNull Lifecycle.Event event) {
-        if (getModel() != null) {
-            getModel().onStateChanged(event);
+        if (getViewModel() != null) {
+            getViewModel().onStateChanged(event);
         }
         if (getLifecycle().getCurrentState().ordinal() == Lifecycle.State.DESTROYED.ordinal()) {
             getLifecycle().removeObserver(this);
-            if (getModel() != null) {
-                getModel().getStateObservable().removeObservers(this);
-                getModel().getEffectObservable().removeObservers(this);
-            }
         }
     }
 
@@ -84,11 +80,11 @@ public abstract class HostedFragment<
         return fragmentHost;
     }
 
-    protected VIEW_MODEL getModel() {
-        return model;
+    protected VIEW_MODEL getViewModel() {
+        return viewModel;
     }
 
-    protected void setModel(VIEW_MODEL model) {
-        this.model = model;
+    protected void setViewModel(VIEW_MODEL viewModel) {
+        this.viewModel = viewModel;
     }
 }

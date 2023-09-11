@@ -17,6 +17,7 @@ import com.mdgd.pokemon.ui.pokemon.items.LabelProperty;
 import com.mdgd.pokemon.ui.pokemon.items.PokemonProperty;
 import com.mdgd.pokemon.ui.pokemon.items.TextProperty;
 import com.mdgd.pokemon.ui.pokemon.items.TitleProperty;
+import com.mdgd.pokemon.ui.pokemon.state.PokemonScreenEffect;
 import com.mdgd.pokemon.ui.pokemon.state.PokemonScreenState;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract.View, PokemonScreenState> implements PokemonDetailsContract.ViewModel {
+public class PokemonDetailsViewModel extends MviViewModel<PokemonDetailsContract.View, PokemonScreenState, PokemonScreenEffect> implements PokemonDetailsContract.ViewModel {
 
     private final BehaviorSubject<Long> pokemonIdSubject = BehaviorSubject.create();
     private final PokemonsRepo repo;

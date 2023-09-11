@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
-public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, PokemonsScreenState> implements PokemonsContract.ViewModel {
+public class PokemonsViewModel extends MviViewModel<PokemonsContract.View, PokemonsScreenState, PokemonsScreenEffect> implements PokemonsContract.ViewModel {
 
     private final PublishSubject<Integer> loadPageSubject = PublishSubject.create();
     private final BehaviorSubject<FilterData> filtersSubject = BehaviorSubject.createDefault(new FilterData());
