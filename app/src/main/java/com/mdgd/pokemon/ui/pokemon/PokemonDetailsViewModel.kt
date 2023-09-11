@@ -15,6 +15,7 @@ import com.mdgd.pokemon.ui.pokemon.dto.LabelProperty
 import com.mdgd.pokemon.ui.pokemon.dto.PokemonProperty
 import com.mdgd.pokemon.ui.pokemon.dto.TextProperty
 import com.mdgd.pokemon.ui.pokemon.dto.TitleProperty
+import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenEffect
 import com.mdgd.pokemon.ui.pokemon.state.PokemonDetailsScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,7 +28,7 @@ import java.util.LinkedList
 
 class PokemonDetailsViewModel(
     private val repo: PokemonsRepo
-) : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState>(),
+) : MviViewModel<PokemonDetailsContract.View, PokemonDetailsScreenState, PokemonDetailsScreenEffect>(),
     PokemonDetailsContract.ViewModel {
 
     private val pokemonIdFlow = MutableStateFlow(-1L)

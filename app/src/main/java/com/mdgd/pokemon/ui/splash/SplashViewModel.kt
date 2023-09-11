@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class SplashViewModel(
     private val cache: Cache
-) : MviViewModel<SplashContract.View, SplashScreenState>(), SplashContract.ViewModel {
+) : MviViewModel<SplashContract.View, SplashScreenState, SplashScreenEffect>(),
+    SplashContract.ViewModel {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         setEffect(SplashScreenEffect.ShowError(e))

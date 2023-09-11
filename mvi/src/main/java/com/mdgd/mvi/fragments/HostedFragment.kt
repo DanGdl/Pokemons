@@ -17,13 +17,12 @@ abstract class HostedFragment<
     : NavHostFragment(), FragmentContract.View, Observer<ScreenState<VIEW>>,
     LifecycleEventObserver {
 
-    protected var model: VIEW_MODEL? = null
+    protected var viewModel: VIEW_MODEL? = null
         private set
 
     protected var fragmentHost: HOST? = null
         private set
 
-    @Suppress("UNCHECKED_CAST")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // keep the call back
@@ -33,8 +32,7 @@ abstract class HostedFragment<
             val hostClassName = ((javaClass.genericSuperclass as ParameterizedType)
                 .actualTypeArguments[1] as Class<*>).canonicalName
             throw RuntimeException(
-                "Activity must implement $hostClassName to attach ${this.javaClass.simpleName}",
-                e
+                "Activity must implement $hostClassName to attach ${this.javaClass.simpleName}", e
             )
         }
     }
@@ -45,34 +43,31 @@ abstract class HostedFragment<
         fragmentHost = null
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setModel(createModel())
         lifecycle.addObserver(this)
-        model?.getStateObservable()?.observe(this, this)
-        model?.getEffectObservable()?.observe(this) { it.visit(this@HostedFragment as VIEW) }
+        viewModel?.let {
+            it.getStateObservable().observe(this, this)
+            it.getEffectObservable().observe(this, this)
+        }
     }
 
     protected abstract fun createModel(): VIEW_MODEL
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        model?.onStateChanged(event)
+        viewModel?.onStateChanged(event)
 
         if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
             lifecycle.removeObserver(this)
-            // order matters
-            model?.getEffectObservable()?.removeObservers(this)
-            model?.getStateObservable()?.removeObservers(this)
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onChanged(value: ScreenState<VIEW>) {
         value.visit(this@HostedFragment as VIEW)
     }
 
     protected fun setModel(model: VIEW_MODEL) {
-        this.model = model
+        this.viewModel = model
     }
 }

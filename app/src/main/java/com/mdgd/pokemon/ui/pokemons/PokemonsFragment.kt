@@ -32,7 +32,7 @@ class PokemonsFragment : HostedFragment<
     // maybe paging library?
     private val scrollListener: EndlessScrollListener = object : EndlessScrollListener() {
         override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-            model?.loadPage(page)
+            viewModel?.loadPage(page)
         }
     }
     private var recyclerView: RecyclerView? = null
@@ -46,7 +46,7 @@ class PokemonsFragment : HostedFragment<
 
         lifecycleScope.launch {
             adapter.getEventsObservable().collect {
-                model?.onItemClicked(it.model)
+                viewModel?.onItemClicked(it.model)
             }
         }
     }
@@ -107,16 +107,16 @@ class PokemonsFragment : HostedFragment<
             onRefresh()
         } else {
             when {
-                filterAttack === view -> model?.sort(FilterData.FILTER_ATTACK)
-                filterDefence === view -> model?.sort(FilterData.FILTER_DEFENCE)
-                filterSpeed === view -> model?.sort(FilterData.FILTER_SPEED)
+                filterAttack === view -> viewModel?.sort(FilterData.FILTER_ATTACK)
+                filterDefence === view -> viewModel?.sort(FilterData.FILTER_DEFENCE)
+                filterSpeed === view -> viewModel?.sort(FilterData.FILTER_SPEED)
             }
         }
     }
 
     override fun onRefresh() {
         scrollListener.resetState()
-        model?.reload()
+        viewModel?.reload()
     }
 
     override fun setProgressVisibility(isVisible: Boolean) {
