@@ -10,8 +10,8 @@ import com.mdgd.mvi.states.AbstractState
 import com.mdgd.mvi.states.ScreenState
 
 abstract class MviViewModel<V, STATE : AbstractState<V, STATE>, EFFECT : AbstractEffect<V>> :
-    ViewModel(),
-    FragmentContract.ViewModel<V> {
+    ViewModel(), FragmentContract.ViewModel<V> {
+
     private val stateHolder = MutableLiveData<ScreenState<V>>()
     private val effectHolder = MutableLiveData<ScreenState<V>>()
 
@@ -19,12 +19,15 @@ abstract class MviViewModel<V, STATE : AbstractState<V, STATE>, EFFECT : Abstrac
 
     override fun getEffectObservable() = effectHolder
 
+    @Suppress("UNCHECKED_CAST")
     protected fun setState(state: STATE) {
         stateHolder.value = stateHolder.value?.let { state.merge(it as STATE) } ?: state
     }
 
+    @Suppress("UNCHECKED_CAST")
     protected fun getState() = stateHolder.value as STATE?
 
+    @Suppress("UNCHECKED_CAST")
     protected fun getEffect() = stateHolder.value as EFFECT?
 
     protected fun setEffect(action: EFFECT) {
