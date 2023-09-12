@@ -23,6 +23,7 @@ abstract class HostedFragment<
     protected var fragmentHost: HOST? = null
         private set
 
+    @Suppress("UNCHECKED_CAST")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // keep the call back
@@ -30,7 +31,7 @@ abstract class HostedFragment<
             context as HOST
         } catch (e: Throwable) {
             val hostClassName = ((javaClass.genericSuperclass as ParameterizedType)
-                    .actualTypeArguments[1] as Class<*>).canonicalName
+                .actualTypeArguments[1] as Class<*>).canonicalName
             throw RuntimeException(
                 "Activity must implement $hostClassName to attach ${this.javaClass.simpleName}", e
             )
@@ -63,6 +64,7 @@ abstract class HostedFragment<
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onChanged(value: ScreenState<VIEW>) {
         value.visit(this@HostedFragment as VIEW)
     }
