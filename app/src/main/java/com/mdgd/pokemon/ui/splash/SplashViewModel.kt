@@ -38,9 +38,4 @@ class SplashViewModel(
             setEffect(SplashScreenEffect.LaunchWorker)
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        progressJob = null
-    }
 }
